@@ -2,14 +2,12 @@
 @import "_variables.scss";
 
 .TextPanel {
+  @include flex-center;
   background-color: #fff;
   border-radius: $corner;
   box-shadow: 0 2px 5px rgba($color: #000, $alpha: 0.3);
-  display: grid;
-  grid-template-areas:
-    "value   value     "
-    "heading percentage"
-    "navbar  navbar    ";
+  flex-direction: column;
+  overflow: hidden;
   width: 100%;
 
   &--profit {
@@ -28,6 +26,26 @@
     grid-area: complaints;
   }
 
+  &__stats {
+    display: grid;
+    grid-template-areas:
+      "value   value     "
+      "heading percentage";
+    padding: $panel-padding;
+    width: 100%;
+  }
+
+  &__footer {
+    background-color: #ddd;
+    width: 100%;
+  }
+
+  &__heading,
+  &__value,
+  &__percentage {
+    margin: 0;
+  }
+
   &__heading {
     grid-area: heading;
   }
@@ -38,5 +56,17 @@
 
   &__percentage {
     grid-area: percentage;
+  }
+
+  &__dropdown {
+    border: none;
+    background: none;
+    padding: $panel-padding;
+    text-transform: uppercase;
+  }
+
+  &__option {
+    background: none;
+    padding: $panel-padding;
   }
 }

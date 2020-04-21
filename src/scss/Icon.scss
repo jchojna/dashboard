@@ -1,0 +1,22 @@
+@import "_variables.scss";
+
+.Icon {
+  fill: none;
+  padding: 10px;
+  stroke: #fff;
+  stroke-width: 6;
+  width: 50px;
+
+  $icons: (
+    profit: $color-profit,
+    users: $color-users,
+    orders: $color-orders,
+    complaints: $color-complaints,
+  );
+
+  @each $name, $val in $icons {
+    &--#{$name} {
+      background-color: $val;
+    }
+  }
+}
