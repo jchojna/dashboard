@@ -1,3 +1,42 @@
+@import "_mixins.scss";
+@import "_variables.scss";
+
 .TextPanel {
-  border: 2px solid lightseagreen;
+  background-color: #fff;
+  border-radius: $corner;
+  box-shadow: 0 2px 5px rgba($color: #000, $alpha: 0.3);
+  display: grid;
+  grid-template-areas:
+    "value   value     "
+    "heading percentage"
+    "navbar  navbar    ";
+  width: 100%;
+
+  &--profit {
+    grid-area: profit;
+  }
+
+  &--users {
+    grid-area: users;
+  }
+
+  &--orders {
+    grid-area: orders;
+  }
+
+  &--complaints {
+    grid-area: complaints;
+  }
+
+  &__heading {
+    grid-area: heading;
+  }
+
+  &__value {
+    grid-area: value;
+  }
+
+  &__percentage {
+    grid-area: percentage;
+  }
 }

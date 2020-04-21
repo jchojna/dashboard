@@ -6,7 +6,30 @@ function App() {
   return (
     <div className="App">
         <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
-        <TextPanel />
+        <TextPanel
+          key="profit"
+          heading="Total profit"
+          value="2674862"
+          percentage="4,5"
+        />
+        <TextPanel
+          key="users"
+          heading="Active users"
+          value="657"
+          percentage="8,5"
+        />
+        <TextPanel
+          key="orders"
+          heading="New orders"
+          value="245"
+          percentage="3,9"
+        />
+        <TextPanel
+          key="complaints"
+          heading="Open complaints"
+          value="12"
+          percentage="-5,3"
+        />
     </div>
   );
 }
