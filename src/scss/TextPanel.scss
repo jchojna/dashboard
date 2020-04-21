@@ -37,7 +37,10 @@
   }
 
   &__footer {
+    align-items: center;
     background-color: #ddd;
+    display: flex;
+    justify-content: space-between;
     width: 100%;
   }
 

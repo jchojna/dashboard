@@ -1,5 +1,6 @@
 import React from "react";
 import Icon from "./Icon";
+import Dropdown from "./Dropdown";
 import "../scss/TextPanel.scss";
 
 const TextPanel = (props) => {
@@ -12,17 +13,7 @@ const TextPanel = (props) => {
         <p className="TextPanel__percentage">{`${percentage}%`}</p>
       </div>
       <footer className="TextPanel__footer">
-        <select name="" className="TextPanel__dropdown">
-          <option className="TextPanel__option" value="weekly">
-            Weekly Stats
-          </option>
-          <option className="TextPanel__option" value="monthly">
-            Monthly Stats
-          </option>
-          <option className="TextPanel__option" value="yearly">
-            Yearly Stats
-          </option>
-        </select>
+        <Dropdown />
         <Icon iconId={id} />
       </footer>
     </section>

@@ -19,4 +19,11 @@
       background-color: $val;
     }
   }
+
+  &--dropdown {
+    padding: 0;
+    stroke: $color-dark;
+    stroke-width: 15;
+    width: 20px;
+  }
 }
