@@ -16,21 +16,22 @@
 .App {
   background-color: #ddd;
   border-radius: $corner;
-  box-shadow:
-    0 2px 20px rgba($color: #000, $alpha: 0.1),
+  box-shadow: 0 2px 20px rgba($color: #000, $alpha: 0.1),
     0 2px 5px rgba($color: #000, $alpha: 0.3);
   display: grid;
   gap: 20px;
   grid-template-areas:
-    "heading heading heading heading   "
-    "profit  users   orders  complaints";
+    "heading    heading    heading heading   "
+    "profit     users      orders  complaints"
+    "production production sales   sales     "
+    "summary    summary    sales   sales     ";
   grid-template-columns: repeat(4, 1fr);
   align-items: stretch;
   padding: 30px;
   width: 100%;
 
   &__heading {
-    font-size: 1.3em;
+    font-size: 1.5em;
     grid-area: heading;
     margin: 0;
   }

@@ -5,7 +5,7 @@
   @include flex-center;
   background-color: #fff;
   border-radius: $corner;
-  box-shadow: 0 2px 5px rgba($color: #000, $alpha: 0.3);
+  box-shadow: $section-shadow;
   flex-direction: column;
   overflow: hidden;
   width: 100%;

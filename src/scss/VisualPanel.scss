@@ -1,0 +1,30 @@
+@import "_variables.scss";
+
+.VisualPanel {
+  background-color: #fff;
+  border-radius: $corner;
+  box-shadow: $section-shadow;
+
+  &--production {
+    grid-area: production;
+  }
+
+  &--sales {
+    grid-area: sales;
+    min-height: 500px;
+  }
+
+  &--summary {
+    grid-area: summary;
+  }
+
+  &__header {
+
+  }
+
+  &__heading {
+    font-size: 1.3em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+}
