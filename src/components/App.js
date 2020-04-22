@@ -1,9 +1,10 @@
 import React, {Component} from "react";
+import {countriesList, getData} from "../lib/generateData";
+import {stats, getTotalInTimeRange} from "../lib/aquireData";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
-import {countriesList, getData} from "../lib/data";
 import "../scss/App.scss";
 
 class App extends Component {
@@ -14,35 +15,22 @@ class App extends Component {
       profit: 0,
       users: 0,
       orders: 0,
-      complaints: 0
+      complaints: 0,
     };
   }
 
   componentDidMount = () => {
-    this.setState({
-      profit: this.getTotal("profit"),
-      users: this.getTotal("users"),
-      orders: this.getTotal("orders"),
-      complaints: this.getTotal("complaints"),
-    });
-  };
-
-  getTotal = (type) => {
     const {data} = this.state;
-    let total = 0;
 
-    Object.values(data).forEach((country) => {
-      total += Object.values(country)
-        .map((date) => date[type])
-        .reduce((acc, curr) => acc + curr, 0);
+    stats.forEach((stat) => {
+      const {id} = stat;
+      this.setState({
+        [id]: getTotalInTimeRange(data, id),
+      });
     });
-
-    return total;
   };
 
   render() {
-    const {profit, users, orders, complaints} = this.state;
-
     return (
       <main className="App">
         <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
@@ -52,34 +40,19 @@ class App extends Component {
             <p className="App__range">X to Y vs. A to B</p>
             <Dropdown id="stats" label="" />
           </header>
-          <TextPanel
-            key="profit"
-            id="profit"
-            heading="Total profit"
-            value={profit}
-            percentage="4,5"
-          />
-          <TextPanel
-            key="users"
-            id="users"
-            heading="Active users"
-            value={users}
-            percentage="8,5"
-          />
-          <TextPanel
-            key="orders"
-            id="orders"
-            heading="New orders"
-            value={orders}
-            percentage="3,9"
-          />
-          <TextPanel
-            key="complaints"
-            id="complaints"
-            heading="Open complaints"
-            value={complaints}
-            percentage="-5,3"
-          />
+          {stats.map((stat) => {
+            const {id, heading} = stat;
+            const value = `${id === "profit" ? "$ " : ""}${this.state[id]}`;
+            return (
+              <TextPanel
+                key={id}
+                id={id}
+                heading={heading}
+                value={value}
+                percentage="4,5"
+              />
+            );
+          })}
         </section>
         <section className="App__section App__section--analytics">
           <header className="App__header App__header--analytics">
