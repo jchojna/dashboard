@@ -1,14 +1,19 @@
 import React from "react";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
+import Dropdown from "./Dropdown";
 import "../scss/App.scss";
 
 function App() {
   return (
     <main className="App">
       <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
-      <section className="App__section App__section--latest">
-        <h1 className="App__heading">Latest Stats</h1>
+      <section className="App__section App__section--stats">
+        <header className="App__header App__header--stats">
+          <h2 className="App__heading">Latest Stats</h2>
+          <p className="App__range">X to Y vs. A to B</p>
+          <Dropdown id="stats" label=""/>
+        </header>
         <TextPanel
           key="profit"
           id="profit"
@@ -38,8 +43,13 @@ function App() {
           percentage="-5,3"
         />
       </section>
-      <section className="App__section App__section--analysis">
-        <h1 className="App__heading">Analysis</h1>
+      <section className="App__section App__section--analytics">
+        <header className="App__header App__header--analytics">
+          <h2 className="App__heading">Analytics</h2>
+          <p className="App__range">Some info</p>
+          <Dropdown id="latestStats" label=""/>
+          <Dropdown id="latestStats" label=""/>
+        </header>
         <VisualPanel id="production" heading="Production" />
         <VisualPanel id="sales" heading="Sales Revenue By Country" />
         <VisualPanel id="summary" heading="Summary" />

@@ -13,14 +13,30 @@
   padding: 30px;
   width: 100%;
 
+  &__header {
+    align-items: center;
+    display: grid;
+    column-gap: 20px;
+    grid-area: header;
+    width: 100%;
+
+    &--stats {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    &--analytics {
+      grid-template-columns: auto 1fr auto auto;
+    }
+  }
+
   &__heading {
     color: $color-dark;
     font-size: 1.5em;
-    grid-area: heading;
     margin: 0;
   }
 
   &__section {
+    align-items: stretch;
     background-color: #ddd;
     border-radius: $corner;
     box-shadow: inset 0 2px 20px rgba($color: #000, $alpha: 0.1),
@@ -28,22 +44,22 @@
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(4, 1fr);
-    align-items: stretch;
+    max-width: 1200px;
     padding: 30px;
     width: 100%;
 
-    &--latest {
+    &--stats {
       grid-template-areas:
-        "heading    heading    heading heading   "
-        "profit     users      orders  complaints";
+        "header header header header    "
+        "profit users  orders complaints";
       margin: 30px 0;
     }
 
-    &--analysis {
+    &--analytics {
       grid-template-areas:
-        "heading    heading    heading heading   "
-        "production production sales   sales     "
-        "summary    summary    sales   sales     ";
+        "header     header     header header"
+        "production production sales  sales "
+        "summary    summary    sales  sales ";
     }
   }
 }
