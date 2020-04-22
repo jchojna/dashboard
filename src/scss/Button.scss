@@ -1,0 +1,16 @@
+@import "_variables.scss";
+@import "_mixins.scss";
+
+.Button {
+  @include button;
+  align-items: center;
+  background-color: #ccc;
+  display: flex;
+  justify-content: space-between;
+  min-width: 150px;
+  text-transform: uppercase;
+
+  &__text {
+    padding: 10px;
+  }
+}

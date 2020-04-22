@@ -8,7 +8,7 @@ const TextPanel = (props) => {
     <section className={`TextPanel TextPanel--${id}`}>
       <header className="TextPanel__header">
         <h3 className="TextPanel__heading">{heading}</h3>
-        <Icon iconId={id} type="infographic" />
+        <Icon id={id} type="infographic" />
       </header>
       <p className="TextPanel__value">{`$ ${value}`}</p>
       <p className="TextPanel__percentage">{`${percentage}%`}</p>

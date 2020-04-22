@@ -7,6 +7,11 @@
 @mixin button {
   background: none;
   border: none;
-  padding: 0;
+  color: $color-dark;
   cursor: pointer;
+  font-family: 'Nunito';
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0;
+  text-transform: uppercase;
 }

@@ -2,6 +2,7 @@ import React from "react";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
+import Button from "./Button";
 import "../scss/App.scss";
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
         <header className="App__header App__header--stats">
           <h2 className="App__heading">Latest Stats</h2>
           <p className="App__range">X to Y vs. A to B</p>
-          <Dropdown id="stats" label=""/>
+          <Dropdown id="stats" label="" />
         </header>
         <TextPanel
           key="profit"
@@ -47,8 +48,10 @@ function App() {
         <header className="App__header App__header--analytics">
           <h2 className="App__heading">Analytics</h2>
           <p className="App__range">Some info</p>
-          <Dropdown id="latestStats" label=""/>
-          <Dropdown id="latestStats" label=""/>
+          <Button id="export" />
+          <Button id="print" />
+          <Dropdown id="latestStats" label="" />
+          <Dropdown id="latestStats" label="" />
         </header>
         <VisualPanel id="production" heading="Production" />
         <VisualPanel id="sales" heading="Sales Revenue By Country" />

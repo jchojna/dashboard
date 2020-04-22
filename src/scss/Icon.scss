@@ -4,6 +4,7 @@
   fill: none;
 
   &--infographic {
+    background-color: #aaa;
     padding: 10px;
     stroke: #fff;
     stroke-width: 6;
@@ -34,16 +35,10 @@
     fill: $color-dark;
     width: 15px;
   }
-
-  &--refresh {
-
-  }
-
-  &--drag {
-
-  }
-
-  &--minimize {
-
+  
+  &--export,
+  &--print {
+    padding: 7px;
+    width: 40px;
   }
 }

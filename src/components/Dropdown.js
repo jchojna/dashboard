@@ -8,7 +8,7 @@ const Dropdown = (props) => {
     <div className="Dropdown">
       <button className="Dropdown__button">
         Last Month
-        <Icon iconId="dropdown" />
+        <Icon id="dropdown" />
       </button>
     </div>
   );

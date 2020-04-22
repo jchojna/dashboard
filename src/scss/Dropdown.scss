@@ -7,14 +7,9 @@
     @include button;
     align-items: center;
     background-color: #ccc;
-    color: $color-dark;
     display: flex;
-    font-family: 'Nunito';
-    font-size: 1em;
-    font-weight: bold;
     justify-content: space-between;
     min-width: 180px;
     padding: 10px;
-    text-transform: uppercase;
   }
 }
