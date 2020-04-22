@@ -1,6 +1,5 @@
 import React from "react";
-import Icon from "./Icon";
-import Dropdown from "./Dropdown";
+import Controls from "./Controls.js";
 import classNames from "classnames";
 import "../scss/VisualPanel.scss";
 
@@ -13,10 +12,9 @@ const VisualPanel = (props) => {
     <section className={panelClass}>
       <header className="VisualPanel__header">
         <h2 className="VisualPanel__heading">{heading}</h2>
-
+        <Controls />
       </header>
-      {/* <Dropdown /> */}
-      {/* <Icon iconId={id} /> */}
+      <div className="VisualPanel__content"></div>
     </section>
   );
 };

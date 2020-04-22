@@ -4,6 +4,7 @@
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
+  overflow: hidden;
 
   &--production {
     grid-area: production;
@@ -19,12 +20,21 @@
   }
 
   &__header {
-
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
   }
 
   &__heading {
-    font-size: 1.3em;
+    font-size: 1.2em;
     margin: 0;
+    padding: $panel-padding;
     text-transform: uppercase;
+  }
+
+  &__content {
+    background-color: #eee;
+    width: 100%;
+    height: 100%;
   }
 }

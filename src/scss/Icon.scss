@@ -2,10 +2,20 @@
 
 .Icon {
   fill: none;
-  padding: 10px;
-  stroke: #fff;
-  stroke-width: 6;
-  width: 50px;
+
+  &--infographic {
+    padding: 10px;
+    stroke: #fff;
+    stroke-width: 6;
+    width: 50px;
+  }
+
+  &--controls {
+    stroke: inherit;
+    stroke-width: 5;
+    width: 30px;
+    height: 100%;
+  }
 
   $icons: (
     profit: $color-profit,
@@ -21,9 +31,19 @@
   }
 
   &--dropdown {
-    padding: 0;
-    stroke: $color-dark;
-    stroke-width: 15;
-    width: 20px;
+    fill: $color-dark;
+    width: 15px;
+  }
+
+  &--refresh {
+
+  }
+
+  &--drag {
+
+  }
+
+  &--minimize {
+
   }
 }

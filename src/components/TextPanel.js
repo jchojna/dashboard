@@ -14,7 +14,7 @@ const TextPanel = (props) => {
       </div>
       <footer className="TextPanel__footer">
         <Dropdown />
-        <Icon iconId={id} />
+        <Icon iconId={id} type="infographic" />
       </footer>
     </section>
   );

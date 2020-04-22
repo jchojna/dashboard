@@ -6,6 +6,7 @@
   &__button {
     @include button;
     align-items: center;
+    color: $color-dark;
     display: flex;
     font-family: 'Nunito';
     font-size: 0.8em;
