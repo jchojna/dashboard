@@ -7,12 +7,42 @@ import {countriesList, getData} from "../lib/data";
 import "../scss/App.scss";
 
 class App extends Component {
-
-  componentDidMount = () => {
-    getData(countriesList);
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: getData(countriesList),
+      profit: 0,
+      users: 0,
+      orders: 0,
+      complaints: 0
+    };
   }
 
+  componentDidMount = () => {
+    this.setState({
+      profit: this.getTotal("profit"),
+      users: this.getTotal("users"),
+      orders: this.getTotal("orders"),
+      complaints: this.getTotal("complaints"),
+    });
+  };
+
+  getTotal = (type) => {
+    const {data} = this.state;
+    let total = 0;
+
+    Object.values(data).forEach((country) => {
+      total += Object.values(country)
+        .map((date) => date[type])
+        .reduce((acc, curr) => acc + curr, 0);
+    });
+
+    return total;
+  };
+
   render() {
+    const {profit, users, orders, complaints} = this.state;
+
     return (
       <main className="App">
         <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
@@ -26,28 +56,28 @@ class App extends Component {
             key="profit"
             id="profit"
             heading="Total profit"
-            value="2674862"
+            value={profit}
             percentage="4,5"
           />
           <TextPanel
             key="users"
             id="users"
             heading="Active users"
-            value="657"
+            value={users}
             percentage="8,5"
           />
           <TextPanel
             key="orders"
             id="orders"
             heading="New orders"
-            value="245"
+            value={orders}
             percentage="3,9"
           />
           <TextPanel
             key="complaints"
             id="complaints"
             heading="Open complaints"
-            value="12"
+            value={complaints}
             percentage="-5,3"
           />
         </section>

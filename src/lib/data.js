@@ -8,13 +8,21 @@ export const countriesList = [
     startDate: [2018, 5, 24],
   },
 ];
+const getStartDateString = (date) => date.toISOString().slice(0, 10);
+const getRandom = (bottomLimit, upperLimit) => {
+  return (
+    Math.floor(Math.random() * (upperLimit - bottomLimit + 1)) + bottomLimit
+  );
+};
 
 export const getData = (list) => {
   const data = {};
 
   list.forEach((item) => {
-    const {country, startDate: [year, month, day]} = item;
-    const getStartDateString = (date) => date.toISOString().slice(0,10);
+    const {
+      country,
+      startDate: [year, month, day],
+    } = item;
 
     const date = new Date(year, month - 1, day);
     const todaysDate = new Date();
@@ -24,17 +32,16 @@ export const getData = (list) => {
     data[country] = {};
 
     // generate data for each consecutive date
-    while(dateString !== todaysDateString) {
-
+    while (dateString !== todaysDateString) {
       date.setDate(date.getDate() + 1);
       dateString = getStartDateString(date);
       data[country][dateString] = {};
-      data[country][dateString].profit = 'a';
-      data[country][dateString].users = 'b';
-      data[country][dateString].orders = 'c';
-      data[country][dateString].complaints = 'd';
+      data[country][dateString].profit = getRandom(-300, 2000);
+      data[country][dateString].users = getRandom(0, 100);
+      data[country][dateString].orders = getRandom(0, 50);
+      data[country][dateString].complaints = getRandom(0, 5);
     }
   });
 
-  console.log(data);
+  return data;
 };
