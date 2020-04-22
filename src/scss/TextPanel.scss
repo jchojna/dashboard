@@ -2,11 +2,16 @@
 @import "_variables.scss";
 
 .TextPanel {
-  @include flex-center;
+  align-items: center;
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
-  flex-direction: column;
+  display: grid;
+  grid-template-areas:
+    "value   percentage"
+    "header  header    ";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr auto;
   overflow: hidden;
   width: 100%;
 
@@ -26,57 +31,36 @@
     grid-area: complaints;
   }
 
-  &__stats {
-    align-items: center;
-    display: grid;
-    grid-template-areas:
-      "value   value     "
-      "heading percentage";
-    padding: $panel-padding;
-    width: 100%;
-  }
-
-  &__footer {
+  &__header {
     align-items: center;
     background-color: #ddd;
     display: flex;
+    grid-area: header;
     justify-content: space-between;
     width: 100%;
+  }
+
+  &__heading {
+    font-size: 1em;
+    text-transform: uppercase;
   }
 
   &__heading,
   &__value,
   &__percentage {
     margin: 0;
-  }
-
-  &__heading {
-    font-size: 1em;
-    grid-area: heading;
-    text-transform: uppercase;
+    padding: $panel-padding;
   }
 
   &__value {
-    font-size: 2.5em;
+    font-size: 2em;
     grid-area: value;
+    padding: 30px $panel-padding;
   }
 
   &__percentage {
     color: $color-users;
     font-size: 1.2em;
-    justify-self: end;
     grid-area: percentage;
-  }
-
-  &__dropdown {
-    border: none;
-    background: none;
-    padding: $panel-padding;
-    text-transform: uppercase;
-  }
-
-  &__option {
-    background: none;
-    padding: $panel-padding;
   }
 }

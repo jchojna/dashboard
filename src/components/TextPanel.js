@@ -7,15 +7,12 @@ const TextPanel = (props) => {
   const {id, heading, value, percentage} = props;
   return (
     <section className={`TextPanel TextPanel--${id}`}>
-      <div className="TextPanel__stats">
-        <h2 className="TextPanel__heading">{heading}</h2>
-        <p className="TextPanel__value">{`$ ${value}`}</p>
-        <p className="TextPanel__percentage">{`${percentage}%`}</p>
-      </div>
-      <footer className="TextPanel__footer">
-        <Dropdown />
+      <header className="TextPanel__header">
+        <h3 className="TextPanel__heading">{heading}</h3>
         <Icon iconId={id} type="infographic" />
-      </footer>
+      </header>
+      <p className="TextPanel__value">{`$ ${value}`}</p>
+      <p className="TextPanel__percentage">{`${percentage}%`}</p>
     </section>
   );
 };
