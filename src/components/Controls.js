@@ -7,12 +7,12 @@ const Controls = (props) => {
     <ul className="Controls">
       <li className="Controls__item">
         <button className="Controls__button Controls__button--minimize">
-          <Icon iconId="minimize" type="controls" />
+          <Icon id="minimize" type="controls" />
         </button>
       </li>
       <li className="Controls__item">
         <button className="Controls__button Controls__button--fullscreen">
-          <Icon iconId="fullscreen" type="controls" />
+          <Icon id="fullscreen" type="controls" />
         </button>
       </li>
     </ul>

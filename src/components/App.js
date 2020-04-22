@@ -48,14 +48,17 @@ function App() {
         <header className="App__header App__header--analytics">
           <h2 className="App__heading">Analytics</h2>
           <p className="App__range">Some info</p>
-          <Button id="export" />
-          <Button id="print" />
           <Dropdown id="latestStats" label="" />
           <Dropdown id="latestStats" label="" />
         </header>
         <VisualPanel id="production" heading="Production" />
         <VisualPanel id="sales" heading="Sales Revenue By Country" />
         <VisualPanel id="summary" heading="Summary" />
+        <footer className="App__footer">
+          <p className="App__info">Some info</p>
+          <Button id="export" />
+          <Button id="print" />
+        </footer>
       </section>
     </main>
   );
