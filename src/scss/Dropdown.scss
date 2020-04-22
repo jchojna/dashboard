@@ -1,0 +1,15 @@
+@import "_mixins.scss";
+@import "_variables.scss";
+
+.Dropdown {
+
+  &__button {
+    @include button;
+    align-items: center;
+    background-color: #ccc;
+    display: flex;
+    justify-content: space-between;
+    min-width: 180px;
+    padding: 10px;
+  }
+}

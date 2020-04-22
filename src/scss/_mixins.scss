@@ -1,0 +1,17 @@
+@mixin flex-center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+@mixin button {
+  background: none;
+  border: none;
+  color: $color-dark;
+  cursor: pointer;
+  font-family: 'Nunito';
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0;
+  text-transform: uppercase;
+}

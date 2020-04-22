@@ -1,0 +1,78 @@
+@import "_mixins.scss";
+@import "_variables.scss";
+
+.App {
+  @include flex-center;
+  flex-direction: column;
+  background-color: #eee;
+  display: flex;
+  color: $color-dark;
+  font-weight: normal;
+  height: 100%;
+  min-height: 100vh;
+  padding: 30px;
+  width: 100%;
+
+  &__header,
+  &__footer {
+    align-items: center;
+    display: grid;
+    column-gap: 20px;
+    width: 100%;
+  }
+
+  &__header {
+    grid-area: header;
+
+    &--stats {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    &--analytics {
+      grid-template-columns: auto 1fr repeat(2, auto);
+    }
+  }
+
+  &__heading {
+    color: $color-dark;
+    font-size: 1.5em;
+    margin: 0;
+  }
+
+  &__section {
+    background-color: #ddd;
+    border-radius: $corner;
+    box-shadow: inset 0 2px 20px rgba($color: #000, $alpha: 0.1),
+      inset 0 2px 5px rgba($color: #000, $alpha: 0.3);
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1200px;
+    padding: 30px;
+    width: 100%;
+
+    &--stats {
+      grid-template-areas:
+        "header header header header    "
+        "profit users  orders complaints";
+      margin: 30px 0;
+    }
+
+    &--analytics {
+      grid-template-areas:
+        "header     header     header header"
+        "production production sales  sales "
+        "summary    summary    sales  sales "
+        "footer     footer     footer footer";
+    }
+  }
+
+  &__footer {
+    grid-area: footer;
+    grid-template-columns: 1fr repeat(2, auto);
+  }
+
+  &__info {
+    margin: 0;
+  }
+}

@@ -1,0 +1,44 @@
+@import "_variables.scss";
+
+.Icon {
+  fill: none;
+
+  &--infographic {
+    background-color: #aaa;
+    padding: 10px;
+    stroke: #fff;
+    stroke-width: 6;
+    width: 50px;
+  }
+
+  &--controls {
+    stroke: inherit;
+    stroke-width: 5;
+    width: 30px;
+    height: 100%;
+  }
+
+  $icons: (
+    profit: $color-profit,
+    users: $color-users,
+    orders: $color-orders,
+    complaints: $color-complaints,
+  );
+
+  @each $name, $val in $icons {
+    &--#{$name} {
+      background-color: $val;
+    }
+  }
+
+  &--dropdown {
+    fill: $color-dark;
+    width: 15px;
+  }
+  
+  &--export,
+  &--print {
+    padding: 7px;
+    width: 40px;
+  }
+}
