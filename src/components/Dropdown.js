@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import classNames from "classnames";
-import {statsPeriods, months} from "../lib/dataHelpers";
+import {statsNames, statsPeriods, months} from "../lib/dataHelpers";
 import Icon from "./Icon";
 import "../scss/Dropdown.scss";
 
@@ -40,19 +40,33 @@ class Dropdown extends Component {
 
   renderMenu = () => {
     const {id, years} = this.props;
-    const menuList =
-      id === "stats"
-        ? Object.keys(statsPeriods)
-        : id === "month"
-        ? months
-        : id === "year"
-        ? years
-        : null;
+    let menuList;
+
+    switch (id) {
+      case "periods":
+        menuList = Object.keys(statsPeriods);
+        break;
+
+      case "month":
+        menuList = months;
+        break;
+
+      case "year":
+        menuList = years;
+        break;
+
+      case "stats":
+        menuList = Object.values(statsNames).map((name) => name.heading);
+        break;
+
+      default:
+        break;
+    }
 
     return (
       <ul className="Dropdown__list">
         {menuList.map((item) => {
-          const label = id === "stats" ? statsPeriods[item] : item;
+          const label = id === "periods" ? statsPeriods[item] : item;
 
           return (
             <li key={item} className="Dropdown__item">

@@ -98,7 +98,7 @@ class App extends Component {
               ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
             </p>
             <Dropdown
-              id="stats"
+              id="periods"
               period={period}
               onMenuClick={this.handleStats}
             />
@@ -124,6 +124,11 @@ class App extends Component {
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
+            <Dropdown
+              id="stats"
+              period="month"
+              onMenuClick={this.handleAnalytics}
+            />
             <Dropdown
               id="month"
               period="month"
