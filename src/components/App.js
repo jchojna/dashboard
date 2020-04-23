@@ -6,6 +6,7 @@ import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
+import Map from "./Map";
 import "../scss/App.scss";
 
 class App extends Component {
@@ -61,7 +62,6 @@ class App extends Component {
     });
 
     const stats = {
-      ...this.state.stats,
       period,
       lastPeriodEndDate,
       lastPeriodStartDate,
@@ -143,8 +143,12 @@ class App extends Component {
           </header>
 
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
-          <VisualPanel id="production" heading="Production" />
-          <VisualPanel id="sales" heading="Sales Revenue By Country" />
+          <VisualPanel id="histogram" heading="Temp1" />
+          <VisualPanel id="map" heading="Temp2">
+
+            <Map />
+
+          </VisualPanel>
           <VisualPanel id="summary" heading="Summary" />
 
           {/* ANALYTICS FOOTER */}

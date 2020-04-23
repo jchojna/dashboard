@@ -60,10 +60,10 @@
 
     &--analytics {
       grid-template-areas:
-        "header     header     header header"
-        "production production sales  sales "
-        "summary    summary    sales  sales "
-        "footer     footer     footer footer";
+        "header    header    header header"
+        "histogram histogram map    map   "
+        "summary   summary   map    map   "
+        "footer    footer    footer footer";
     }
   }
 

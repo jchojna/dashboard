@@ -14,7 +14,7 @@ const VisualPanel = (props) => {
         <h2 className="VisualPanel__heading">{heading}</h2>
         <Controls />
       </header>
-      <div className="VisualPanel__content"></div>
+      {props.children}
     </section>
   );
 };
