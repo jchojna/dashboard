@@ -8,8 +8,9 @@
   box-shadow: $section-shadow;
   display: grid;
   grid-template-areas:
-    "value   percentage"
-    "header  header    ";
+    "percent percent"
+    "value   value  "
+    "header  header ";
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr auto;
   overflow: hidden;
@@ -55,12 +56,24 @@
   &__value {
     font-size: 1.5em;
     grid-area: value;
-    padding: 20px $panel-padding;
+    padding-top: 0;
   }
 
   &__percentage {
-    color: $color-users;
+    @include flex-center;
     font-size: 1.2em;
-    grid-area: percentage;
+    grid-area: percent;
+    justify-self: end;
+    padding-bottom: 0;
+
+    &--positive {
+      color: $color-users;
+      stroke: $color-users;
+    }
+
+    &--negative {
+      color: $color-complaints;
+      stroke: $color-complaints;
+    }
   }
 }

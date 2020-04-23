@@ -75,7 +75,7 @@ class Dropdown extends Component {
       <div className="Dropdown" ref={this.dropdown}>
         <button className={buttonClass} onClick={this.toggleDropdown}>
           <span className="Dropdown__label">{label}</span>
-          <Icon id="dropdown" isActive={isOpen} />
+          <Icon id="dropdown" isRotated={isOpen} />
         </button>
         {isOpen && this.renderMenu()}
       </div>

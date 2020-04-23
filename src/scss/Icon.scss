@@ -43,7 +43,14 @@
     width: 40px;
   }
 
-  &--active {
+  &--indicator {
+    margin-right: 5px;
+    stroke: inherit;
+    stroke-width: 10;
+    width: 20px;
+  }
+
+  &--rotated {
     transform: rotate(180deg);
   }
 }
