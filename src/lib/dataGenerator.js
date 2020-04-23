@@ -1,3 +1,5 @@
+import {getStartDateString, getRandom} from "./dataHandlers";
+
 export const countriesList = [
   {
     country: "Poland",
@@ -8,12 +10,6 @@ export const countriesList = [
     startDate: [2018, 5, 24],
   },
 ];
-const getStartDateString = (date) => date.toISOString().slice(0, 10);
-const getRandom = (bottomLimit, upperLimit) => {
-  return (
-    Math.floor(Math.random() * (upperLimit - bottomLimit + 1)) + bottomLimit
-  );
-};
 
 export const getData = (list) => {
   const data = {};
@@ -36,8 +32,8 @@ export const getData = (list) => {
       date.setDate(date.getDate() + 1);
       dateString = getStartDateString(date);
       data[country][dateString] = {};
-      data[country][dateString].profit = getRandom(-300, 2000);
-      data[country][dateString].users = getRandom(0, 100);
+      data[country][dateString].profit = getRandom(-300, 2200);
+      data[country][dateString].users = getRandom(0, 80);
       data[country][dateString].orders = getRandom(0, 50);
       data[country][dateString].complaints = getRandom(0, 5);
     }

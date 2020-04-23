@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {countriesList, getData} from "../lib/generateData";
-import {stats, getTotalInTimeRange} from "../lib/aquireData";
+import {countriesList, getData} from "../lib/dataGenerator";
+import * as dataHandlers from "../lib/dataHandlers";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
@@ -12,44 +12,100 @@ class App extends Component {
     super(props);
     this.state = {
       data: getData(countriesList),
-      profit: 0,
-      users: 0,
-      orders: 0,
-      complaints: 0,
+      profit: {},
+      users: {},
+      orders: {},
+      complaints: {},
+      stats: {
+        range: "month",
+        lastPeriodStart: "",
+        lastPeriodEnd: "today",
+        prevPeriodStart: "",
+        prevPeriodEnd: "",
+      },
     };
   }
 
-  componentDidMount = () => {
-    const {data} = this.state;
+  handleStats = () => {
+    const {range} = this.state.stats;
+    const {getStartingDates, getDateFormatted} = dataHandlers;
+    const now = new Date();
+    const startingDates = getStartingDates(now, range);
+    const [lastPeriodStartDate, prevPeriodStartDate] = startingDates;
 
-    stats.forEach((stat) => {
+    const lastPeriodStart = lastPeriodStartDate
+      ? getDateFormatted(lastPeriodStartDate)
+      : "";
+    const prevPeriodStart = prevPeriodStartDate
+      ? getDateFormatted(prevPeriodStartDate)
+      : "";
+
+    const stats = {
+      ...this.state.stats,
+      lastPeriodStart,
+      prevPeriodStart,
+      prevPeriodEnd: lastPeriodStart,
+    };
+    this.setState({stats});
+  };
+
+  componentDidMount = () => {
+    const {
+      data,
+      stats,
+      stats: {range},
+    } = this.state;
+    const {statsNames, getTotalInTimeRange} = dataHandlers;
+
+    this.handleStats();
+
+    statsNames.forEach((stat) => {
       const {id} = stat;
+      const statsOutput = getTotalInTimeRange(data, id, stats);
+      const [lastPeriodTotal, percentage] = statsOutput;
+
       this.setState({
-        [id]: getTotalInTimeRange(data, id),
+        [id]: {
+          value: `${id === "profit" ? "$ " : ""}${lastPeriodTotal}`,
+          percentage,
+        },
       });
     });
   };
 
   render() {
+    const {
+      lastPeriodStart,
+      lastPeriodEnd,
+      prevPeriodStart,
+      prevPeriodEnd,
+    } = this.state.stats;
+
     return (
       <main className="App">
         <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
         <section className="App__section App__section--stats">
+          {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
             <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__range">X to Y vs. A to B</p>
+            <p className="App__range">
+              {`${lastPeriodStart} - ${lastPeriodEnd} vs.
+              ${prevPeriodStart} - ${prevPeriodEnd}`}
+            </p>
             <Dropdown id="stats" label="" />
           </header>
-          {stats.map((stat) => {
+
+          {/* LATEST STATS TEXT PANELS */}
+          {dataHandlers.statsNames.map((stat) => {
             const {id, heading} = stat;
-            const value = `${id === "profit" ? "$ " : ""}${this.state[id]}`;
+            const {value, percentage} = this.state[id];
             return (
               <TextPanel
                 key={id}
                 id={id}
                 heading={heading}
                 value={value}
-                percentage="4,5"
+                percentage={percentage}
               />
             );
           })}
