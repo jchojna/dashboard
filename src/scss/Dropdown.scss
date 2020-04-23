@@ -6,10 +6,13 @@
   &__button {
     @include button;
     align-items: center;
-    background-color: #ccc;
     display: flex;
     justify-content: space-between;
     min-width: 180px;
     padding: 10px;
+
+    &:hover {
+      background-color: #ccc;
+    }
   }
 }

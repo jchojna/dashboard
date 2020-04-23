@@ -8,12 +8,23 @@ class Dropdown extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: true,
+      isOpen: false,
     };
   }
 
+  handleDropdown = () => {
+    this.setState(prevState => ({
+      isOpen: !prevState.isOpen
+    }));
+  }
+
+  handleMenu = (item) => {
+    this.handleDropdown();
+    this.props.onMenuClick(item);
+  }
+
   renderMenu = () => {
-    const {id, onMenuClick} = this.props;
+    const {id} = this.props;
     const menuList =
       id === "stats" ? Object.keys(statsPeriods) : id === "month" ? months : [];
 
@@ -24,9 +35,7 @@ class Dropdown extends Component {
 
           return (
             <li key={item}>
-              <button onClick={() => onMenuClick(item)}>
-                {label}
-              </button>
+              <button onClick={() => this.handleMenu(item)}>{label}</button>
             </li>
           );
         })}
@@ -41,7 +50,7 @@ class Dropdown extends Component {
 
     return (
       <div className="Dropdown">
-        <button className="Dropdown__button">
+        <button className="Dropdown__button" onClick={this.handleDropdown}>
           <span className="Dropdown__label">{label}</span>
           <Icon id="dropdown" />
         </button>

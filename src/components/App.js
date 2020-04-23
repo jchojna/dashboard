@@ -27,6 +27,11 @@ class App extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const {period} = this.state.stats;
+    this.handleStats(period);
+  };
+
   handleStats = (period) => {
     const {data} = this.state;
 
@@ -64,9 +69,8 @@ class App extends Component {
     this.setState({stats});
   };
 
-  componentDidMount = () => {
-    const {period} = this.state.stats;
-    this.handleStats(period);
+  handleAnalytics = (period) => {
+    console.log(period);
   };
 
   render() {
@@ -113,15 +117,28 @@ class App extends Component {
           })}
         </section>
         <section className="App__section App__section--analytics">
+          {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
-            <Dropdown id="month" label="" />
-            <Dropdown id="latestStats" label="" />
+            <Dropdown
+              id="month"
+              period="month"
+              onMenuClick={this.handleAnalytics}
+            />
+            <Dropdown
+              id="year"
+              period="year"
+              onMenuClick={this.handleAnalytics}
+            />
           </header>
+
+          {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
           <VisualPanel id="production" heading="Production" />
           <VisualPanel id="sales" heading="Sales Revenue By Country" />
           <VisualPanel id="summary" heading="Summary" />
+
+          {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
             <p className="App__info">Some info</p>
             <Button id="export" />
