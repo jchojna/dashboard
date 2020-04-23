@@ -34,7 +34,6 @@ class App extends Component {
 
   handleStats = (period) => {
     const {data} = this.state;
-
     const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
     const {statsNames} = dataHelpers;
 

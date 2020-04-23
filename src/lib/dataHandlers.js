@@ -12,34 +12,19 @@ export const getDateFormatted = (date) => {
 
 export const getBreakpointDates = (range) => {
   const now = new Date();
-  switch (range) {
-    case "week":
-      return [
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 6))),
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 6))),
-      ];
+  const offsets = {
+    today: [0, 0, 1, 0],
+    yesterday: [1, 0, 1, 0],
+    week: [1, 6, 1, 6],
+    month: [1, 27, 1, 27],
+    year: [1, 364, 1, 364],
+  };
 
-    case "month":
-      return [
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 27))),
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 27))),
-      ];
-
-    case "year":
-      return [
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 364))),
-        getDateString(new Date(now.setDate(now.getDate() - 1))),
-        getDateString(new Date(now.setDate(now.getDate() - 364))),
-      ];
-
-    default:
-      return false;
-  }
+  return Object.entries(offsets)
+    .find(([key, value]) => key === range)[1]
+    .map((offset) =>
+      getDateString(new Date(now.setDate(now.getDate() - offset)))
+    );
 };
 
 export const getTotalInTimeRange = (data, type, breakpointDates) => {
@@ -50,7 +35,7 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
     lastPeriodEndDate,
     lastPeriodStartDate,
     prevPeriodEndDate,
-    prevPeriodStartDate
+    prevPeriodStartDate,
   ] = breakpointDates;
 
   /* iterating through all countries */
@@ -76,7 +61,7 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
         }
         return acc;
       }, 0);
-      
+
     lastPeriodTotal += Object.values(country)
       .map((date) => date[type])
       .reduce((acc, curr, index) => {
@@ -87,6 +72,6 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
       }, 0);
   });
 
-  const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(2);
+  const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(1);
   return [lastPeriodTotal, percentage];
 };

@@ -6,6 +6,8 @@ export const statsNames = [
 ];
 
 export const statsPeriods = {
+  today: "Today",
+  yesterday: "Yesterday",
   week: "Last Week",
   month: "Last Month",
   year: "Last Year",
