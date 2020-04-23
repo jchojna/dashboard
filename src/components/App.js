@@ -61,6 +61,7 @@ class App extends Component {
 
     const stats = {
       ...this.state.stats,
+      period,
       lastPeriodEndDate,
       lastPeriodStartDate,
       prevPeriodEndDate,
