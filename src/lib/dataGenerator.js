@@ -6,8 +6,16 @@ export const countriesList = [
     startDate: [2017, 12, 5],
   },
   {
+    country: "Germany",
+    startDate: [2019, 11, 3],
+  },
+  {
     country: "Usa",
     startDate: [2018, 5, 24],
+  },
+  {
+    country: "UK",
+    startDate: [2019, 3, 17],
   },
 ];
 

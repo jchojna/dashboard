@@ -39,9 +39,15 @@ class Dropdown extends Component {
   };
 
   renderMenu = () => {
-    const {id} = this.props;
+    const {id, years} = this.props;
     const menuList =
-      id === "stats" ? Object.keys(statsPeriods) : id === "month" ? months : [];
+      id === "stats"
+        ? Object.keys(statsPeriods)
+        : id === "month"
+        ? months
+        : id === "year"
+        ? years
+        : null;
 
     return (
       <ul className="Dropdown__list">

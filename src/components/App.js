@@ -24,12 +24,14 @@ class App extends Component {
         prevPeriodEndDate: "",
         prevPeriodStartDate: "",
       },
+      years: null
     };
   }
 
   componentDidMount = () => {
-    const {period} = this.state.stats;
+    const {data, stats: {period}} = this.state;
     this.handleStats(period);
+    this.setState({years: dataHandlers.getYears(data)})
   };
 
   handleStats = (period) => {
@@ -74,6 +76,7 @@ class App extends Component {
   };
 
   render() {
+    const {years} = this.state;
     const {
       period,
       lastPeriodEndDate,
@@ -129,6 +132,7 @@ class App extends Component {
             <Dropdown
               id="year"
               period="year"
+              years={years}
               onMenuClick={this.handleAnalytics}
             />
           </header>

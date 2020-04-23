@@ -75,3 +75,16 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
   const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(1);
   return [lastPeriodTotal, percentage];
 };
+
+export const getYears = (data) => {
+  const currentYear = new Date().getFullYear();
+  const years = Object.values(data).map(
+    (country) => Object.keys(country)[0].split("-")[0]
+  );
+  const firstYear = parseInt([...new Set([...years])].sort()[0]);
+  const allYears = [];
+  for (let i = firstYear; i <= currentYear; i++) {
+    allYears.push(i);
+  }
+  return allYears.sort((a, b) => b - a);
+};
