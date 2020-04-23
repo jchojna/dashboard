@@ -1,10 +1,3 @@
-export const statsNames = [
-  {id: "profit", heading: "Total Profit"},
-  {id: "users", heading: "Active users"},
-  {id: "orders", heading: "New orders"},
-  {id: "complaints", heading: "Open complaints"},
-];
-
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
     Math.floor(Math.random() * (upperLimit - bottomLimit + 1)) + bottomLimit

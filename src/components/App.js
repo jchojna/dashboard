@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {countriesList, getData} from "../lib/dataGenerator";
 import * as dataHandlers from "../lib/dataHandlers";
+import * as dataHelpers from "../lib/dataHelpers";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
@@ -17,7 +18,7 @@ class App extends Component {
       orders: {},
       complaints: {},
       stats: {
-        range: "month",
+        period: "month",
         lastPeriodEndDate: "",
         lastPeriodStartDate: "",
         prevPeriodEndDate: "",
@@ -26,29 +27,19 @@ class App extends Component {
     };
   }
 
-  handleStats = () => {
-    const {
-      data,
-      stats: {range},
-    } = this.state;
+  handleStats = (period) => {
+    const {data} = this.state;
 
-    const {
-      statsNames,
-      getTotalInTimeRange,
-      getBreakpointDates,
-      getDateFormatted,
-    } = dataHandlers;
+    const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
+    const {statsNames} = dataHelpers;
 
-    const breakpointDates = getBreakpointDates(range);
+    const breakpointDates = getBreakpointDates(period);
     const [
       lastPeriodEndDate,
       lastPeriodStartDate,
       prevPeriodEndDate,
-      prevPeriodStartDate
+      prevPeriodStartDate,
     ] = breakpointDates;
-    
-
-
 
     statsNames.forEach((stat) => {
       const {id} = stat;
@@ -68,22 +59,25 @@ class App extends Component {
       lastPeriodEndDate,
       lastPeriodStartDate,
       prevPeriodEndDate,
-      prevPeriodStartDate
+      prevPeriodStartDate,
     };
     this.setState({stats});
   };
 
   componentDidMount = () => {
-    this.handleStats();
+    const {period} = this.state.stats;
+    this.handleStats(period);
   };
 
   render() {
     const {
+      period,
       lastPeriodEndDate,
       lastPeriodStartDate,
       prevPeriodEndDate,
-      prevPeriodStartDate
+      prevPeriodStartDate,
     } = this.state.stats;
+    const {statsNames} = dataHelpers;
 
     return (
       <main className="App">
@@ -96,11 +90,15 @@ class App extends Component {
               {`${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
               ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
             </p>
-            <Dropdown id="stats" label="" />
+            <Dropdown
+              id="stats"
+              period={period}
+              onMenuClick={this.handleStats}
+            />
           </header>
 
           {/* LATEST STATS TEXT PANELS */}
-          {dataHandlers.statsNames.map((stat) => {
+          {statsNames.map((stat) => {
             const {id, heading} = stat;
             const {value, percentage} = this.state[id];
             return (
@@ -118,7 +116,7 @@ class App extends Component {
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
-            <Dropdown id="latestStats" label="" />
+            <Dropdown id="month" label="" />
             <Dropdown id="latestStats" label="" />
           </header>
           <VisualPanel id="production" heading="Production" />
