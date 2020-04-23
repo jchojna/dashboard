@@ -1,4 +1,4 @@
-import {getStartDateString, getRandom} from "./dataHandlers";
+import {getDateString, getRandom} from "./dataHandlers";
 
 export const countriesList = [
   {
@@ -22,15 +22,15 @@ export const getData = (list) => {
 
     const date = new Date(year, month - 1, day);
     const todaysDate = new Date();
-    let dateString = getStartDateString(date);
-    const todaysDateString = getStartDateString(todaysDate);
+    let dateString = getDateString(date);
+    const todaysDateString = getDateString(todaysDate);
 
     data[country] = {};
 
     // generate data for each consecutive date
     while (dateString !== todaysDateString) {
       date.setDate(date.getDate() + 1);
-      dateString = getStartDateString(date);
+      dateString = getDateString(date);
       data[country][dateString] = {};
       data[country][dateString].profit = getRandom(-300, 2200);
       data[country][dateString].users = getRandom(0, 80);

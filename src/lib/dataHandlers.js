@@ -11,40 +11,89 @@ export const getRandom = (bottomLimit, upperLimit) => {
   );
 };
 
-export const getStartDateString = (date) => date.toISOString().slice(0, 10);
+export const getDateString = (date) => date.toISOString().slice(0, 10);
 
 export const getDateFormatted = (date) => {
   return date.toISOString().slice(0, 10);
 };
 
-export const getStartingDates = (date, range) => {
-  let lastPeriodStart, prevPeriodStart = null;
-
+export const getBreakpointDates = (range) => {
+  const now = new Date();
   switch (range) {
+    case "week":
+      return [
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 6))),
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 6))),
+      ];
+
     case "month":
-      lastPeriodStart = new Date(date.setDate(date.getDate() - 28));
-      prevPeriodStart = new Date(date.setDate(date.getDate() - 28));
-    break;
+      return [
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 27))),
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 27))),
+      ];
 
-    default: break;
+    case "year":
+      return [
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 364))),
+        getDateString(new Date(now.setDate(now.getDate() - 1))),
+        getDateString(new Date(now.setDate(now.getDate() - 364))),
+      ];
+
+    default:
+      return false;
   }
-  console.log('lastPeriodStart', lastPeriodStart);
-  console.log('prevPeriodStart', prevPeriodStart);
-  return [lastPeriodStart, prevPeriodStart];
-}
+};
 
-export const getTotalInTimeRange = (data, type, obj) => {
+export const getTotalInTimeRange = (data, type, breakpointDates) => {
   let lastPeriodTotal = 0;
   let prevPeriodTotal = 0;
-  //const baseTime =
-  //  typeof base === "undefined" ? getStartDateString(new Date()) : base;
 
+  const [
+    lastPeriodEndDate,
+    lastPeriodStartDate,
+    prevPeriodEndDate,
+    prevPeriodStartDate
+  ] = breakpointDates;
+
+  /* iterating through all countries */
   Object.values(data).forEach((country) => {
+    const prevStartIndex = Object.keys(country).findIndex(
+      (key) => key === prevPeriodStartDate
+    );
+    const prevEndIndex = Object.keys(country).findIndex(
+      (key) => key === prevPeriodEndDate
+    );
+    const lastStartIndex = Object.keys(country).findIndex(
+      (key) => key === lastPeriodStartDate
+    );
+    const lastEndIndex = Object.keys(country).findIndex(
+      (key) => key === lastPeriodEndDate
+    );
+
+    prevPeriodTotal += Object.values(country)
+      .map((date) => date[type])
+      .reduce((acc, curr, index) => {
+        if (index >= prevStartIndex && index <= prevEndIndex) {
+          acc += curr;
+        }
+        return acc;
+      }, 0);
+      
     lastPeriodTotal += Object.values(country)
       .map((date) => date[type])
-      .reduce((acc, curr) => acc + curr, 0);
+      .reduce((acc, curr, index) => {
+        if (index >= lastStartIndex && index <= lastEndIndex) {
+          acc += curr;
+        }
+        return acc;
+      }, 0);
   });
 
-  const percentage = 0;
+  const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(2);
   return [lastPeriodTotal, percentage];
 };

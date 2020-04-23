@@ -18,50 +18,41 @@ class App extends Component {
       complaints: {},
       stats: {
         range: "month",
-        lastPeriodStart: "",
-        lastPeriodEnd: "today",
-        prevPeriodStart: "",
-        prevPeriodEnd: "",
+        lastPeriodEndDate: "",
+        lastPeriodStartDate: "",
+        prevPeriodEndDate: "",
+        prevPeriodStartDate: "",
       },
     };
   }
 
   handleStats = () => {
-    const {range} = this.state.stats;
-    const {getStartingDates, getDateFormatted} = dataHandlers;
-    const now = new Date();
-    const startingDates = getStartingDates(now, range);
-    const [lastPeriodStartDate, prevPeriodStartDate] = startingDates;
-
-    const lastPeriodStart = lastPeriodStartDate
-      ? getDateFormatted(lastPeriodStartDate)
-      : "";
-    const prevPeriodStart = prevPeriodStartDate
-      ? getDateFormatted(prevPeriodStartDate)
-      : "";
-
-    const stats = {
-      ...this.state.stats,
-      lastPeriodStart,
-      prevPeriodStart,
-      prevPeriodEnd: lastPeriodStart,
-    };
-    this.setState({stats});
-  };
-
-  componentDidMount = () => {
     const {
       data,
-      stats,
       stats: {range},
     } = this.state;
-    const {statsNames, getTotalInTimeRange} = dataHandlers;
 
-    this.handleStats();
+    const {
+      statsNames,
+      getTotalInTimeRange,
+      getBreakpointDates,
+      getDateFormatted,
+    } = dataHandlers;
+
+    const breakpointDates = getBreakpointDates(range);
+    const [
+      lastPeriodEndDate,
+      lastPeriodStartDate,
+      prevPeriodEndDate,
+      prevPeriodStartDate
+    ] = breakpointDates;
+    
+
+
 
     statsNames.forEach((stat) => {
       const {id} = stat;
-      const statsOutput = getTotalInTimeRange(data, id, stats);
+      const statsOutput = getTotalInTimeRange(data, id, breakpointDates);
       const [lastPeriodTotal, percentage] = statsOutput;
 
       this.setState({
@@ -71,14 +62,27 @@ class App extends Component {
         },
       });
     });
+
+    const stats = {
+      ...this.state.stats,
+      lastPeriodEndDate,
+      lastPeriodStartDate,
+      prevPeriodEndDate,
+      prevPeriodStartDate
+    };
+    this.setState({stats});
+  };
+
+  componentDidMount = () => {
+    this.handleStats();
   };
 
   render() {
     const {
-      lastPeriodStart,
-      lastPeriodEnd,
-      prevPeriodStart,
-      prevPeriodEnd,
+      lastPeriodEndDate,
+      lastPeriodStartDate,
+      prevPeriodEndDate,
+      prevPeriodStartDate
     } = this.state.stats;
 
     return (
@@ -89,8 +93,8 @@ class App extends Component {
           <header className="App__header App__header--stats">
             <h2 className="App__heading">Latest Stats</h2>
             <p className="App__range">
-              {`${lastPeriodStart} - ${lastPeriodEnd} vs.
-              ${prevPeriodStart} - ${prevPeriodEnd}`}
+              {`${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
+              ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
             </p>
             <Dropdown id="stats" label="" />
           </header>
