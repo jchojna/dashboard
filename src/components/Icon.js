@@ -5,9 +5,10 @@ import icons from "../assets/icons.svg";
 import "../scss/Icon.scss";
 
 const Icon = (props) => {
-  const {id, type} = props;
+  const {id, type, isActive} = props;
   const iconClass = classNames("Icon", `Icon--${id}`, {
-    [`Icon--${type}`]: type
+    [`Icon--${type}`]: type,
+    "Icon--active": isActive
   });
   return (
     <svg className={iconClass} viewBox="0 0 100 100">

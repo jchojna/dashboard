@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import classNames from 'classnames';
+import classNames from "classnames";
 import {statsPeriods, months} from "../lib/dataHelpers";
 import Icon from "./Icon";
 import "../scss/Dropdown.scss";
@@ -67,15 +67,15 @@ class Dropdown extends Component {
     const {period} = this.props;
     const label = statsPeriods[period];
 
-    const buttonClass = classNames('Dropdown__button', {
-      "Dropdown__button--active": isOpen
-    })
+    const buttonClass = classNames("Dropdown__button", {
+      "Dropdown__button--active": isOpen,
+    });
 
     return (
       <div className="Dropdown" ref={this.dropdown}>
         <button className={buttonClass} onClick={this.toggleDropdown}>
           <span className="Dropdown__label">{label}</span>
-          <Icon id="dropdown" />
+          <Icon id="dropdown" isActive={isOpen} />
         </button>
         {isOpen && this.renderMenu()}
       </div>
