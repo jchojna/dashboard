@@ -2,14 +2,36 @@
 @import "_variables.scss";
 
 .Dropdown {
+  position: relative;
 
   &__button {
     @include button;
     align-items: center;
-    background-color: #ccc;
     display: flex;
     justify-content: space-between;
     min-width: 180px;
     padding: 10px;
+
+    &--active {
+      background-color: #ccc;
+
+    }
+
+    &:hover {
+      background-color: #ccc;
+    }
+  }
+  
+  &__list {
+    background-color: #eee;
+    box-shadow: $section-shadow;
+    left: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 1;
   }
 }

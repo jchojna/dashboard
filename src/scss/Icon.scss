@@ -2,6 +2,7 @@
 
 .Icon {
   fill: none;
+  transition: transform 0.3s;
 
   &--infographic {
     background-color: #aaa;
@@ -40,5 +41,16 @@
   &--print {
     padding: 7px;
     width: 40px;
+  }
+
+  &--indicator {
+    margin-right: 5px;
+    stroke: inherit;
+    stroke-width: 10;
+    width: 20px;
+  }
+
+  &--rotated {
+    transform: rotate(180deg);
   }
 }
