@@ -1,3 +1,5 @@
+import countryCodes from "./countryCodes";
+
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
     Math.floor(Math.random() * (upperLimit - bottomLimit + 1)) + bottomLimit
@@ -89,9 +91,26 @@ export const getYears = (data) => {
   return allYears.sort((a, b) => b - a);
 };
 
+const getColor = (id) => {
+  const svgIcon = document.querySelector(`svg[class*=${id}]`);
+  const style = window.getComputedStyle(svgIcon);
+  return style.getPropertyValue("background-color");
+};
+
 export const getMapData = (data, field, month, year) => {
-  return ({
-    USA: {fillColor: "rgba(0,0,0,0.8)", numberOfWhatever: 75},
-    FRA: {fillColor: "#8dc386", numberOfWhatever: 43},
+  const color = getColor(field);
+  const mapData = {};
+
+  Object.keys(data).forEach((countryName) => {
+    const countryCode = countryCodes[countryName];
+
+    if (countryCode) {
+      mapData[countryCode] = {
+        fillColor: color,
+        numberOfWhatever: 75,
+      };
+    }
   });
-}
+
+  return mapData;
+};

@@ -50,7 +50,7 @@ class App extends Component {
     this.handleStats(period);
     this.setState({
       yearsArray: dataHandlers.getYears(data),
-      analytics
+      analytics,
     });
   };
 
@@ -90,18 +90,21 @@ class App extends Component {
   };
 
   handleAnalytics = (type, id) => {
-    const {
-      data,
-      analytics: {field, month, year},
-    } = this.state;
+    const {data, analytics} = this.state;
+    let {field, month, year} = this.state.analytics;
+    field = type === 'field' ? id : field;
+    month = type === 'month' ? id : month;
+    year = type === 'year' ? id : year;
+    
     const mapData = dataHandlers.getMapData(data, field, month, year);
 
-    const analytics = {
-      ...this.state.analytics,
-      [type]: id,
-      mapData,
-    };
-    this.setState({analytics});
+    this.setState({
+      analytics: {
+        ...analytics,
+        [type]: id,
+        mapData,
+      },
+    });
   };
 
   render() {
