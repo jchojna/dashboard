@@ -6,6 +6,7 @@ import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
+import Histogram from "./Histogram";
 import Map from "./Map";
 import "../scss/App.scss";
 
@@ -182,8 +183,10 @@ class App extends Component {
           </header>
 
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
-          <VisualPanel id="histogram" heading="Temp1" />
-          <VisualPanel id="map" heading="Temp2">
+          <VisualPanel id="histogram" heading="Temp1">
+            <Histogram data={dataHelpers.testData} />
+          </VisualPanel>
+          <VisualPanel id="map" heading={field}>
             <Map data={mapData} />
           </VisualPanel>
           <VisualPanel id="summary" heading="Summary" />

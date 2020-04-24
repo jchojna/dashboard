@@ -1,0 +1,11 @@
+@import "_variables.scss";
+@import "_mixins.scss";
+
+.Histogram {
+  font-family: "Arial" !important;
+  font-size: 2rem !important;
+  font-weight: bold;
+
+  height: 300px;
+  width: 100%;
+}

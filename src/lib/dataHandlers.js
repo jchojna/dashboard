@@ -131,7 +131,7 @@ export const getMapData = (data, field, month, year) => {
       const countryPercent = ((countryTotal / allCountriesTotal) * 100)
         .toFixed(1)
         .concat("%");
-      const minOpacity = 0.2;
+      const minOpacity = 0.1;
       const opacity = (countryTotal / maxTotal) * (1 - minOpacity) + minOpacity;
 
       if (countryTotal) {
