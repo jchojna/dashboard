@@ -1,9 +1,9 @@
-export const statsNames = [
-  {id: "profit", heading: "Total Profit"},
-  {id: "users", heading: "Active users"},
-  {id: "orders", heading: "New orders"},
-  {id: "complaints", heading: "Open complaints"},
-];
+export const statsFields = {
+  profit: "Total Profit",
+  users: "Active users",
+  orders: "New orders",
+  complaints: "Open complaints",
+};
 
 export const statsPeriods = {
   today: "Today",
@@ -13,7 +13,8 @@ export const statsPeriods = {
   year: "Last Year",
 };
 
-export const months = [
+export const monthsArray = [
+  "all",
   "january",
   "february",
   "march",

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import classNames from "classnames";
-import {statsNames, statsPeriods, months} from "../lib/dataHelpers";
+import * as dataHelpers from "../lib/dataHelpers";
 import Icon from "./Icon";
 import "../scss/Dropdown.scss";
 
@@ -34,39 +34,20 @@ class Dropdown extends Component {
   };
 
   handleMenu = (item) => {
+    const {type, onMenuClick} = this.props;
     this.toggleDropdown();
-    this.props.onMenuClick(item);
+    type === "period" ? onMenuClick(item) : onMenuClick(type, item);
   };
 
   renderMenu = () => {
-    const {id, years} = this.props;
-    let menuList;
-
-    switch (id) {
-      case "periods":
-        menuList = Object.keys(statsPeriods);
-        break;
-
-      case "month":
-        menuList = months;
-        break;
-
-      case "year":
-        menuList = years;
-        break;
-
-      case "stats":
-        menuList = Object.values(statsNames).map((name) => name.heading);
-        break;
-
-      default:
-        break;
-    }
+    const {menuList} = this.props;
+    const isListAnArray = Array.isArray(menuList);
+    const menuItems = isListAnArray ? menuList : Object.keys(menuList);
 
     return (
       <ul className="Dropdown__list">
-        {menuList.map((item) => {
-          const label = id === "periods" ? statsPeriods[item] : item;
+        {menuItems.map((item) => {
+          const label = isListAnArray ? item : menuList[item];
 
           return (
             <li key={item} className="Dropdown__item">
@@ -84,8 +65,8 @@ class Dropdown extends Component {
 
   render() {
     const {isOpen} = this.state;
-    const {period} = this.props;
-    const label = statsPeriods[period];
+    const {currentId, menuList} = this.props;
+    const label = Array.isArray(menuList) ? currentId : menuList[currentId];
 
     const buttonClass = classNames("Dropdown__button", {
       "Dropdown__button--active": isOpen,

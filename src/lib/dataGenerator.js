@@ -10,12 +10,12 @@ export const countriesList = [
     startDate: [2019, 11, 3],
   },
   {
-    country: "Usa",
+    country: "United States",
     startDate: [2018, 5, 24],
   },
   {
-    country: "UK",
-    startDate: [2016, 3, 17],
+    country: "United Kingdom",
+    startDate: [2018, 3, 17],
   },
 ];
 

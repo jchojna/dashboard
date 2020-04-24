@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
 import Datamaps from "datamaps/dist/datamaps.world.hires.min.js";
 import "../scss/Map.scss";
 
@@ -7,14 +7,6 @@ class Map extends Component {
     super(props);
     this.container = React.createRef();
   }
-  /* static propTypes = {
-    arc: PropTypes.array,
-    arcOptions: PropTypes.object,
-    bubbleOptions: PropTypes.object,
-    bubbles: PropTypes.array,
-    graticule: PropTypes.bool,
-    labels: PropTypes.bool
-  }; */
 
   resize = () => {
     if (this.map) {
@@ -27,7 +19,6 @@ class Map extends Component {
     window.addEventListener("resize", this.resize);
   }
 
-  //this will remove the map from the dom when the react component is unmounted
   componentWillReceiveProps() {
     this.clear();
   }
@@ -43,13 +34,17 @@ class Map extends Component {
 
   clear = () => {
     const container = this.container.current;
-
     for (const child of Array.from(container.childNodes)) {
       container.removeChild(child);
     }
   };
 
   drawMap = () => {
+    const dataset = {
+      USA: {fillColor: "rgba(0,0,0,0.8)", numberOfWhatever: 75},
+      FRA: {fillColor: "#8dc386", numberOfWhatever: 43},
+    };
+
     const map = new Datamaps(
       Object.assign(
         {},
@@ -60,6 +55,38 @@ class Map extends Component {
           element: this.container.current,
           projection: "mercator",
           responsive: true,
+          fills: {
+            defaultFill: "#ccc",
+          },
+          data: dataset,
+          geographyConfig: {
+            //borderColor: "#DEDEDE",
+            //highlightBorderWidth: 2,
+            // don't change color on mouse hover
+            /* highlightFillColor: function (geo) {
+              return geo["fillColor"] || "#F5F5F5";
+            }, */
+            // only change border
+            //highlightBorderColor: "#B7B7B7",
+            // show desired information in tooltip
+            /* popupTemplate: function (geo, data) {
+              // don't show tooltip if country don't present in dataset
+              if (!data) {
+                return;
+              }
+              // tooltip content
+              return [
+                '<div class="hoverinfo">',
+                "<strong>",
+                geo.properties.name,
+                "</strong>",
+                "<br>Count: <strong>",
+                data.numberOfThings,
+                "</strong>",
+                "</div>",
+              ].join("");
+            }, */
+          },
         }
       )
     );

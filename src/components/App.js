@@ -25,20 +25,28 @@ class App extends Component {
         prevPeriodEndDate: "",
         prevPeriodStartDate: "",
       },
-      years: null
+      analytics: {
+        field: "profit",
+        month: dataHelpers.monthsArray[0],
+        year: new Date().getFullYear(),
+      },
+      yearsArray: [],
     };
   }
 
   componentDidMount = () => {
-    const {data, stats: {period}} = this.state;
+    const {
+      data,
+      stats: {period},
+    } = this.state;
     this.handleStats(period);
-    this.setState({years: dataHandlers.getYears(data)})
+    this.setState({yearsArray: dataHandlers.getYears(data)});
   };
 
   handleStats = (period) => {
     const {data} = this.state;
     const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
-    const {statsNames} = dataHelpers;
+    const {statsFields} = dataHelpers;
 
     const breakpointDates = getBreakpointDates(period);
     const [
@@ -48,14 +56,13 @@ class App extends Component {
       prevPeriodStartDate,
     ] = breakpointDates;
 
-    statsNames.forEach((stat) => {
-      const {id} = stat;
-      const statsOutput = getTotalInTimeRange(data, id, breakpointDates);
+    Object.keys(statsFields).forEach((field) => {
+      const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
       const [lastPeriodTotal, percentage] = statsOutput;
 
       this.setState({
-        [id]: {
-          value: `${id === "profit" ? "$ " : ""}${lastPeriodTotal}`,
+        [field]: {
+          value: `${field === "profit" ? "$ " : ""}${lastPeriodTotal}`,
           percentage,
         },
       });
@@ -71,12 +78,16 @@ class App extends Component {
     this.setState({stats});
   };
 
-  handleAnalytics = (period) => {
-    console.log(period);
+  handleAnalytics = (type, id) => {
+    const analytics = {
+      ...this.state.analytics,
+      [type]: id
+    };
+    this.setState({analytics});
   };
 
   render() {
-    const {years} = this.state;
+    const {yearsArray} = this.state;
     const {
       period,
       lastPeriodEndDate,
@@ -84,7 +95,9 @@ class App extends Component {
       prevPeriodEndDate,
       prevPeriodStartDate,
     } = this.state.stats;
-    const {statsNames} = dataHelpers;
+
+    const {field, month, year} = this.state.analytics;
+    const {statsFields, statsPeriods, monthsArray} = dataHelpers;
 
     return (
       <main className="App">
@@ -98,20 +111,21 @@ class App extends Component {
               ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
             </p>
             <Dropdown
-              id="periods"
-              period={period}
+              currentId={period}
+              type="period"
+              menuList={statsPeriods}
               onMenuClick={this.handleStats}
             />
           </header>
 
           {/* LATEST STATS TEXT PANELS */}
-          {statsNames.map((stat) => {
-            const {id, heading} = stat;
-            const {value, percentage} = this.state[id];
+          {Object.entries(statsFields).map(([field, heading]) => {
+            const {value, percentage} = this.state[field];
+
             return (
               <TextPanel
-                key={id}
-                id={id}
+                key={field}
+                id={field}
                 heading={heading}
                 value={value}
                 percentage={percentage}
@@ -125,19 +139,21 @@ class App extends Component {
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
             <Dropdown
-              id="stats"
-              period="month"
+              currentId={field}
+              type="field"
+              menuList={statsFields}
               onMenuClick={this.handleAnalytics}
             />
             <Dropdown
-              id="month"
-              period="month"
+              currentId={month}
+              type="month"
+              menuList={monthsArray}
               onMenuClick={this.handleAnalytics}
             />
             <Dropdown
-              id="year"
-              period="year"
-              years={years}
+              currentId={year}
+              type="year"
+              menuList={yearsArray}
               onMenuClick={this.handleAnalytics}
             />
           </header>
@@ -145,9 +161,7 @@ class App extends Component {
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
           <VisualPanel id="histogram" heading="Temp1" />
           <VisualPanel id="map" heading="Temp2">
-
             <Map />
-
           </VisualPanel>
           <VisualPanel id="summary" heading="Summary" />
 
