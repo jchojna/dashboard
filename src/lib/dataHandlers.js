@@ -94,46 +94,49 @@ export const getYears = (data) => {
 const getColor = (id) => {
   const svgIcon = document.querySelector(`svg[class*=${id}]`);
   const style = window.getComputedStyle(svgIcon);
-  return style.getPropertyValue("background-color");
+  const color = style.getPropertyValue("background-color");
+  return color.match(/\d+/g);
 };
 
 const getCountryValue = (dates, field, month, year) => {
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
 
-  const val = Object.entries(dates)
+  return Object.entries(dates)
     .filter(([date]) => {
       const [y, m] = date.split("-").map((elem) => parseInt(elem));
-      return m === monthNum && y === yearNum;
+      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
     })
     .map(([date, values]) => values[field])
     .reduce((acc, curr) => acc + curr, 0);
-
-
-
-
-
-
-
-
-
-
-  console.log(val);
 };
 
 export const getMapData = (data, field, month, year) => {
-  const color = getColor(field);
+  const [r, g, b] = getColor(field);
   const mapData = {};
+  const countriesTotals = {};
+
+  Object.entries(data).forEach(([countryName, values]) => {
+    countriesTotals[countryName] = getCountryValue(values, field, month, year);
+  });
+
+  const totalsArray = Object.values(countriesTotals);
+  const maxTotal = Math.max(...totalsArray);
+  const allCountriesTotal = totalsArray.reduce((a, b) => a + b, 0);
 
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
-    const dates = data[countryName];
-
     if (countryCode) {
-      mapData[countryCode] = {
-        //fillColor: color,
-        value: getCountryValue(dates, field, month, year),
-      };
+      const value = countriesTotals[countryName];
+      const minOpacity = 0.2;
+      const opacity = (value / maxTotal) * (1 - minOpacity) + minOpacity;
+
+      if (value) {
+        mapData[countryCode] = {
+          fillColor: `rgba(${r},${g},${b},${opacity})`,
+          value,
+        };
+      }
     }
   });
 
