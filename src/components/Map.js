@@ -40,10 +40,7 @@ class Map extends Component {
   };
 
   drawMap = () => {
-    const dataset = {
-      USA: {fillColor: "rgba(0,0,0,0.8)", numberOfWhatever: 75},
-      FRA: {fillColor: "#8dc386", numberOfWhatever: 43},
-    };
+    const {data} = this.props;
 
     const map = new Datamaps(
       Object.assign(
@@ -58,7 +55,7 @@ class Map extends Component {
           fills: {
             defaultFill: "#ccc",
           },
-          data: dataset,
+          data,
           geographyConfig: {
             //borderColor: "#DEDEDE",
             //highlightBorderWidth: 2,

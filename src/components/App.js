@@ -29,6 +29,7 @@ class App extends Component {
         field: "profit",
         month: dataHelpers.monthsArray[0],
         year: new Date().getFullYear(),
+        mapData: {},
       },
       yearsArray: [],
     };
@@ -38,9 +39,19 @@ class App extends Component {
     const {
       data,
       stats: {period},
+      analytics: {field, month, year},
     } = this.state;
+
+    const analytics = {
+      ...this.state.analytics,
+      mapData: dataHandlers.getMapData(data, field, month, year),
+    };
+
     this.handleStats(period);
-    this.setState({yearsArray: dataHandlers.getYears(data)});
+    this.setState({
+      yearsArray: dataHandlers.getYears(data),
+      analytics
+    });
   };
 
   handleStats = (period) => {
@@ -79,24 +90,33 @@ class App extends Component {
   };
 
   handleAnalytics = (type, id) => {
+    const {
+      data,
+      analytics: {field, month, year},
+    } = this.state;
+    const mapData = dataHandlers.getMapData(data, field, month, year);
+
     const analytics = {
       ...this.state.analytics,
-      [type]: id
+      [type]: id,
+      mapData,
     };
     this.setState({analytics});
   };
 
   render() {
-    const {yearsArray} = this.state;
     const {
-      period,
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
-    } = this.state.stats;
+      stats: {
+        period,
+        lastPeriodEndDate,
+        lastPeriodStartDate,
+        prevPeriodEndDate,
+        prevPeriodStartDate,
+      },
+      analytics: {field, month, year, mapData},
+      yearsArray,
+    } = this.state;
 
-    const {field, month, year} = this.state.analytics;
     const {statsFields, statsPeriods, monthsArray} = dataHelpers;
 
     return (
@@ -161,7 +181,7 @@ class App extends Component {
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
           <VisualPanel id="histogram" heading="Temp1" />
           <VisualPanel id="map" heading="Temp2">
-            <Map />
+            <Map data={mapData} />
           </VisualPanel>
           <VisualPanel id="summary" heading="Summary" />
 

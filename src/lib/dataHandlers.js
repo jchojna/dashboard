@@ -88,3 +88,10 @@ export const getYears = (data) => {
   }
   return allYears.sort((a, b) => b - a);
 };
+
+export const getMapData = (data, field, month, year) => {
+  return ({
+    USA: {fillColor: "rgba(0,0,0,0.8)", numberOfWhatever: 75},
+    FRA: {fillColor: "#8dc386", numberOfWhatever: 43},
+  });
+}
