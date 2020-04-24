@@ -53,36 +53,45 @@ class Map extends Component {
           projection: "mercator",
           responsive: true,
           fills: {
-            defaultFill: "#ccc",
+            defaultFill: "#fff",
           },
           data,
           geographyConfig: {
-            //borderColor: "#DEDEDE",
+            borderWidth: 0.5,
+            borderOpacity: 1,
+            borderColor: "#fff",
             //highlightBorderWidth: 2,
             // don't change color on mouse hover
-            /* highlightFillColor: function (geo) {
-              return geo["fillColor"] || "#F5F5F5";
-            }, */
-            // only change border
-            //highlightBorderColor: "#B7B7B7",
+            highlightFillColor: function (geo) {
+              return geo["fillColor"] || "#ccc";
+            },
+            
+            highlightBorderColor: function (geo) {
+              return geo.value ? "#fff" : "#ccc";
+            },
+            
+
+            highlightBorderWidth: 1,
+
             // show desired information in tooltip
-            /* popupTemplate: function (geo, data) {
-              // don't show tooltip if country don't present in dataset
-              if (!data) {
-                return;
-              }
-              // tooltip content
-              return [
-                '<div class="hoverinfo">',
-                "<strong>",
-                geo.properties.name,
-                "</strong>",
-                "<br>Count: <strong>",
-                data.numberOfThings,
-                "</strong>",
-                "</div>",
-              ].join("");
-            }, */
+            popupTemplate: function (geo, data) {
+              const {fillColor, countryTotal, countryPercent, field} = data;
+              if (!data) return;
+              return `
+                <div class="hoverinfo">
+                <div class="hoverinfo2">
+                
+                <strong>
+                  ${geo.properties.name}
+                </strong><br>
+                  ${field}: <strong>${data.countryTotal}</strong></br>
+                  Count: <strong>${countryPercent}</strong></br>
+                </div>          
+                </div>            
+              `
+              
+              
+            },
           },
         }
       )

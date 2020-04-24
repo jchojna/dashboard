@@ -127,14 +127,19 @@ export const getMapData = (data, field, month, year) => {
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
-      const value = countriesTotals[countryName];
+      const countryTotal = countriesTotals[countryName];
+      const countryPercent = ((countryTotal / allCountriesTotal) * 100)
+        .toFixed(1)
+        .concat("%");
       const minOpacity = 0.2;
-      const opacity = (value / maxTotal) * (1 - minOpacity) + minOpacity;
+      const opacity = (countryTotal / maxTotal) * (1 - minOpacity) + minOpacity;
 
-      if (value) {
+      if (countryTotal) {
         mapData[countryCode] = {
           fillColor: `rgba(${r},${g},${b},${opacity})`,
-          value,
+          countryTotal,
+          countryPercent,
+          field,
         };
       }
     }

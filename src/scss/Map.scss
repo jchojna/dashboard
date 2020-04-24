@@ -6,3 +6,24 @@
   height: 500px;
   background-color: #eee;
 }
+
+.hoverinfo {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.hoverinfo2 {
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 0 5px gray;
+  padding: 20px;
+  font-family: 'Nunito', Times, serif;
+  display: block !important;
+}
+
+@keyframes fadein {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
