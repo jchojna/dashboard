@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import classNames from "classnames";
-import * as dataHelpers from "../lib/dataHelpers";
 import Icon from "./Icon";
 import "../scss/Dropdown.scss";
 

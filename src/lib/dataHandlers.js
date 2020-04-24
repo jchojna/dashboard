@@ -97,17 +97,42 @@ const getColor = (id) => {
   return style.getPropertyValue("background-color");
 };
 
+const getCountryValue = (dates, field, month, year) => {
+  const monthNum = parseInt(month);
+  const yearNum = parseInt(year);
+
+  const val = Object.entries(dates)
+    .filter(([date]) => {
+      const [y, m] = date.split("-").map((elem) => parseInt(elem));
+      return m === monthNum && y === yearNum;
+    })
+    .map(([date, values]) => values[field])
+    .reduce((acc, curr) => acc + curr, 0);
+
+
+
+
+
+
+
+
+
+
+  console.log(val);
+};
+
 export const getMapData = (data, field, month, year) => {
   const color = getColor(field);
   const mapData = {};
 
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
+    const dates = data[countryName];
 
     if (countryCode) {
       mapData[countryCode] = {
-        fillColor: color,
-        numberOfWhatever: 75,
+        //fillColor: color,
+        value: getCountryValue(dates, field, month, year),
       };
     }
   });

@@ -27,8 +27,8 @@ class App extends Component {
       },
       analytics: {
         field: "profit",
-        month: dataHelpers.monthsArray[0],
-        year: new Date().getFullYear(),
+        month: "4",
+        year: new Date().getFullYear() - 1,
         mapData: {},
       },
       yearsArray: [],
@@ -92,10 +92,10 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    field = type === 'field' ? id : field;
-    month = type === 'month' ? id : month;
-    year = type === 'year' ? id : year;
-    
+    field = type === "field" ? id : field;
+    month = type === "month" ? id : month;
+    year = type === "year" ? id : year;
+
     const mapData = dataHandlers.getMapData(data, field, month, year);
 
     this.setState({
@@ -120,7 +120,7 @@ class App extends Component {
       yearsArray,
     } = this.state;
 
-    const {statsFields, statsPeriods, monthsArray} = dataHelpers;
+    const {statsFields, statsPeriods, months} = dataHelpers;
 
     return (
       <main className="App">
@@ -170,7 +170,7 @@ class App extends Component {
             <Dropdown
               currentId={month}
               type="month"
-              menuList={monthsArray}
+              menuList={months}
               onMenuClick={this.handleAnalytics}
             />
             <Dropdown
