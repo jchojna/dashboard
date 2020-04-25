@@ -6,13 +6,13 @@
   box-shadow: $section-shadow;
   overflow: hidden;
 
-  &--production {
-    grid-area: production;
+  &--histogram {
+    grid-area: histogram;
   }
 
-  &--sales {
-    grid-area: sales;
-    min-height: 500px;
+  &--map {
+    grid-area: map;
+    min-height: 400px;
   }
 
   &--summary {

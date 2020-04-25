@@ -6,6 +6,8 @@ import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
+import Histogram from "./Histogram";
+import Map from "./Map";
 import "../scss/App.scss";
 
 class App extends Component {
@@ -24,19 +26,45 @@ class App extends Component {
         prevPeriodEndDate: "",
         prevPeriodStartDate: "",
       },
+      analytics: {
+        field: "profit",
+        month: "0",
+        year: new Date().getFullYear(),
+        mapData: {},
+        histData: [],
+        summaryData: [],
+      },
+      yearsArray: [],
     };
   }
 
   componentDidMount = () => {
-    const {period} = this.state.stats;
+    const {
+      data,
+      stats: {period},
+      analytics,
+      analytics: {field, month, year},
+    } = this.state;
+    const {getAnalyticsData, getSummaryData} = dataHandlers;
+    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const summaryData = getSummaryData(data, month, year);
+
     this.handleStats(period);
+    this.setState({
+      yearsArray: dataHandlers.getYears(data),
+      analytics: {
+        ...analytics,
+        mapData,
+        histData,
+        summaryData,
+      },
+    });
   };
 
   handleStats = (period) => {
     const {data} = this.state;
-
     const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
-    const {statsNames} = dataHelpers;
+    const {statsFields} = dataHelpers;
 
     const breakpointDates = getBreakpointDates(period);
     const [
@@ -46,21 +74,19 @@ class App extends Component {
       prevPeriodStartDate,
     ] = breakpointDates;
 
-    statsNames.forEach((stat) => {
-      const {id} = stat;
-      const statsOutput = getTotalInTimeRange(data, id, breakpointDates);
+    Object.keys(statsFields).forEach((field) => {
+      const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
       const [lastPeriodTotal, percentage] = statsOutput;
 
       this.setState({
-        [id]: {
-          value: `${id === "profit" ? "$ " : ""}${lastPeriodTotal}`,
+        [field]: {
+          value: `${field === "profit" ? "$ " : ""}${lastPeriodTotal}`,
           percentage,
         },
       });
     });
 
     const stats = {
-      ...this.state.stats,
       period,
       lastPeriodEndDate,
       lastPeriodStartDate,
@@ -70,19 +96,45 @@ class App extends Component {
     this.setState({stats});
   };
 
-  handleAnalytics = (period) => {
-    console.log(period);
+  handleAnalytics = (type, id) => {
+    const {data, analytics} = this.state;
+    let {field, month, year} = this.state.analytics;
+    const {getAnalyticsData, getSummaryData} = dataHandlers;
+
+    field = type === "field" ? id : field;
+    month = type === "month" ? id : month;
+    year = type === "year" ? id : year;
+    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const summaryData =
+      type === "month" || type === "year"
+        ? getSummaryData(data, month, year)
+        : analytics.summaryData;
+
+    this.setState({
+      analytics: {
+        ...analytics,
+        [type]: id,
+        mapData,
+        histData,
+        summaryData,
+      },
+    });
   };
 
   render() {
     const {
-      period,
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
-    } = this.state.stats;
-    const {statsNames} = dataHelpers;
+      stats: {
+        period,
+        lastPeriodEndDate,
+        lastPeriodStartDate,
+        prevPeriodEndDate,
+        prevPeriodStartDate,
+      },
+      analytics: {field, month, year, mapData, histData, summaryData},
+      yearsArray,
+    } = this.state;
+
+    const {statsFields, statsPeriods, months} = dataHelpers;
 
     return (
       <main className="App">
@@ -96,20 +148,21 @@ class App extends Component {
               ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
             </p>
             <Dropdown
-              id="stats"
-              period={period}
+              currentId={period}
+              type="period"
+              menuList={statsPeriods}
               onMenuClick={this.handleStats}
             />
           </header>
 
           {/* LATEST STATS TEXT PANELS */}
-          {statsNames.map((stat) => {
-            const {id, heading} = stat;
-            const {value, percentage} = this.state[id];
+          {Object.entries(statsFields).map(([field, heading]) => {
+            const {value, percentage} = this.state[field];
+
             return (
               <TextPanel
-                key={id}
-                id={id}
+                key={field}
+                id={field}
                 heading={heading}
                 value={value}
                 percentage={percentage}
@@ -123,21 +176,43 @@ class App extends Component {
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
             <Dropdown
-              id="month"
-              period="month"
+              currentId={field}
+              type="field"
+              menuList={statsFields}
               onMenuClick={this.handleAnalytics}
             />
             <Dropdown
-              id="year"
-              period="year"
+              currentId={month}
+              type="month"
+              menuList={months}
+              onMenuClick={this.handleAnalytics}
+            />
+            <Dropdown
+              currentId={year}
+              type="year"
+              menuList={yearsArray}
               onMenuClick={this.handleAnalytics}
             />
           </header>
 
-          {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
-          <VisualPanel id="production" heading="Production" />
-          <VisualPanel id="sales" heading="Sales Revenue By Country" />
-          <VisualPanel id="summary" heading="Summary" />
+          {/* HISTOGRAM */}
+          <VisualPanel id="histogram" heading="Histogram">
+            <Histogram data={histData} keys={[field]} layout="vertical" />
+          </VisualPanel>
+
+          {/* MAP */}
+          <VisualPanel id="map" heading="Map">
+            <Map data={mapData} />
+          </VisualPanel>
+
+          {/* SUMMARY */}
+          <VisualPanel id="summary" heading="Summary">
+            <Histogram
+              data={summaryData}
+              keys={["all before", "current period"]}
+              layout="horizontal"
+            />
+          </VisualPanel>
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">

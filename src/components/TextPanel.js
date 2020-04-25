@@ -9,14 +9,18 @@ const TextPanel = (props) => {
     "TextPanel__percentage--positive": percentage > 0,
     "TextPanel__percentage--negative": percentage < 0,
   });
-  const percentValue = `${Math.abs(percentage)}%`;
+  const absPercent = Math.abs(percentage);
+  const percentValue = absPercent !== 0 ? `${absPercent}%` : "stable";
 
   return (
     <section className={`TextPanel TextPanel--${id}`}>
+      {/* HEADER BAR */}
       <header className="TextPanel__header">
         <h3 className="TextPanel__heading">{heading}</h3>
         <Icon id={id} type="infographic" />
       </header>
+
+      {/* VALUES AND INDICATORS */}
       <p className="TextPanel__value">{value}</p>
       <div className={percentageClass}>
         <Icon id="minimize" type="indicator" isRotated={percentage > 0} />
