@@ -35,6 +35,7 @@ class App extends Component {
         summaryData: [],
       },
       yearsArray: [],
+      accentColor: "#fff",
     };
   }
 
@@ -45,7 +46,7 @@ class App extends Component {
       analytics,
       analytics: {field, month, year},
     } = this.state;
-    const {getAnalyticsData, getSummaryData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
     const [mapData, histData] = getAnalyticsData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
 
@@ -58,6 +59,7 @@ class App extends Component {
         histData,
         summaryData,
       },
+      accentColor: getColorRgb(field),
     });
   };
 
@@ -99,7 +101,7 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getAnalyticsData, getSummaryData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
@@ -109,6 +111,8 @@ class App extends Component {
       type === "month" || type === "year"
         ? getSummaryData(data, month, year)
         : analytics.summaryData;
+    const accentColor =
+    type === "field" ? getColorRgb(id) : this.state.accentColor;
 
     this.setState({
       analytics: {
@@ -118,15 +122,27 @@ class App extends Component {
         histData,
         summaryData,
       },
+      accentColor,
     });
   };
 
   renderAnalytics = (type) => {
-    const {field, mapData, histData, summaryData} = this.state.analytics;
+    const {
+      analytics: {field, mapData, histData, summaryData},
+      accentColor,
+    } = this.state;
 
     switch (type) {
       case "histogram":
-        return <Histogram data={histData} keys={[field]} layout="vertical" />;
+        return (
+          <Histogram
+            data={histData}
+            keys={[field]}
+            layout="vertical"
+            margin={{top: 30, right: 30, bottom: 30, left: 50}}
+            colors={accentColor}
+          />
+        );
 
       case "map":
         return <Map data={mapData} />;
@@ -137,6 +153,13 @@ class App extends Component {
             data={summaryData}
             keys={["all before", "current period"]}
             layout="horizontal"
+            axisRight={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+            }}
+            margin={{top: 30, right: 30, bottom: 30, left: 50}}
+            colors={["#ccc", accentColor]}
           />
         );
 

@@ -3,8 +3,7 @@ import {ResponsiveBar} from "@nivo/bar";
 import "../scss/Histogram.scss";
 
 const Histogram = (props) => {
-
-  const {data, keys, layout} = props;
+  const {data, keys, layout, axisRight = null, margin, colors} = props;
 
   const theme = {
     fontFamily: "Nunito",
@@ -21,10 +20,10 @@ const Histogram = (props) => {
         },
       },
     },
-    /* grid: {
-      stroke: '#888',
+    grid: {
+      stroke: "#888",
       strokeWidth: 1,
-    }, */
+    },
   };
 
   const axisLeft = {
@@ -36,9 +35,19 @@ const Histogram = (props) => {
   const tooltip = (tooltipData) => {
     const {id, value, index, indexValue, color} = tooltipData;
 
-    return <div className="Histogram__tooltip">
-      {id}<br/>{value}<br/>{index}<br/>{indexValue}<br/>{color}
-    </div>;
+    return (
+      <div className="Histogram__tooltip">
+        {id}
+        <br />
+        {value}
+        <br />
+        {index}
+        <br />
+        {indexValue}
+        <br />
+        {color}
+      </div>
+    );
   };
 
   return (
@@ -47,13 +56,13 @@ const Histogram = (props) => {
         data={data}
         keys={keys}
         indexBy="id"
-        margin={{top: 30, right: 30, bottom: 30, left: 50}}
+        margin={margin}
         padding={0.5}
         layout={layout}
-        colors="#ccc"
+        colors={colors}
         borderColor={{from: "color", modifiers: [["darker", "1.6"]]}}
         axisTop={null}
-        axisRight={null}
+        axisRight={axisRight}
         axisBottom={null}
         axisLeft={axisLeft}
         enableLabel={false}

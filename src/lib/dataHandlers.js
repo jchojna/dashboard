@@ -92,6 +92,12 @@ export const getYears = (data) => {
   return allYears.sort((a, b) => b - a);
 };
 
+export const getColorRgb = (id) => {
+  const svgIcon = document.querySelector(`svg[class*=${id}]`);
+  const style = window.getComputedStyle(svgIcon);
+  return style.getPropertyValue("background-color");
+};
+
 const getColor = (id) => {
   const svgIcon = document.querySelector(`svg[class*=${id}]`);
   const style = window.getComputedStyle(svgIcon);
