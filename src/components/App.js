@@ -189,7 +189,7 @@ class App extends Component {
 
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
           <VisualPanel id="histogram" heading="Temp1">
-            <Histogram data={histData} />
+            <Histogram data={histData} field={field} />
           </VisualPanel>
           <VisualPanel id="map" heading={field}>
             <Map data={mapData} />

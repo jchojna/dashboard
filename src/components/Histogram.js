@@ -2,8 +2,7 @@ import React from "react";
 import {ResponsiveBar} from "@nivo/bar";
 import "../scss/Histogram.scss";
 
-const Histogram = ({data}) => {
-  console.log('data', data);
+const Histogram = ({data, field}) => {
 
   const theme = {
     fontFamily: "Nunito",
@@ -44,9 +43,9 @@ const Histogram = ({data}) => {
     <div className="Histogram">
       <ResponsiveBar
         data={data}
-        keys={["value"]}
+        keys={[field]}
         indexBy="id"
-        margin={{top: 50, right: 0, bottom: 50, left: 60}}
+        margin={{top: 30, right: 30, bottom: 30, left: 50}}
         padding={0.5}
         layout="vertical"
         colors="#ccc"

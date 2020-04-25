@@ -1,4 +1,5 @@
 import countryCodes from "./countryCodes";
+import {months} from "./dataHelpers";
 
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
@@ -98,6 +99,16 @@ const getColor = (id) => {
   return color.match(/\d+/g);
 };
 
+const getDateIds = (array, isYearly) => {
+  const allDaysAsDates = array.map(([elem]) => elem);
+  const daysAsDates = [...new Set(allDaysAsDates)];
+  const allMonthsAsDates = daysAsDates.map((date) =>
+    date.split("-").slice(0, 2).join("-")
+  );
+  const monthsAsDates = [...new Set(allMonthsAsDates)];
+  return isYearly ? monthsAsDates : daysAsDates;
+}
+
 export const getAnalyticsData = (data, field, month, year) => {
   const mapData = {};
   const histArray = [];
@@ -145,10 +156,13 @@ export const getAnalyticsData = (data, field, month, year) => {
 
   /* HIST DATA */
 
+
   Object.values(data).forEach((datesObj) => {
     histArray.push(...Object.entries(datesObj));
   });
-
+  // get filtered and sorted array of all date-value elements
+  // in a given time range (if there's more than one country
+  // there will be many duplicates of the same date key) 
   const filteredHistArray = histArray
     .filter(([date]) => {
       //* refactor
@@ -156,29 +170,28 @@ export const getAnalyticsData = (data, field, month, year) => {
       return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
     })
     .sort(([dateA], [dateB]) => {
-      const getNum = (date) => parseInt(date.split('-').join(''));
+      const getNum = (date) => parseInt(date.split("-").join(""));
       return getNum(dateA) - getNum(dateB);
-    })
-    
-  // REMOVE DUPLICATES FROM HISTORY DATA
-  const dateStrings = [...new Set(filteredHistArray.map(el => el[0]))];
-    
-  const histData = dateStrings.map((dateString, index) => {
-
-    const value = filteredHistArray
-    .filter((date) => date[0] === dateString)
-    .map(([date, values]) => values[field])
-    .reduce((a,b) => a + b, 0)
-
-    return ({
-      id: index + 1,
-      value: value,
-      //index: index,
-      indexValue: index.toString(),
     });
+
+  // remove duplicates from history data
+
+  const isYearly = monthNum === 0;
+  const dateStrings = getDateIds(filteredHistArray, isYearly);
+
+
+
+  const histData = dateStrings.map((dateString, index) => {
+    const value = filteredHistArray
+      .filter(([date]) => date.includes(dateString))
+      .map(([date, values]) => values[field])
+      .reduce((a, b) => a + b, 0);
+
+    return {
+      id: `${index + 1} ${months[month]}`,
+      [field]: value,
+    };
   });
-    
-    
 
   return [mapData, histData];
 };
