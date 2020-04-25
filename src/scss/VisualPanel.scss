@@ -1,4 +1,5 @@
 @import "_variables.scss";
+@import "_mixins.scss";
 
 .VisualPanel {
   background-color: #fff;
@@ -12,7 +13,9 @@
 
   &--map {
     grid-area: map;
-    min-height: 400px;
+    position: relative;
+
+
   }
 
   &--summary {
@@ -21,8 +24,11 @@
 
   &__header {
     align-items: center;
+    background-color: #fff;
     display: flex;
     justify-content: space-between;
+    position: relative;
+    z-index: 1;
   }
 
   &__heading {
@@ -32,9 +38,12 @@
     text-transform: uppercase;
   }
 
-  &__content {
-    background-color: #eee;
-    width: 100%;
-    height: 100%;
+  &__buttons {
+    @include flex-center;
+    bottom: $offset--zoomButton;
+    flex-direction: column;
+    position: absolute;
+    right: $offset--zoomButton;
+
   }
 }

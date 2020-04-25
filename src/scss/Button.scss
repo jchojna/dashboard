@@ -3,14 +3,26 @@
 
 .Button {
   @include button;
-  align-items: center;
-  background-color: #ccc;
-  display: flex;
-  justify-content: space-between;
-  min-width: 150px;
-  text-transform: uppercase;
+  @include flex-center;
 
   &__text {
     padding: 10px;
+  }
+
+  &--export,
+  &--print {
+    background-color: #ccc;
+    justify-content: space-between;
+    min-width: 150px;
+    text-transform: uppercase;
+  }
+
+  &--zoomIn,
+  &--zoomOut {
+    width: 40px;
+  }
+
+  &--zoomIn {
+    margin-bottom: $offset--zoomButton;
   }
 }

@@ -153,7 +153,15 @@ class App extends Component {
         );
 
       case "map":
-        return <Map data={mapData} />;
+        return (
+          <React.Fragment>
+            <Map data={mapData} />
+            <div className="VisualPanel__buttons">
+              <Button id="zoomIn" label="+" />
+              <Button id="zoomOut" />
+            </div>
+          </React.Fragment>
+        );
 
       case "summary":
         return (
@@ -281,8 +289,8 @@ class App extends Component {
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
             <p className="App__info">Some info</p>
-            <Button id="export" />
-            <Button id="print" />
+            <Button id="export" label="export" hasLabel="true" />
+            <Button id="print" label="print" hasLabel="true" />
           </footer>
         </section>
       </main>

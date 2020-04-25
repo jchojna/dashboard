@@ -39,4 +39,12 @@
   <symbol id="print" viewBox="0 0 100 100">
     <path d="M30 65h40m-40 15h40m-65-55v50h15v-25h60v25h15v-50h-15v5h-60v-5zm15-20h60v25h-60zm0 45h60v45h-60z"/>
   </symbol>
+  <!-- ZOOM IN -->
+  <symbol id="zoomIn" viewBox="0 0 100 100">
+    <polyline points="40,5 40,40 5,40 5,60 40,60 40,95 60,95 60,60 95,60 95,40 60,40 60,5 40,5"/>
+  </symbol>
+  <!-- ZOOM OUT -->
+  <symbol id="zoomOut" viewBox="0 0 100 100">
+    <polyline points="5,40 5,60 95,60 95,40 5,40"/>
+  </symbol>
 </svg>

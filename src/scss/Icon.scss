@@ -43,6 +43,19 @@
     width: 40px;
   }
 
+  &--zoomIn,
+  &--zoomOut {
+    background-color: #ccc;
+    fill: #eee;
+    padding: 8px;
+    stroke: none;
+
+    &:hover {
+      background-color: #aaa;
+      fill: #fff;
+    }
+  }
+
   &--indicator {
     margin-right: 5px;
     stroke: inherit;
