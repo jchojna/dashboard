@@ -153,15 +153,7 @@ class App extends Component {
         );
 
       case "map":
-        return (
-          <React.Fragment>
-            <Map data={mapData} />
-            <div className="VisualPanel__buttons">
-              <Button id="zoomIn" label="+" />
-              <Button id="zoomOut" />
-            </div>
-          </React.Fragment>
-        );
+        return <Map data={mapData} />;
 
       case "summary":
         return (

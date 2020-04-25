@@ -3,10 +3,10 @@ import Icon from "./Icon";
 import "../scss/Button.scss";
 
 const Button = (props) => {
-  const {id, label, hasLabel = false} = props;
+  const {id} = props;
   return (
     <button className={`Button Button--${id}`}>
-      {hasLabel && <span className="Button__text">{label}</span>}
+      <span className="Button__text">{id}</span>
       <Icon id={id} type="infographic" />
     </button>
   );

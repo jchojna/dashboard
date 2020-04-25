@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import Datamaps from "datamaps/dist/datamaps.world.hires.min.js";
+import Datamaps from "datamaps";
+import * as d3 from "d3";
 import "../scss/Histogram.scss";
 import "../scss/Map.scss";
 
@@ -66,11 +67,10 @@ class Map extends Component {
             highlightFillColor: function (geo) {
               return geo["fillColor"] || "#ccc";
             },
-            
+
             highlightBorderColor: function (geo) {
               return geo.value ? "#fff" : "#ccc";
             },
-            
 
             highlightBorderWidth: 1,
 
@@ -82,19 +82,43 @@ class Map extends Component {
                 <div class="hoverinfo tooltip">
                   <h4 class="tooltip__heading">${geo.properties.name}</h4>
                   <p class="tooltip__text">${field}: ${data.countryTotal}</p>
-                  <p class="tooltip__text">Share: ${countryPercent.toFixed(1)}%</p>
+                  <p class="tooltip__text">Share: ${countryPercent.toFixed(
+                    1
+                  )}%</p>
                 </div>            
-              `
+              `;
             },
+          },
+          done: function (datamap) {
+            datamap.svg.call(d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", redraw));
+            function redraw() {
+              datamap.svg
+                .selectAll("g")
+                .attr(
+                  "transform",
+                  "translate(" +
+                    d3.event.translate +
+                    ")scale(" +
+                    d3.event.scale +
+                    ")"
+                );
+            }
           },
         }
       )
     );
     this.map = map;
+    this.container.current.style.position = "absolute";
+    this.container.current.style.paddingBottom = 0;
   };
 
   render() {
-    return <div ref={this.container} className="Map"></div>;
+
+    return (
+      <div ref={this.container} className="Map">
+        {this.props.children}
+      </div>
+    );
   }
 }
 export default Map;
