@@ -3,26 +3,48 @@ import {ResponsiveBar} from "@nivo/bar";
 import "../scss/Histogram.scss";
 
 const Histogram = (props) => {
-  const {data, keys, layout, axisRight = null, margin, colors} = props;
+  const {
+    data,
+    keys,
+    type,
+    layout,
+    margin,
+    axisRight = null,
+    colors,
+    enableGridX = false,
+    enableGridY = false,
+  } = props;
 
   const theme = {
-    fontFamily: "Nunito",
-    fontSize: "11px",
     axis: {
-      textColor: "#eee",
-      tickColor: "#eee",
+      textColor: "#fff",
+      textTransform: "uppercase",
+      tickColor: "#fff",
       ticks: {
         line: {
-          stroke: "gray",
+          stroke: "fff",
         },
         text: {
-          fill: "#ccc",
+          fill: "#555",
+          fontWeight: "bold",
+          fontFamily: "Nunito",
+          fontSize: "11px",
+          textTransform: "uppercase",
         },
       },
     },
     grid: {
-      stroke: "#888",
-      strokeWidth: 1,
+      line: {
+        stroke: "#fff",
+        strokeWidth: 3,
+        strokeDasharray: "3 3",
+      },
+    },
+    tooltip: {
+      container: {
+        padding: "10px",
+        borderRadius: "5px"
+      },
     },
   };
 
@@ -30,6 +52,7 @@ const Histogram = (props) => {
     tickSize: 5,
     tickPadding: 5,
     tickRotation: 0,
+    tickValues: 3,
   };
 
   const tooltip = (tooltipData) => {
@@ -51,21 +74,27 @@ const Histogram = (props) => {
   };
 
   return (
-    <div className="Histogram">
+    <div className={`Histogram Histogram--${type}`}>
       <ResponsiveBar
         data={data}
         keys={keys}
         indexBy="id"
         margin={margin}
-        padding={0.5}
+        padding={0.6}
+        innerPadding={5}
         layout={layout}
         colors={colors}
+        colorBy="id"
         borderColor={{from: "color", modifiers: [["darker", "1.6"]]}}
         axisTop={null}
         axisRight={axisRight}
         axisBottom={null}
         axisLeft={axisLeft}
         enableLabel={false}
+        enableGridX={enableGridX}
+        enableGridY={enableGridY}
+        gridXValues={[20,40,60,80]}
+        gridYValues={5}
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{from: "color", modifiers: [["darker", 1.6]]}}

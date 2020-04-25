@@ -13,6 +13,7 @@ import "../scss/App.scss";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.date = new Date();
     this.state = {
       data: getData(countriesList),
       profit: {},
@@ -28,8 +29,8 @@ class App extends Component {
       },
       analytics: {
         field: "profit",
-        month: "0",
-        year: new Date().getFullYear(),
+        month: this.date.getMonth() + 1,
+        year: this.date.getFullYear(),
         mapData: {},
         histData: [],
         summaryData: [],
@@ -138,9 +139,11 @@ class App extends Component {
           <Histogram
             data={histData}
             keys={[field]}
+            type="histogram"
             layout="vertical"
-            margin={{top: 30, right: 30, bottom: 30, left: 50}}
+            margin={{top: 30, right: 30, bottom: 30, left: 60}}
             colors={accentColor}
+            enableGridY={true}
           />
         );
 
@@ -152,14 +155,11 @@ class App extends Component {
           <Histogram
             data={summaryData}
             keys={["all before", "current period"]}
+            type="summary"
             layout="horizontal"
-            axisRight={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-            }}
-            margin={{top: 30, right: 30, bottom: 30, left: 50}}
-            colors={["#ccc", accentColor]}
+            margin={{top: 30, right: 30, bottom: 30, left: 100}}
+            colors={["#fff", accentColor]}
+            enableGridX={true}
           />
         );
 
