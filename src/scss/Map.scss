@@ -9,20 +9,14 @@
   background-color: #eee;
 }
 
+// overriding library's inline styles
 .hoverinfo {
-  background: none !important;
   border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-.hoverinfo2 {
-  background-color: #eee;
-  border-radius: 5px;
-  box-shadow: 0 0 5px gray;
-  padding: 20px;
-  font-family: 'Nunito', Times, serif;
-  display: block !important;
+  border-radius: 5px !important;
+  box-shadow: 0 2px 5px rgba($color: #000, $alpha: 0.3) !important;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem !important;
+  padding: 10px !important;
 }
 
 @keyframes fadein {

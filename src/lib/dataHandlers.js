@@ -187,9 +187,7 @@ export const getAnalyticsData = (data, field, month, year) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
       const countryTotal = countriesTotals[countryName];
-      const countryPercent = ((countryTotal / allCountriesTotal) * 100)
-        .toFixed(1)
-        .concat("%");
+      const countryPercent = ((countryTotal / allCountriesTotal) * 100);
       const minOpacity = 0.1;
       const opacity = (countryTotal / maxTotal) * (1 - minOpacity) + minOpacity;
 

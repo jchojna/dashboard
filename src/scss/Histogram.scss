@@ -20,7 +20,12 @@
 
   &__heading,
   &__text {
+    font-size: 1rem;
     margin: 0;
     text-transform: capitalize;
+  }
+
+  &__heading {
+    margin-bottom: 5px;
   }
 }

@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import Datamaps from "datamaps/dist/datamaps.world.hires.min.js";
+import "../scss/Histogram.scss";
 import "../scss/Map.scss";
 
 class Map extends Component {
@@ -75,22 +76,15 @@ class Map extends Component {
 
             // show desired information in tooltip
             popupTemplate: function (geo, data) {
-              const {fillColor, countryTotal, countryPercent, field} = data;
+              const {countryPercent, field} = data;
               if (!data) return;
               return `
-                <div class="hoverinfo">
-                <div class="hoverinfo2">
-                
-                <strong>
-                  ${geo.properties.name}
-                </strong><br>
-                  ${field}: <strong>${data.countryTotal}</strong></br>
-                  Count: <strong>${countryPercent}</strong></br>
-                </div>          
+                <div class="hoverinfo tooltip">
+                  <h4 class="tooltip__heading">${geo.properties.name}</h4>
+                  <p class="tooltip__text">${field}: ${data.countryTotal}</p>
+                  <p class="tooltip__text">Share: ${countryPercent.toFixed(1)}%</p>
                 </div>            
               `
-              
-              
             },
           },
         }
