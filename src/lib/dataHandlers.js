@@ -98,32 +98,30 @@ const getColor = (id) => {
   return color.match(/\d+/g);
 };
 
-const getCountryValue = (dates, field, month, year) => {
+export const getAnalyticsData = (data, field, month, year) => {
+  const mapData = {};
+  const histArray = [];
+  const countriesTotals = {};
+  const [r, g, b] = getColor(field);
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
 
-  return Object.entries(dates)
-    .filter(([date]) => {
-      const [y, m] = date.split("-").map((elem) => parseInt(elem));
-      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
-    })
-    .map(([date, values]) => values[field])
-    .reduce((acc, curr) => acc + curr, 0);
-};
-
-export const getMapData = (data, field, month, year) => {
-  const [r, g, b] = getColor(field);
-  const mapData = {};
-  const countriesTotals = {};
-
   Object.entries(data).forEach(([countryName, values]) => {
-    countriesTotals[countryName] = getCountryValue(values, field, month, year);
+    countriesTotals[countryName] = Object.entries(values)
+      .filter(([date]) => {
+        //* refactor
+        const [y, m] = date.split("-").map((elem) => parseInt(elem));
+        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+      })
+      .map(([date, values]) => values[field])
+      .reduce((acc, curr) => acc + curr, 0);
   });
 
   const totalsArray = Object.values(countriesTotals);
   const maxTotal = Math.max(...totalsArray);
   const allCountriesTotal = totalsArray.reduce((a, b) => a + b, 0);
 
+  /* MAP DATA */
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
@@ -145,5 +143,42 @@ export const getMapData = (data, field, month, year) => {
     }
   });
 
-  return mapData;
+  /* HIST DATA */
+
+  Object.values(data).forEach((datesObj) => {
+    histArray.push(...Object.entries(datesObj));
+  });
+
+  const filteredHistArray = histArray
+    .filter(([date]) => {
+      //* refactor
+      const [y, m] = date.split("-").map((elem) => parseInt(elem));
+      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+    })
+    .sort(([dateA], [dateB]) => {
+      const getNum = (date) => parseInt(date.split('-').join(''));
+      return getNum(dateA) - getNum(dateB);
+    })
+    
+  // REMOVE DUPLICATES FROM HISTORY DATA
+  const dateStrings = [...new Set(filteredHistArray.map(el => el[0]))];
+    
+  const histData = dateStrings.map((dateString, index) => {
+
+    const value = filteredHistArray
+    .filter((date) => date[0] === dateString)
+    .map(([date, values]) => values[field])
+    .reduce((a,b) => a + b, 0)
+
+    return ({
+      id: index + 1,
+      value: value,
+      //index: index,
+      indexValue: index.toString(),
+    });
+  });
+    
+    
+
+  return [mapData, histData];
 };

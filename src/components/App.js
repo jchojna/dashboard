@@ -27,10 +27,11 @@ class App extends Component {
         prevPeriodStartDate: "",
       },
       analytics: {
-        field: "profit",
-        month: "4",
-        year: new Date().getFullYear() - 1,
+        field: "complaints",
+        month: "1",
+        year: new Date().getFullYear(),
         mapData: {},
+        histData: [],
       },
       yearsArray: [],
     };
@@ -40,18 +41,20 @@ class App extends Component {
     const {
       data,
       stats: {period},
+      analytics,
       analytics: {field, month, year},
     } = this.state;
-
-    const analytics = {
-      ...this.state.analytics,
-      mapData: dataHandlers.getMapData(data, field, month, year),
-    };
+    const {getAnalyticsData} = dataHandlers;
+    const [mapData, histData] = getAnalyticsData(data, field, month, year);
 
     this.handleStats(period);
     this.setState({
       yearsArray: dataHandlers.getYears(data),
-      analytics,
+      analytics: {
+        ...analytics,
+        mapData,
+        histData
+      }
     });
   };
 
@@ -93,17 +96,19 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
+    const {getAnalyticsData} = dataHandlers;
+
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
-
-    const mapData = dataHandlers.getMapData(data, field, month, year);
+    const [mapData, histData] = getAnalyticsData(data, field, month, year);
 
     this.setState({
       analytics: {
         ...analytics,
         [type]: id,
         mapData,
+        histData,
       },
     });
   };
@@ -117,7 +122,7 @@ class App extends Component {
         prevPeriodEndDate,
         prevPeriodStartDate,
       },
-      analytics: {field, month, year, mapData},
+      analytics: {field, month, year, mapData, histData},
       yearsArray,
     } = this.state;
 
@@ -184,7 +189,7 @@ class App extends Component {
 
           {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
           <VisualPanel id="histogram" heading="Temp1">
-            <Histogram data={dataHelpers.testData} />
+            <Histogram data={histData} />
           </VisualPanel>
           <VisualPanel id="map" heading={field}>
             <Map data={mapData} />
