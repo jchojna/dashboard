@@ -28,3 +28,5 @@ export const months = {
   11: "november",
   12: "december",
 };
+
+export const analyticsPanels = ["histogram", "map", "summary"];

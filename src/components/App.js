@@ -121,6 +121,30 @@ class App extends Component {
     });
   };
 
+  renderAnalytics = (type) => {
+    const {field, mapData, histData, summaryData} = this.state.analytics;
+
+    switch (type) {
+      case "histogram":
+        return <Histogram data={histData} keys={[field]} layout="vertical" />;
+
+      case "map":
+        return <Map data={mapData} />;
+
+      case "summary":
+        return (
+          <Histogram
+            data={summaryData}
+            keys={["all before", "current period"]}
+            layout="horizontal"
+          />
+        );
+
+      default:
+        return false;
+    }
+  };
+
   render() {
     const {
       stats: {
@@ -130,11 +154,11 @@ class App extends Component {
         prevPeriodEndDate,
         prevPeriodStartDate,
       },
-      analytics: {field, month, year, mapData, histData, summaryData},
+      analytics: {field, month, year},
       yearsArray,
     } = this.state;
 
-    const {statsFields, statsPeriods, months} = dataHelpers;
+    const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
 
     return (
       <main className="App">
@@ -195,24 +219,12 @@ class App extends Component {
             />
           </header>
 
-          {/* HISTOGRAM */}
-          <VisualPanel id="histogram" heading="Histogram">
-            <Histogram data={histData} keys={[field]} layout="vertical" />
-          </VisualPanel>
-
-          {/* MAP */}
-          <VisualPanel id="map" heading="Map">
-            <Map data={mapData} />
-          </VisualPanel>
-
-          {/* SUMMARY */}
-          <VisualPanel id="summary" heading="Summary">
-            <Histogram
-              data={summaryData}
-              keys={["all before", "current period"]}
-              layout="horizontal"
-            />
-          </VisualPanel>
+          {/* ANALYTICS CHARTS */}
+          {analyticsPanels.map((panel) => (
+            <VisualPanel key={panel} id={panel} heading={panel}>
+              {this.renderAnalytics(panel)}
+            </VisualPanel>
+          ))}
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
