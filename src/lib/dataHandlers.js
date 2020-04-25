@@ -109,8 +109,7 @@ const getDateIds = (array, isYearly) => {
   return isYearly ? monthsAsDates : daysAsDates;
 };
 
-const getSpecificData = (data, field, month, year) => {
-
+const getSpecificData = (data, field, month, year, isAllBefore = false) => {
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
   const histArray = [];
@@ -123,9 +122,13 @@ const getSpecificData = (data, field, month, year) => {
   // there will be many duplicates of the same date key)
   const filteredHistArray = histArray
     .filter(([date]) => {
-      //* refactor
       const [y, m] = date.split("-").map((elem) => parseInt(elem));
-      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+
+      if (isAllBefore) {
+        return y < yearNum || (y === yearNum && m < monthNum);
+      } else {
+        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+      }
     })
     .sort(([dateA], [dateB]) => {
       const getNum = (date) => parseInt(date.split("-").join(""));
@@ -149,7 +152,7 @@ const getSpecificData = (data, field, month, year) => {
     };
   });
   return histData;
-}
+};
 
 export const getAnalyticsData = (data, field, month, year) => {
   const mapData = {};
@@ -195,42 +198,37 @@ export const getAnalyticsData = (data, field, month, year) => {
     }
   });
 
-  /* HIST DATA */
-  const histData = getSpecificData(data, field, month, year)
-
+  /* HISTOGRAM DATA */
+  const histData = getSpecificData(data, field, month, year);
   return [mapData, histData];
 };
 
+/* SUMMARY DATA */
 export const getSummaryData = (data, month, year) => {
-  
   const getFieldTotals = () => {
 
     const array = [];
-
     for (let field in statsFields) {
+      const beforeTotal = getTotal(field, true);
+      const currentTotal = getTotal(field, false);
+      const allTotal = beforeTotal + currentTotal;
+      const beforePercent = beforeTotal / allTotal * 100;
+      const currentPercent =  currentTotal / allTotal * 100;
+
       array.push({
         id: field,
-        current: getTotal(field, false),
-        all: getTotal(field, true),
+        "all before": beforePercent,
+        "current period": currentPercent,
       });
     }
     return array;
-  }
+  };
 
-  const getTotal = (field, isAllSinceStart) => {
+  const getTotal = (field, isAllBefore) => {
+    return getSpecificData(data, field, month, year, isAllBefore)
+      .map((elem) => elem[field])
+      .reduce((a, b) => a + b, 0);
+  };
 
-    const total = isAllSinceStart ? [] : getSpecificData(data, field, month, year);
-    return total.map(elem => elem[field]).reduce((a,b) => a+b, 0);
-  }
-
-
-
-
-
-
-
-  const output = getFieldTotals();
-  console.log('output', output);
-
-  return output;
+  return getFieldTotals();
 };

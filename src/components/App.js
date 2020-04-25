@@ -196,18 +196,22 @@ class App extends Component {
           </header>
 
           {/* HISTOGRAM */}
-          <VisualPanel id="histogram" heading="Temp1">
-            <Histogram data={histData} field={field} layout="vertical" />
+          <VisualPanel id="histogram" heading="Histogram">
+            <Histogram data={histData} keys={[field]} layout="vertical" />
           </VisualPanel>
 
           {/* MAP */}
-          <VisualPanel id="map" heading={field}>
+          <VisualPanel id="map" heading="Map">
             <Map data={mapData} />
           </VisualPanel>
 
           {/* SUMMARY */}
           <VisualPanel id="summary" heading="Summary">
-            <Histogram data={summaryData} field={field} layout="horizontal" />
+            <Histogram
+              data={summaryData}
+              keys={["all before", "current period"]}
+              layout="horizontal"
+            />
           </VisualPanel>
 
           {/* ANALYTICS FOOTER */}

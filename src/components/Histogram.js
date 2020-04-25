@@ -4,7 +4,7 @@ import "../scss/Histogram.scss";
 
 const Histogram = (props) => {
 
-  const {data, field, layout} = props;
+  const {data, keys, layout} = props;
 
   const theme = {
     fontFamily: "Nunito",
@@ -45,7 +45,7 @@ const Histogram = (props) => {
     <div className="Histogram">
       <ResponsiveBar
         data={data}
-        keys={[field]}
+        keys={keys}
         indexBy="id"
         margin={{top: 30, right: 30, bottom: 30, left: 50}}
         padding={0.5}
