@@ -14,7 +14,7 @@ export const statsPeriods = {
 };
 
 export const months = {
-  0: "all",
+  0: "all months",
   1: "january",
   2: "february",
   3: "march",

@@ -36,7 +36,7 @@ class App extends Component {
         summaryData: [],
       },
       yearsArray: [],
-      accentColor: "#fff",
+      colors: {},
     };
   }
 
@@ -48,8 +48,13 @@ class App extends Component {
       analytics: {field, month, year},
     } = this.state;
     const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {statsFields} = dataHelpers;
     const [mapData, histData] = getAnalyticsData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
+    const colors = {};
+    Object.keys(statsFields).forEach(
+      (field) => (colors[field] = getColorRgb(field))
+    );
 
     this.handleStats(period);
     this.setState({
@@ -60,7 +65,7 @@ class App extends Component {
         histData,
         summaryData,
       },
-      accentColor: getColorRgb(field),
+      colors,
     });
   };
 
@@ -113,7 +118,7 @@ class App extends Component {
         ? getSummaryData(data, month, year)
         : analytics.summaryData;
     const accentColor =
-    type === "field" ? getColorRgb(id) : this.state.accentColor;
+      type === "field" ? getColorRgb(id) : this.state.accentColor;
 
     this.setState({
       analytics: {
@@ -130,7 +135,7 @@ class App extends Component {
   renderAnalytics = (type) => {
     const {
       analytics: {field, mapData, histData, summaryData},
-      accentColor,
+      colors,
     } = this.state;
 
     switch (type) {
@@ -142,7 +147,7 @@ class App extends Component {
             type="histogram"
             layout="vertical"
             margin={{top: 30, right: 30, bottom: 30, left: 60}}
-            colors={accentColor}
+            colors={colors[field]}
             enableGridY={true}
           />
         );
@@ -154,12 +159,36 @@ class App extends Component {
         return (
           <Histogram
             data={summaryData}
-            keys={["all before", "current period"]}
+            keys={[
+              "profitBefore",
+              "profitCurrent",
+              "usersBefore",
+              "usersCurrent",
+              "ordersBefore",
+              "ordersCurrent",
+              "complaintsBefore",
+              "complaintsCurrent",
+            ]}
             type="summary"
             layout="horizontal"
-            margin={{top: 30, right: 30, bottom: 30, left: 100}}
-            colors={["#fff", accentColor]}
+            margin={{top: 30, right: 30, bottom: 50, left: 100}}
+            colors={[
+              "#fff",
+              colors.profit,
+              "#fff",
+              colors.users,
+              "#fff",
+              colors.orders,
+              "#fff",
+              colors.complaints,
+            ]}
             enableGridX={true}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              tickValues: [20, 40, 60, 80],
+            }}
           />
         );
 

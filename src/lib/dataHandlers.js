@@ -148,10 +148,10 @@ const getSpecificData = (data, field, month, year, isAllBefore = false) => {
 
   const histData = dateStrings.map((dateString, index) => {
     const value = filteredHistArray
-      .filter(([date]) => date.includes(dateString))
-      .map(([date, values]) => values[field])
-      .reduce((a, b) => a + b, 0);
-
+    .filter(([date]) => date.includes(dateString))
+    .map(([date, values]) => values[field])
+    .reduce((a, b) => a + b, 0);
+    
     return {
       id: `${index + 1} ${months[month]}`,
       [field]: value,
@@ -218,13 +218,13 @@ export const getSummaryData = (data, month, year) => {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = beforeTotal / allTotal * 100;
-      const currentPercent =  currentTotal / allTotal * 100;
+      const beforePercent = (beforeTotal / allTotal * 100);
+      const currentPercent =  (currentTotal / allTotal * 100);
 
-      array.push({
+      array.unshift({
         id: field,
-        "all before": beforePercent,
-        "current period": currentPercent,
+        [`${field}Before`]: beforePercent,
+        [`${field}Current`]: currentPercent,
       });
     }
     return array;

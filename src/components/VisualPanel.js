@@ -11,7 +11,7 @@ const VisualPanel = (props) => {
   return (
     <section className={panelClass}>
       <header className="VisualPanel__header">
-        <h2 className="VisualPanel__heading">{heading}</h2>
+        <h3 className="VisualPanel__heading">{heading}</h3>
         <Controls />
       </header>
       {props.children}

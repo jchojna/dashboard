@@ -1,4 +1,5 @@
 import React from "react";
+import {statsFields, months} from "../lib/dataHelpers";
 import {ResponsiveBar} from "@nivo/bar";
 import "../scss/Histogram.scss";
 
@@ -10,6 +11,7 @@ const Histogram = (props) => {
     layout,
     margin,
     axisRight = null,
+    axisBottom = null,
     colors,
     enableGridX = false,
     enableGridY = false,
@@ -42,8 +44,9 @@ const Histogram = (props) => {
     },
     tooltip: {
       container: {
-        padding: "10px",
-        borderRadius: "5px"
+        padding: "10px 15px",
+        borderRadius: "5px",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
       },
     },
   };
@@ -56,19 +59,28 @@ const Histogram = (props) => {
   };
 
   const tooltip = (tooltipData) => {
-    const {id, value, index, indexValue, color} = tooltipData;
+    const {id, value, indexValue} = tooltipData;
+    const monthName =
+      type === "histogram" && indexValue.includes("all")
+        ? months[parseInt(indexValue)]
+        : null;
+
+    const heading =
+      type === "histogram"
+        ? `${statsFields[id]}: ${value}${id === "profit" ? " $" : ""}`
+        : `${indexValue}: ${value.toFixed(1)}%`;
+
+    const text =
+      type === "histogram"
+        ? monthName ? monthName : `Date: ${indexValue}`
+        : `${
+            id === "before" ? "Before current period" : "During current period"
+          }`;
 
     return (
-      <div className="Histogram__tooltip">
-        {id}
-        <br />
-        {value}
-        <br />
-        {index}
-        <br />
-        {indexValue}
-        <br />
-        {color}
+      <div className="tooltip">
+        <h4 className="tooltip__heading">{heading}</h4>
+        <p className="tooltip__text">{text}</p>
       </div>
     );
   };
@@ -88,12 +100,12 @@ const Histogram = (props) => {
         borderColor={{from: "color", modifiers: [["darker", "1.6"]]}}
         axisTop={null}
         axisRight={axisRight}
-        axisBottom={null}
+        axisBottom={axisBottom}
         axisLeft={axisLeft}
         enableLabel={false}
         enableGridX={enableGridX}
         enableGridY={enableGridY}
-        gridXValues={[20,40,60,80]}
+        gridXValues={[20, 40, 60, 80]}
         gridYValues={5}
         labelSkipWidth={12}
         labelSkipHeight={12}

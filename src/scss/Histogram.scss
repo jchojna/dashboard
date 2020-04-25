@@ -15,3 +15,12 @@
 
   }
 }
+
+.tooltip {
+
+  &__heading,
+  &__text {
+    margin: 0;
+    text-transform: capitalize;
+  }
+}
