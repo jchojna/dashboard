@@ -27,11 +27,12 @@ class App extends Component {
         prevPeriodStartDate: "",
       },
       analytics: {
-        field: "complaints",
-        month: "1",
+        field: "profit",
+        month: "0",
         year: new Date().getFullYear(),
         mapData: {},
         histData: [],
+        summaryData: [],
       },
       yearsArray: [],
     };
@@ -44,8 +45,9 @@ class App extends Component {
       analytics,
       analytics: {field, month, year},
     } = this.state;
-    const {getAnalyticsData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData} = dataHandlers;
     const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const summaryData = getSummaryData(data, month, year);
 
     this.handleStats(period);
     this.setState({
@@ -53,8 +55,9 @@ class App extends Component {
       analytics: {
         ...analytics,
         mapData,
-        histData
-      }
+        histData,
+        summaryData,
+      },
     });
   };
 
@@ -96,12 +99,16 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getAnalyticsData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
     const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const summaryData =
+      type === "month" || type === "year"
+        ? getSummaryData(data, month, year)
+        : analytics.summaryData;
 
     this.setState({
       analytics: {
@@ -109,6 +116,7 @@ class App extends Component {
         [type]: id,
         mapData,
         histData,
+        summaryData,
       },
     });
   };
@@ -122,7 +130,7 @@ class App extends Component {
         prevPeriodEndDate,
         prevPeriodStartDate,
       },
-      analytics: {field, month, year, mapData, histData},
+      analytics: {field, month, year, mapData, histData, summaryData},
       yearsArray,
     } = this.state;
 
@@ -187,14 +195,20 @@ class App extends Component {
             />
           </header>
 
-          {/* ANALYTICS VISUAL PANELS WITH CHARTS */}
+          {/* HISTOGRAM */}
           <VisualPanel id="histogram" heading="Temp1">
-            <Histogram data={histData} field={field} />
+            <Histogram data={histData} field={field} layout="vertical" />
           </VisualPanel>
+
+          {/* MAP */}
           <VisualPanel id="map" heading={field}>
             <Map data={mapData} />
           </VisualPanel>
-          <VisualPanel id="summary" heading="Summary" />
+
+          {/* SUMMARY */}
+          <VisualPanel id="summary" heading="Summary">
+            <Histogram data={summaryData} field={field} layout="horizontal" />
+          </VisualPanel>
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">

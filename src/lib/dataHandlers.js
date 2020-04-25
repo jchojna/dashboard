@@ -1,5 +1,5 @@
 import countryCodes from "./countryCodes";
-import {months} from "./dataHelpers";
+import {statsFields, months} from "./dataHelpers";
 
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
@@ -107,11 +107,52 @@ const getDateIds = (array, isYearly) => {
   );
   const monthsAsDates = [...new Set(allMonthsAsDates)];
   return isYearly ? monthsAsDates : daysAsDates;
+};
+
+const getSpecificData = (data, field, month, year) => {
+
+  const monthNum = parseInt(month);
+  const yearNum = parseInt(year);
+  const histArray = [];
+  /* HIST DATA */
+  Object.values(data).forEach((datesObj) => {
+    histArray.push(...Object.entries(datesObj));
+  });
+  // get filtered and sorted array of all date-value elements
+  // in a given time range (if there's more than one country
+  // there will be many duplicates of the same date key)
+  const filteredHistArray = histArray
+    .filter(([date]) => {
+      //* refactor
+      const [y, m] = date.split("-").map((elem) => parseInt(elem));
+      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+    })
+    .sort(([dateA], [dateB]) => {
+      const getNum = (date) => parseInt(date.split("-").join(""));
+      return getNum(dateA) - getNum(dateB);
+    });
+
+  // get date keys in format yyyy-mm-dd for days
+  // or yyyy-mm for months
+  const isYearly = monthNum === 0;
+  const dateStrings = getDateIds(filteredHistArray, isYearly);
+
+  const histData = dateStrings.map((dateString, index) => {
+    const value = filteredHistArray
+      .filter(([date]) => date.includes(dateString))
+      .map(([date, values]) => values[field])
+      .reduce((a, b) => a + b, 0);
+
+    return {
+      id: `${index + 1} ${months[month]}`,
+      [field]: value,
+    };
+  });
+  return histData;
 }
 
 export const getAnalyticsData = (data, field, month, year) => {
   const mapData = {};
-  const histArray = [];
   const countriesTotals = {};
   const [r, g, b] = getColor(field);
   const monthNum = parseInt(month);
@@ -155,43 +196,41 @@ export const getAnalyticsData = (data, field, month, year) => {
   });
 
   /* HIST DATA */
-
-
-  Object.values(data).forEach((datesObj) => {
-    histArray.push(...Object.entries(datesObj));
-  });
-  // get filtered and sorted array of all date-value elements
-  // in a given time range (if there's more than one country
-  // there will be many duplicates of the same date key) 
-  const filteredHistArray = histArray
-    .filter(([date]) => {
-      //* refactor
-      const [y, m] = date.split("-").map((elem) => parseInt(elem));
-      return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
-    })
-    .sort(([dateA], [dateB]) => {
-      const getNum = (date) => parseInt(date.split("-").join(""));
-      return getNum(dateA) - getNum(dateB);
-    });
-
-  // remove duplicates from history data
-
-  const isYearly = monthNum === 0;
-  const dateStrings = getDateIds(filteredHistArray, isYearly);
-
-
-
-  const histData = dateStrings.map((dateString, index) => {
-    const value = filteredHistArray
-      .filter(([date]) => date.includes(dateString))
-      .map(([date, values]) => values[field])
-      .reduce((a, b) => a + b, 0);
-
-    return {
-      id: `${index + 1} ${months[month]}`,
-      [field]: value,
-    };
-  });
+  const histData = getSpecificData(data, field, month, year)
 
   return [mapData, histData];
+};
+
+export const getSummaryData = (data, month, year) => {
+  
+  const getFieldTotals = () => {
+
+    const array = [];
+
+    for (let field in statsFields) {
+      array.push({
+        id: field,
+        current: getTotal(field, false),
+        all: getTotal(field, true),
+      });
+    }
+    return array;
+  }
+
+  const getTotal = (field, isAllSinceStart) => {
+
+    const total = isAllSinceStart ? [] : getSpecificData(data, field, month, year);
+    return total.map(elem => elem[field]).reduce((a,b) => a+b, 0);
+  }
+
+
+
+
+
+
+
+  const output = getFieldTotals();
+  console.log('output', output);
+
+  return output;
 };
