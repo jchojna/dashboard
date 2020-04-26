@@ -1,16 +1,5 @@
 import {getDateString, getRandom} from "./dataHandlers";
 
-export const countriesList = [
-  {
-    country: "Poland",
-    startDate: [2017, 12, 5],
-  },
-  {
-    country: "United States",
-    startDate: [2018, 5, 24],
-  },
-];
-
 export const getData = (list) => {
   const data = {};
 

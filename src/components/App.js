@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import classNames from "classnames";
-import {countriesList, getData} from "../lib/dataGenerator";
+import {getData} from "../lib/dataGenerator";
+import countriesList from "../lib/countryData";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
 import TextPanel from "./TextPanel";
@@ -23,12 +24,13 @@ class App extends Component {
       orders: {},
       complaints: {},
       stats: {
-        period: "today",
+        period: "week",
         timeRanges: "",
       },
       analytics: {
         field: "profit",
-        month: this.date.getMonth() + 1,
+        month: 0,
+        //month: this.date.getMonth() + 1,
         year: this.date.getFullYear(),
         mapData: {},
         histData: [],
@@ -47,9 +49,11 @@ class App extends Component {
       analytics,
       analytics: {field, month, year},
     } = this.state;
-    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
     const {statsFields} = dataHelpers;
-    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const mapData = getMapData(data, field, month, year);
+    console.log('mapData', mapData);
+    const histData = getHistData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
     const colors = {};
     Object.keys(statsFields).forEach(
@@ -104,12 +108,13 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
-    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const mapData = getMapData(data, field, month, year);
+    const histData = getHistData(data, field, month, year);
     const summaryData =
       type === "month" || type === "year"
         ? getSummaryData(data, month, year)

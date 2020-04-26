@@ -218,7 +218,7 @@ const getDateIds = (array, isYearly) => {
   return isYearly ? monthsAsDates : daysAsDates;
 };
 
-const getSpecificData = (data, field, month, year, isAllBefore = false) => {
+export const getHistData = (data, field, month, year, isAllBefore = false) => {
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
   const histArray = [];
@@ -263,7 +263,7 @@ const getSpecificData = (data, field, month, year, isAllBefore = false) => {
   return histData;
 };
 
-export const getAnalyticsData = (data, field, month, year) => {
+export const getMapData = (data, field, month, year) => {
   const mapData = {};
   const countriesTotals = {};
   const [r, g, b] = getColor(field);
@@ -273,7 +273,6 @@ export const getAnalyticsData = (data, field, month, year) => {
   Object.entries(data).forEach(([countryName, values]) => {
     countriesTotals[countryName] = Object.entries(values)
       .filter(([date]) => {
-        //* refactor
         const [y, m] = date.split("-").map((elem) => parseInt(elem));
         return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
       })
@@ -285,7 +284,6 @@ export const getAnalyticsData = (data, field, month, year) => {
   const maxTotal = Math.max(...totalsArray);
   const allCountriesTotal = totalsArray.reduce((a, b) => a + b, 0);
 
-  /* MAP DATA */
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
@@ -304,13 +302,10 @@ export const getAnalyticsData = (data, field, month, year) => {
       }
     }
   });
-
-  /* HISTOGRAM DATA */
-  const histData = getSpecificData(data, field, month, year);
-  return [mapData, histData];
+  return mapData;
 };
 
-/* SUMMARY DATA */
+
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
     const array = [];
@@ -331,7 +326,7 @@ export const getSummaryData = (data, month, year) => {
   };
 
   const getTotal = (field, isAllBefore) => {
-    return getSpecificData(data, field, month, year, isAllBefore)
+    return getHistData(data, field, month, year, isAllBefore)
       .map((elem) => elem[field])
       .reduce((a, b) => a + b, 0);
   };
