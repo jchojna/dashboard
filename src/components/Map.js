@@ -62,16 +62,13 @@ class Map extends Component {
             borderWidth: 0.5,
             borderOpacity: 1,
             borderColor: "#fff",
-            //highlightBorderWidth: 2,
             // don't change color on mouse hover
             highlightFillColor: function (geo) {
-              return geo["fillColor"] || "#ccc";
+              return geo["fillColor"] || "#fff";
             },
-
             highlightBorderColor: function (geo) {
-              return geo.value ? "#fff" : "#ccc";
+              return geo.field ? "#555" : "#fff";
             },
-
             highlightBorderWidth: 1,
 
             // show desired information in tooltip
@@ -110,7 +107,6 @@ class Map extends Component {
       )
     );
     this.map = map;
-    //this.container.current.style.position = "absolute";
     this.container.current.style.paddingBottom = 0;
   };
 
