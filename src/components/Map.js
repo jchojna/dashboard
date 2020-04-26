@@ -1,5 +1,7 @@
 import React, {Component} from "react";
-import Datamaps from "datamaps/dist/datamaps.world.hires.min.js";
+import Datamaps from "datamaps";
+import d3 from "d3";
+import "../scss/Histogram.scss";
 import "../scss/Map.scss";
 
 class Map extends Component {
@@ -60,43 +62,52 @@ class Map extends Component {
             borderWidth: 0.5,
             borderOpacity: 1,
             borderColor: "#fff",
-            //highlightBorderWidth: 2,
             // don't change color on mouse hover
             highlightFillColor: function (geo) {
-              return geo["fillColor"] || "#ccc";
+              return geo["fillColor"] || "#fff";
             },
-            
             highlightBorderColor: function (geo) {
-              return geo.value ? "#fff" : "#ccc";
+              return geo.field ? "#555" : "#fff";
             },
-            
-
             highlightBorderWidth: 1,
 
             // show desired information in tooltip
             popupTemplate: function (geo, data) {
-              const {fillColor, countryTotal, countryPercent, field} = data;
+              const {countryPercent, field} = data;
               if (!data) return;
               return `
-                <div class="hoverinfo">
-                <div class="hoverinfo2">
-                
-                <strong>
-                  ${geo.properties.name}
-                </strong><br>
-                  ${field}: <strong>${data.countryTotal}</strong></br>
-                  Count: <strong>${countryPercent}</strong></br>
-                </div>          
+                <div class="hoverinfo tooltip">
+                  <h4 class="tooltip__heading">${geo.properties.name}</h4>
+                  <p class="tooltip__text">${field}: ${data.countryTotal}</p>
+                  <p class="tooltip__text">Share: ${countryPercent.toFixed(
+                    1
+                  )}%</p>
                 </div>            
-              `
-              
-              
+              `;
             },
+          },
+          done: function (datamap) {
+            datamap.svg.call(
+              d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", redraw)
+            );
+            function redraw() {
+              datamap.svg
+                .selectAll("g")
+                .attr(
+                  "transform",
+                  "translate(" +
+                    d3.event.translate +
+                    ")scale(" +
+                    d3.event.scale +
+                    ")"
+                );
+            }
           },
         }
       )
     );
     this.map = map;
+    this.container.current.style.paddingBottom = 0;
   };
 
   render() {

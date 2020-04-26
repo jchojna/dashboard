@@ -33,6 +33,7 @@ class Dropdown extends Component {
   };
 
   handleMenu = (item) => {
+    console.log('item', item);
     const {type, onMenuClick} = this.props;
     this.toggleDropdown();
     type === "period" ? onMenuClick(item) : onMenuClick(type, item);

@@ -1,18 +1,20 @@
 import React from "react";
-import Controls from "./Controls.js";
-import classNames from "classnames";
+import Icon from "./Icon";
 import "../scss/VisualPanel.scss";
 
 const VisualPanel = (props) => {
-  const {id, heading} = props;
-
-  const panelClass = classNames("VisualPanel", `VisualPanel--${id}`, {});
+  const {id, heading, isMaximized, onMaximize} = props;
+  const iconId = isMaximized ? "minimize" : "maximize";
 
   return (
-    <section className={panelClass}>
+    <section className={`VisualPanel VisualPanel--${id}`}>
       <header className="VisualPanel__header">
-        <h2 className="VisualPanel__heading">{heading}</h2>
-        <Controls />
+        <h3 className="VisualPanel__heading">{heading}</h3>
+        <button
+          className="VisualPanel__button"
+          onClick={() => onMaximize(id)}>
+          <Icon id={iconId} />
+        </button>
       </header>
       {props.children}
     </section>

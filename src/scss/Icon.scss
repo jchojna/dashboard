@@ -12,13 +12,6 @@
     width: 50px;
   }
 
-  &--controls {
-    stroke: inherit;
-    stroke-width: 5;
-    width: 30px;
-    height: 100%;
-  }
-
   $icons: (
     profit: $color-profit,
     users: $color-users,
@@ -35,6 +28,14 @@
   &--dropdown {
     fill: $color-dark;
     width: 15px;
+  }
+
+  &--minimize,
+  &--maximize {
+    fill: inherit;
+    width: 20px;
+    padding: 0;
+    height: 100%;
   }
   
   &--export,

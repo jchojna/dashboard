@@ -3,14 +3,17 @@
 
 .Button {
   @include button;
-  align-items: center;
+  @include flex-center;
   background-color: #ccc;
-  display: flex;
   justify-content: space-between;
   min-width: 150px;
   text-transform: uppercase;
 
   &__text {
     padding: 10px;
+  }
+
+  &--export,
+  &--print {
   }
 }

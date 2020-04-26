@@ -1,9 +1,11 @@
 @import "_variables.scss";
+@import "_mixins.scss";
 
 .VisualPanel {
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
+  position: relative;
   overflow: hidden;
 
   &--histogram {
@@ -12,7 +14,7 @@
 
   &--map {
     grid-area: map;
-    min-height: 400px;
+    position: relative;
   }
 
   &--summary {
@@ -21,8 +23,14 @@
 
   &__header {
     align-items: center;
+    background-color: #fff;
     display: flex;
     justify-content: space-between;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
   }
 
   &__heading {
@@ -32,9 +40,15 @@
     text-transform: uppercase;
   }
 
-  &__content {
-    background-color: #eee;
-    width: 100%;
-    height: 100%;
+  &__button {
+    @include button;
+    @include flex-center;
+    fill: $color-dark;
+    padding: 5px;
+
+    &:hover {
+      background-color: #aaa;
+      fill: #fff;
+    }
   }
 }

@@ -1,44 +1,88 @@
 import React from "react";
+import {statsFields, months} from "../lib/dataHelpers";
 import {ResponsiveBar} from "@nivo/bar";
 import "../scss/Histogram.scss";
 
 const Histogram = (props) => {
-
-  const {data, keys, layout} = props;
+  const {
+    data,
+    keys,
+    type,
+    layout,
+    margin,
+    axisRight = null,
+    axisBottom = null,
+    colors,
+    enableGridX = false,
+    enableGridY = false,
+  } = props;
 
   const theme = {
-    fontFamily: "Nunito",
-    fontSize: "11px",
     axis: {
-      textColor: "#eee",
-      tickColor: "#eee",
+      textColor: "#fff",
+      textTransform: "uppercase",
+      tickColor: "#fff",
       ticks: {
         line: {
-          stroke: "gray",
+          stroke: "fff",
         },
         text: {
-          fill: "#ccc",
+          fill: "#555",
+          fontWeight: "bold",
+          fontFamily: "Nunito",
+          fontSize: "11px",
+          textTransform: "uppercase",
         },
       },
     },
-    /* grid: {
-      stroke: '#888',
-      strokeWidth: 1,
-    }, */
+    grid: {
+      line: {
+        stroke: "#fff",
+        strokeWidth: 3,
+        strokeDasharray: "3 3",
+      },
+    },
+    tooltip: {
+      container: {
+        padding: "10px 15px",
+        borderRadius: "5px",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+      },
+    },
   };
 
   const axisLeft = {
     tickSize: 5,
     tickPadding: 5,
     tickRotation: 0,
+    tickValues: 3,
   };
 
   const tooltip = (tooltipData) => {
-    const {id, value, index, indexValue, color} = tooltipData;
+    const {id, value, indexValue} = tooltipData;
+    const monthName =
+      type === "histogram" && indexValue.includes("all")
+        ? months[parseInt(indexValue)]
+        : null;
 
-    return <div className="Histogram__tooltip">
-      {id}<br/>{value}<br/>{index}<br/>{indexValue}<br/>{color}
-    </div>;
+    const heading =
+      type === "histogram"
+        ? `${statsFields[id]}: ${value}${id === "profit" ? " $" : ""}`
+        : `${indexValue}: ${value.toFixed(1)}%`;
+
+    const text =
+      type === "histogram"
+        ? monthName ? monthName : `Date: ${indexValue}`
+        : `${
+            id === "before" ? "Before current period" : "During current period"
+          }`;
+
+    return (
+      <div className="tooltip">
+        <h4 className="tooltip__heading">{heading}</h4>
+        <p className="tooltip__text">{text}</p>
+      </div>
+    );
   };
 
   return (
@@ -47,16 +91,22 @@ const Histogram = (props) => {
         data={data}
         keys={keys}
         indexBy="id"
-        margin={{top: 30, right: 30, bottom: 30, left: 50}}
-        padding={0.5}
+        margin={margin}
+        padding={0.6}
+        innerPadding={5}
         layout={layout}
-        colors="#ccc"
+        colors={colors}
+        colorBy="id"
         borderColor={{from: "color", modifiers: [["darker", "1.6"]]}}
         axisTop={null}
-        axisRight={null}
-        axisBottom={null}
+        axisRight={axisRight}
+        axisBottom={axisBottom}
         axisLeft={axisLeft}
         enableLabel={false}
+        enableGridX={enableGridX}
+        enableGridY={enableGridY}
+        gridXValues={[20, 40, 60, 80]}
+        gridYValues={5}
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{from: "color", modifiers: [["darker", 1.6]]}}

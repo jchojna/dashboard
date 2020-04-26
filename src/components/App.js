@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import classNames from "classnames";
 import {countriesList, getData} from "../lib/dataGenerator";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
@@ -13,6 +14,7 @@ import "../scss/App.scss";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.date = new Date();
     this.state = {
       data: getData(countriesList),
       profit: {},
@@ -28,13 +30,15 @@ class App extends Component {
       },
       analytics: {
         field: "profit",
-        month: "0",
-        year: new Date().getFullYear(),
+        month: this.date.getMonth() + 1,
+        year: this.date.getFullYear(),
         mapData: {},
         histData: [],
         summaryData: [],
       },
       yearsArray: [],
+      colors: {},
+      maximizedPanel: null,
     };
   }
 
@@ -45,9 +49,14 @@ class App extends Component {
       analytics,
       analytics: {field, month, year},
     } = this.state;
-    const {getAnalyticsData, getSummaryData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {statsFields} = dataHelpers;
     const [mapData, histData] = getAnalyticsData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
+    const colors = {};
+    Object.keys(statsFields).forEach(
+      (field) => (colors[field] = getColorRgb(field))
+    );
 
     this.handleStats(period);
     this.setState({
@@ -58,6 +67,7 @@ class App extends Component {
         histData,
         summaryData,
       },
+      colors,
     });
   };
 
@@ -97,9 +107,11 @@ class App extends Component {
   };
 
   handleAnalytics = (type, id) => {
+    console.log("id", id);
+    console.log("type", type);
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getAnalyticsData, getSummaryData} = dataHandlers;
+    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
@@ -109,6 +121,8 @@ class App extends Component {
       type === "month" || type === "year"
         ? getSummaryData(data, month, year)
         : analytics.summaryData;
+    const accentColor =
+      type === "field" ? getColorRgb(id) : this.state.accentColor;
 
     this.setState({
       analytics: {
@@ -118,7 +132,79 @@ class App extends Component {
         histData,
         summaryData,
       },
+      accentColor,
     });
+  };
+
+  renderAnalytics = (type) => {
+    const {
+      analytics: {field, mapData, histData, summaryData},
+      colors,
+    } = this.state;
+
+    switch (type) {
+      case "histogram":
+        return (
+          <Histogram
+            data={histData}
+            keys={[field]}
+            type="histogram"
+            layout="vertical"
+            margin={{top: 60, right: 30, bottom: 30, left: 60}}
+            colors={colors[field]}
+            enableGridY={true}
+          />
+        );
+
+      case "map":
+        return <Map data={mapData} />;
+
+      case "summary":
+        return (
+          <Histogram
+            data={summaryData}
+            keys={[
+              "profitBefore",
+              "profitCurrent",
+              "usersBefore",
+              "usersCurrent",
+              "ordersBefore",
+              "ordersCurrent",
+              "complaintsBefore",
+              "complaintsCurrent",
+            ]}
+            type="summary"
+            layout="horizontal"
+            margin={{top: 60, right: 30, bottom: 50, left: 100}}
+            colors={[
+              "#fff",
+              colors.profit,
+              "#fff",
+              colors.users,
+              "#fff",
+              colors.orders,
+              "#fff",
+              colors.complaints,
+            ]}
+            enableGridX={true}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              tickValues: [20, 40, 60, 80],
+            }}
+          />
+        );
+
+      default:
+        return false;
+    }
+  };
+
+  handleMaximize = (id) => {
+    this.setState((prevState) => ({
+      maximizedPanel: prevState.maximizedPanel === id ? null : id,
+    }));
   };
 
   render() {
@@ -130,23 +216,39 @@ class App extends Component {
         prevPeriodEndDate,
         prevPeriodStartDate,
       },
-      analytics: {field, month, year, mapData, histData, summaryData},
+      analytics: {field, month, year},
       yearsArray,
+      maximizedPanel,
     } = this.state;
 
-    const {statsFields, statsPeriods, months} = dataHelpers;
+    const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
+    const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
+    ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
+
+    const dropdownsLists = {
+      field: [statsFields, field],
+      month: [months, month],
+      year: [yearsArray, year],
+    };
+
+    const analyticsClass = classNames(
+      "App__section",
+      "App__section--analytics",
+      {
+        [`App__section--${maximizedPanel}Max`]: maximizedPanel,
+      }
+    );
 
     return (
       <main className="App">
-        <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
+        <h1 className="App__heading">Enterprise Dashboard</h1>
+
+        {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
             <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__range">
-              {`${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
-              ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
-            </p>
+            <p className="App__range">{statsDescription}</p>
             <Dropdown
               currentId={period}
               type="period"
@@ -170,55 +272,47 @@ class App extends Component {
             );
           })}
         </section>
-        <section className="App__section App__section--analytics">
+
+        {/* ANALYTICS SECTION */}
+        <section className={analyticsClass}>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
-            <Dropdown
-              currentId={field}
-              type="field"
-              menuList={statsFields}
-              onMenuClick={this.handleAnalytics}
-            />
-            <Dropdown
-              currentId={month}
-              type="month"
-              menuList={months}
-              onMenuClick={this.handleAnalytics}
-            />
-            <Dropdown
-              currentId={year}
-              type="year"
-              menuList={yearsArray}
-              onMenuClick={this.handleAnalytics}
-            />
+            {/* DROPDOWNS */}
+            {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
+              return (
+                <Dropdown
+                  key={id}
+                  currentId={id}
+                  type={type}
+                  menuList={list}
+                  onMenuClick={this.handleAnalytics}
+                />
+              );
+            })}
           </header>
 
-          {/* HISTOGRAM */}
-          <VisualPanel id="histogram" heading="Histogram">
-            <Histogram data={histData} keys={[field]} layout="vertical" />
-          </VisualPanel>
-
-          {/* MAP */}
-          <VisualPanel id="map" heading="Map">
-            <Map data={mapData} />
-          </VisualPanel>
-
-          {/* SUMMARY */}
-          <VisualPanel id="summary" heading="Summary">
-            <Histogram
-              data={summaryData}
-              keys={["all before", "current period"]}
-              layout="horizontal"
-            />
-          </VisualPanel>
+          {/* ANALYTICS CHARTS */}
+          {analyticsPanels.map((panel) => {
+            const isMaximized = this.state.maximizedPanel === panel;
+            return (
+              <VisualPanel
+                key={panel}
+                id={panel}
+                heading={panel}
+                isMaximized={isMaximized}
+                onMaximize={this.handleMaximize}>
+                {this.renderAnalytics(panel)}
+              </VisualPanel>
+            );
+          })}
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
             <p className="App__info">Some info</p>
-            <Button id="export" />
-            <Button id="print" />
+            <Button id="export" label="export" hasLabel="true" />
+            <Button id="print" label="print" hasLabel="true" />
           </footer>
         </section>
       </main>

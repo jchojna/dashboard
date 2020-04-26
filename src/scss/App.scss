@@ -46,12 +46,12 @@
       inset 0 2px 5px rgba($color: #000, $alpha: 0.3);
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(4, 1fr);
     max-width: 1200px;
     padding: 30px;
     width: 100%;
 
     &--stats {
+      grid-template-columns: repeat(4, 1fr);
       grid-template-areas:
         "header header header header    "
         "profit users  orders complaints";
@@ -59,11 +59,39 @@
     }
 
     &--analytics {
+      grid-template-columns: repeat(2, 1fr);
       grid-template-areas:
-        "header    header    header header"
-        "histogram histogram map    map   "
-        "summary   summary   map    map   "
-        "footer    footer    footer footer";
+        "header    header"
+        "histogram map   "
+        "summary   map   "
+        "footer    footer";
+      grid-template-rows: auto 300px 250px auto;
+    }
+
+    &--histogramMax {
+      grid-template-areas:
+        "header    header   "
+        "histogram histogram"
+        "summary   map      "
+        "footer    footer   ";
+      grid-template-rows: auto 300px 300px auto;
+    }
+
+    &--mapMax {
+      grid-template-areas:
+        "header    header "
+        "map       map    "
+        "histogram summary"
+        "footer    footer ";
+      grid-template-rows: auto 500px 250px auto;
+    }
+
+    &--summaryMax {
+      grid-template-areas:
+        "header    header "
+        "histogram map    "
+        "summary   summary"
+        "footer    footer ";
     }
   }
 

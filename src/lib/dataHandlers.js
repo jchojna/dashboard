@@ -92,6 +92,12 @@ export const getYears = (data) => {
   return allYears.sort((a, b) => b - a);
 };
 
+export const getColorRgb = (id) => {
+  const svgIcon = document.querySelector(`svg[class*=${id}]`);
+  const style = window.getComputedStyle(svgIcon);
+  return style.getPropertyValue("background-color");
+};
+
 const getColor = (id) => {
   const svgIcon = document.querySelector(`svg[class*=${id}]`);
   const style = window.getComputedStyle(svgIcon);
@@ -181,9 +187,7 @@ export const getAnalyticsData = (data, field, month, year) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
       const countryTotal = countriesTotals[countryName];
-      const countryPercent = ((countryTotal / allCountriesTotal) * 100)
-        .toFixed(1)
-        .concat("%");
+      const countryPercent = (countryTotal / allCountriesTotal) * 100;
       const minOpacity = 0.1;
       const opacity = (countryTotal / maxTotal) * (1 - minOpacity) + minOpacity;
 
@@ -206,19 +210,18 @@ export const getAnalyticsData = (data, field, month, year) => {
 /* SUMMARY DATA */
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
-
     const array = [];
     for (let field in statsFields) {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = beforeTotal / allTotal * 100;
-      const currentPercent =  currentTotal / allTotal * 100;
+      const beforePercent = (beforeTotal / allTotal) * 100;
+      const currentPercent = (currentTotal / allTotal) * 100;
 
-      array.push({
+      array.unshift({
         id: field,
-        "all before": beforePercent,
-        "current period": currentPercent,
+        [`${field}Before`]: beforePercent,
+        [`${field}Current`]: currentPercent,
       });
     }
     return array;
