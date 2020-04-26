@@ -5,6 +5,7 @@
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
+  position: relative;
   overflow: hidden;
 
   &--histogram {
@@ -25,7 +26,10 @@
     background-color: #fff;
     display: flex;
     justify-content: space-between;
-    position: relative;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
     z-index: 1;
   }
 

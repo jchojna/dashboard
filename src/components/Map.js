@@ -90,7 +90,9 @@ class Map extends Component {
             },
           },
           done: function (datamap) {
-            datamap.svg.call(d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", redraw));
+            datamap.svg.call(
+              d3.behavior.zoom().scaleExtent([1, 10]).on("zoom", redraw)
+            );
             function redraw() {
               datamap.svg
                 .selectAll("g")
@@ -113,12 +115,7 @@ class Map extends Component {
   };
 
   render() {
-
-    return (
-      <div ref={this.container} className="Map">
-        {this.props.children}
-      </div>
-    );
+    return <div ref={this.container} className="Map"></div>;
   }
 }
 export default Map;

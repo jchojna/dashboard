@@ -4,16 +4,7 @@
 .Histogram {
   background-color: #eee;
   width: 100%;
-
-  &--histogram {
-    height: 250px;
-
-  }
-
-  &--summary {
-    height: 200px;
-
-  }
+  height: 100%;
 }
 
 .tooltip {

@@ -149,7 +149,7 @@ class App extends Component {
             keys={[field]}
             type="histogram"
             layout="vertical"
-            margin={{top: 30, right: 30, bottom: 30, left: 60}}
+            margin={{top: 60, right: 30, bottom: 30, left: 60}}
             colors={colors[field]}
             enableGridY={true}
           />
@@ -174,7 +174,7 @@ class App extends Component {
             ]}
             type="summary"
             layout="horizontal"
-            margin={{top: 30, right: 30, bottom: 50, left: 100}}
+            margin={{top: 60, right: 30, bottom: 50, left: 100}}
             colors={[
               "#fff",
               colors.profit,
@@ -239,6 +239,7 @@ class App extends Component {
     const bottomLeft = isMapMax ? "histogram" : "summary";
     const bottomRight = isMapMax ? "summary" : isSummaryMax ? "summary" : "map";
     const analyticsStyles = {
+      gridTemplateRows: `auto ${isMapMax ? "500px" : "300px"} 250px auto`,
       gridTemplateAreas: `
         "header        header        "
         "${topLeft}    ${topRight}   "

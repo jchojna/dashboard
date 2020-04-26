@@ -86,7 +86,7 @@ const Histogram = (props) => {
   };
 
   return (
-    <div className={`Histogram Histogram--${type}`}>
+    <div className="Histogram">
       <ResponsiveBar
         data={data}
         keys={keys}
