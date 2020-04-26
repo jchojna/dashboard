@@ -29,4 +29,8 @@ export const months = {
   12: "december",
 };
 
+export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export const numberSuffixes = ["st", "nd", "rd", "th"];
+
 export const analyticsPanels = ["histogram", "map", "summary"];

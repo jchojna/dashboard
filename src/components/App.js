@@ -22,11 +22,8 @@ class App extends Component {
       orders: {},
       complaints: {},
       stats: {
-        period: "month",
-        lastPeriodEndDate: "",
-        lastPeriodStartDate: "",
-        prevPeriodEndDate: "",
-        prevPeriodStartDate: "",
+        period: "week",
+        timeRanges: "",
       },
       analytics: {
         field: "profit",
@@ -73,16 +70,13 @@ class App extends Component {
 
   handleStats = (period) => {
     const {data} = this.state;
-    const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
+    const {
+      getTotalInTimeRange,
+      getBreakpointDates,
+      getTimeRanges,
+    } = dataHandlers;
     const {statsFields} = dataHelpers;
-
     const breakpointDates = getBreakpointDates(period);
-    const [
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
-    ] = breakpointDates;
 
     Object.keys(statsFields).forEach((field) => {
       const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
@@ -96,12 +90,11 @@ class App extends Component {
       });
     });
 
+    const timeRanges = getTimeRanges(breakpointDates, period);
+
     const stats = {
       period,
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
+      timeRanges,
     };
     this.setState({stats});
   };
@@ -228,21 +221,13 @@ class App extends Component {
   render() {
     const {
       data,
-      stats: {
-        period,
-        lastPeriodEndDate,
-        lastPeriodStartDate,
-        prevPeriodEndDate,
-        prevPeriodStartDate,
-      },
+      stats: {period, timeRanges},
       analytics: {field, month, year},
       yearsArray,
       maximizedPanel,
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
-    const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
-    ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
 
     const dropdownsLists = {
       field: [statsFields, field],
@@ -258,6 +243,9 @@ class App extends Component {
       }
     );
 
+    const appInfoCurrent = timeRanges ? timeRanges.split('vs.')[0] : "";
+    const appInfoBefore = timeRanges ? timeRanges.split('vs.')[1] : "";
+
     return (
       <main className="App">
         <h1 className="App__heading">dashboard _</h1>
@@ -266,8 +254,11 @@ class App extends Component {
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
-            <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__info">{statsDescription}</p>
+            <h2 className="App__heading App__heading--section">Latest Stats</h2>
+            <p className="App__info">
+              <span className="App__info--current">{appInfoCurrent} vs.</span>
+              <span className="App__info--before">{appInfoBefore}</span>
+            </p>
             <Dropdown
               currentId={period}
               type="period"

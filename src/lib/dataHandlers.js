@@ -1,5 +1,5 @@
 import countryCodes from "./countryCodes";
-import {statsFields, months} from "./dataHelpers";
+import {statsFields, months, days, numberSuffixes} from "./dataHelpers";
 
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
@@ -9,8 +9,115 @@ export const getRandom = (bottomLimit, upperLimit) => {
 
 export const getDateString = (date) => date.toISOString().slice(0, 10);
 
-export const getDateFormatted = (date) => {
-  return date.toISOString().slice(0, 10);
+const getNumberSuffix = (number) => {
+  return number >= 4 ? numberSuffixes[3] : numberSuffixes[number - 1];
+};
+
+const getCapitalized = (string) =>
+  string
+    .split("")
+    .map((letter, index) => (index === 0 ? letter.toUpperCase() : letter))
+    .join("");
+
+// get date format to use in stat's header info
+export const getTimeRanges = (dates, period) => {
+  const [lastEndDate, lastStartDate, prevEndDate, prevStartDate] = dates;
+
+  const getElements = (date) => {
+    const [year, month, day] = getDateString(date)
+      .split("-")
+      .map((string) => parseInt(string));
+    const suffix = getNumberSuffix(day);
+    const dayName = days[date.getDay()];
+    const monthName = getCapitalized(months[month]);
+    return [dayName, day, suffix, monthName, year];
+  };
+
+  const [
+    lastEndDayName,
+    lastEndDay,
+    lastEndSuffix,
+    lastEndMonth,
+    lastEndYear,
+  ] = getElements(lastEndDate);
+
+  const [
+    lastStartDayName,
+    lastStartDay,
+    lastStartSuffix,
+    lastStartMonth,
+    lastStartYear,
+  ] = getElements(lastStartDate);
+
+  const [
+    prevEndDayName,
+    prevEndDay,
+    prevEndSuffix,
+    prevEndMonth,
+    prevEndYear,
+  ] = getElements(prevEndDate);
+
+  const [
+    prevStartDayName,
+    prevStartDay,
+    prevStartSuffix,
+    prevStartMonth,
+    prevStartYear,
+  ] = getElements(prevStartDate);
+
+  switch (period.toLowerCase()) {
+    case "today":
+    case "yesterday":
+      return `
+      ${lastStartDayName}, ${lastStartDay}${lastStartSuffix}
+      ${prevStartMonth !== lastStartMonth ? `of ${lastStartMonth}` : ""}
+      vs.
+      ${prevStartDayName}, ${prevStartDay}${prevStartSuffix} of ${prevStartMonth}
+    `;
+
+    case "week":
+    case "month":
+    case "year":
+      return `
+      ${lastStartDayName}, ${lastStartDay}${lastStartSuffix}
+      ${
+        lastStartMonth !== lastEndMonth || lastStartYear !== lastEndYear
+          ? `of ${lastStartMonth}`
+          : ""
+      }
+      ${lastStartYear !== lastEndYear ? `, ${lastStartYear}` : ""}
+
+      -
+
+      ${lastEndDayName}, ${lastEndDay}${lastEndSuffix}
+      ${
+        lastEndMonth !== prevEndMonth || lastEndYear !== prevEndYear
+          ? `of ${lastEndMonth}`
+          : ""
+      }
+      ${prevEndYear !== lastEndYear ? `, ${lastEndYear}` : ""}
+      
+
+      vs.
+      
+      ${prevStartDayName}, ${prevStartDay}${prevStartSuffix}
+      ${
+        prevStartMonth !== prevEndMonth || prevStartYear !== prevEndYear
+          ? `of ${prevStartMonth}`
+          : ""
+      }
+      ${prevStartYear !== prevEndYear ? `, ${prevStartYear}` : ""}
+
+      -
+
+      ${prevEndDayName}, ${prevEndDay}${prevEndSuffix}
+
+      of ${prevEndMonth}, ${prevEndYear}
+    `;
+
+    default:
+      return false;
+  }
 };
 
 export const getBreakpointDates = (range) => {
@@ -52,7 +159,7 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
       return Object.values(country)
         .map((date) => date[type])
         .reduce((acc, curr, index) => {
-          if (index >= prevStartIndex && index <= prevEndIndex) {
+          if (index >= startIndex && index <= endIndex) {
             acc += curr;
           }
           return acc;

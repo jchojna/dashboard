@@ -68,11 +68,25 @@
     font-size: 1.5em;
     grid-area: heading;
     margin: 0;
+
+    &--section {
+      align-self: center;
+    }
   }
 
   &__info {
     grid-area: info;
     margin: 0;
+
+    &--current {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    &--before {
+      color: #888;
+      font-size: 0.9rem;
+    }
 
     @media only screen and (max-width: $media-md) {
       order: 1;
