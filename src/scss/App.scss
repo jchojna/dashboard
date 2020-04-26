@@ -63,6 +63,7 @@
   }
 
   &__heading {
+    align-self: flex-end;
     color: $color-dark;
     font-size: 1.5em;
     grid-area: heading;

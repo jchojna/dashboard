@@ -260,7 +260,7 @@ class App extends Component {
 
     return (
       <main className="App">
-        <h1 className="App__heading">dashboard</h1>
+        <h1 className="App__heading">dashboard _</h1>
 
         {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">

@@ -25,9 +25,7 @@ export const getBreakpointDates = (range) => {
 
   return Object.entries(offsets)
     .find(([key, value]) => key === range)[1]
-    .map((offset) =>
-      getDateString(new Date(now.setDate(now.getDate() - offset)))
-    );
+    .map((offset) => new Date(now.setDate(now.getDate() - offset)));
 };
 
 export const getTotalInTimeRange = (data, type, breakpointDates) => {
@@ -39,42 +37,31 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
     lastPeriodStartDate,
     prevPeriodEndDate,
     prevPeriodStartDate,
-  ] = breakpointDates;
+  ] = breakpointDates; // date objects
 
   /* iterating through all countries */
   Object.values(data).forEach((country) => {
-    const prevStartIndex = Object.keys(country).findIndex(
-      (key) => key === prevPeriodStartDate
-    );
-    const prevEndIndex = Object.keys(country).findIndex(
-      (key) => key === prevPeriodEndDate
-    );
-    const lastStartIndex = Object.keys(country).findIndex(
-      (key) => key === lastPeriodStartDate
-    );
-    const lastEndIndex = Object.keys(country).findIndex(
-      (key) => key === lastPeriodEndDate
-    );
+    const getIndex = (date) =>
+      Object.keys(country).findIndex((key) => key === getDateString(date));
+    const lastEndIndex = getIndex(lastPeriodEndDate);
+    const lastStartIndex = getIndex(lastPeriodStartDate);
+    const prevEndIndex = getIndex(prevPeriodEndDate);
+    const prevStartIndex = getIndex(prevPeriodStartDate);
 
-    prevPeriodTotal += Object.values(country)
-      .map((date) => date[type])
-      .reduce((acc, curr, index) => {
-        if (index >= prevStartIndex && index <= prevEndIndex) {
-          acc += curr;
-        }
-        return acc;
-      }, 0);
+    const getPeriodTotal = (startIndex, endIndex) => {
+      return Object.values(country)
+        .map((date) => date[type])
+        .reduce((acc, curr, index) => {
+          if (index >= prevStartIndex && index <= prevEndIndex) {
+            acc += curr;
+          }
+          return acc;
+        }, 0);
+    };
 
-    lastPeriodTotal += Object.values(country)
-      .map((date) => date[type])
-      .reduce((acc, curr, index) => {
-        if (index >= lastStartIndex && index <= lastEndIndex) {
-          acc += curr;
-        }
-        return acc;
-      }, 0);
+    prevPeriodTotal += getPeriodTotal(prevStartIndex, prevEndIndex);
+    lastPeriodTotal += getPeriodTotal(lastStartIndex, lastEndIndex);
   });
-
   const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(1);
   return [lastPeriodTotal, percentage];
 };
