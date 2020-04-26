@@ -37,9 +37,9 @@ class App extends Component {
       },
       yearsArray: [],
       colors: {},
-      isHistogramMaximized: false,
-      isMapMaximized: false,
-      isSummaryMaximized: false,
+      isHistogramMax: false,
+      isMapMax: false,
+      isSummaryMax: false,
     };
   }
 
@@ -201,13 +201,14 @@ class App extends Component {
   };
 
   handleMaximize = (id) => {
-    const capitalizedId = id
-      .split("")
-      .map((letter, idx) => (idx === 0 ? letter.toUpperCase() : letter))
-      .join("");
-    const key = [`is${capitalizedId}Maximized`];
+    const {getCapitilizedString} = dataHandlers;
+    const capitalizedId = getCapitilizedString(id);
+    const key = [`is${capitalizedId}Max`];
 
     this.setState((prevState) => ({
+      isHistogramMax: false,
+      isMapMax: false,
+      isSummaryMax: false,
       [key]: !prevState[key],
     }));
   };
@@ -223,21 +224,38 @@ class App extends Component {
       },
       analytics: {field, month, year},
       yearsArray,
+      isHistogramMax,
+      isMapMax,
+      isSummaryMax,
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
+    const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
+    ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
+
+    const topLeft = isMapMax ? "map" : "histogram";
+    const topRight = isHistogramMax ? "histogram" : "map";
+    const bottomLeft = isMapMax ? "histogram" : "summary";
+    const bottomRight = isMapMax ? "summary" : isSummaryMax ? "summary" : "map";
+    const analyticsStyles = {
+      gridTemplateAreas: `
+        "header        header        "
+        "${topLeft}    ${topRight}   "
+        "${bottomLeft} ${bottomRight}"
+        "footer        footer        "
+      `,
+    };
 
     return (
       <main className="App">
-        <h1 className="App__heading">Enterprise Shiny Dashboards</h1>
+        <h1 className="App__heading">Enterprise Dashboard</h1>
+
+        {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
             <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__range">
-              {`${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
-              ${prevPeriodStartDate} - ${prevPeriodEndDate}`}
-            </p>
+            <p className="App__range">{statsDescription}</p>
             <Dropdown
               currentId={period}
               type="period"
@@ -261,7 +279,11 @@ class App extends Component {
             );
           })}
         </section>
-        <section className="App__section App__section--analytics">
+
+        {/* ANALYTICS SECTION */}
+        <section
+          className="App__section App__section--analytics"
+          style={analyticsStyles}>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>

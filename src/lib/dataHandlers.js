@@ -115,6 +115,13 @@ const getDateIds = (array, isYearly) => {
   return isYearly ? monthsAsDates : daysAsDates;
 };
 
+export const getCapitilizedString = (string) => {
+  return string
+    .split("")
+    .map((letter, idx) => (idx === 0 ? letter.toUpperCase() : letter))
+    .join("");
+};
+
 const getSpecificData = (data, field, month, year, isAllBefore = false) => {
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
@@ -148,10 +155,10 @@ const getSpecificData = (data, field, month, year, isAllBefore = false) => {
 
   const histData = dateStrings.map((dateString, index) => {
     const value = filteredHistArray
-    .filter(([date]) => date.includes(dateString))
-    .map(([date, values]) => values[field])
-    .reduce((a, b) => a + b, 0);
-    
+      .filter(([date]) => date.includes(dateString))
+      .map(([date, values]) => values[field])
+      .reduce((a, b) => a + b, 0);
+
     return {
       id: `${index + 1} ${months[month]}`,
       [field]: value,
@@ -187,7 +194,7 @@ export const getAnalyticsData = (data, field, month, year) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
       const countryTotal = countriesTotals[countryName];
-      const countryPercent = ((countryTotal / allCountriesTotal) * 100);
+      const countryPercent = (countryTotal / allCountriesTotal) * 100;
       const minOpacity = 0.1;
       const opacity = (countryTotal / maxTotal) * (1 - minOpacity) + minOpacity;
 
@@ -210,14 +217,13 @@ export const getAnalyticsData = (data, field, month, year) => {
 /* SUMMARY DATA */
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
-
     const array = [];
     for (let field in statsFields) {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = (beforeTotal / allTotal * 100);
-      const currentPercent =  (currentTotal / allTotal * 100);
+      const beforePercent = (beforeTotal / allTotal) * 100;
+      const currentPercent = (currentTotal / allTotal) * 100;
 
       array.unshift({
         id: field,
