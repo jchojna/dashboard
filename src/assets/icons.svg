@@ -25,7 +25,7 @@
     <path d="M5 27.5l40.057 40.057c2.739 2.739 7.148 2.739 9.887 0l40.057-40.057"/>
   </symbol>
   <!-- FULL-SCREEN -->
-  <symbol id="fullscreen" viewBox="0 0 100 100">
+  <symbol id="maximize" viewBox="0 0 100 100">
     <polyline points="35,5 5,5 5,35"/>
     <polyline points="5,65 5,95 35,95"/>
     <polyline points="65,95 95,95 95,65"/>

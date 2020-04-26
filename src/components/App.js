@@ -37,6 +37,9 @@ class App extends Component {
       },
       yearsArray: [],
       colors: {},
+      isHistogramMaximized: false,
+      isMapMaximized: false,
+      isSummaryMaximized: false,
     };
   }
 
@@ -197,6 +200,18 @@ class App extends Component {
     }
   };
 
+  handleMaximize = (id) => {
+    const capitalizedId = id
+      .split("")
+      .map((letter, idx) => (idx === 0 ? letter.toUpperCase() : letter))
+      .join("");
+    const key = [`is${capitalizedId}Maximized`];
+
+    this.setState((prevState) => ({
+      [key]: !prevState[key],
+    }));
+  };
+
   render() {
     const {
       stats: {
@@ -273,7 +288,11 @@ class App extends Component {
 
           {/* ANALYTICS CHARTS */}
           {analyticsPanels.map((panel) => (
-            <VisualPanel key={panel} id={panel} heading={panel}>
+            <VisualPanel
+              key={panel}
+              id={panel}
+              heading={panel}
+              onMaximize={this.handleMaximize}>
               {this.renderAnalytics(panel)}
             </VisualPanel>
           ))}

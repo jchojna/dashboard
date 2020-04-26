@@ -13,9 +13,11 @@
   }
 
   &--controls {
+    fill: inherit;
     stroke: inherit;
     stroke-width: 5;
-    width: 30px;
+    width: 20px;
+    padding: 0;
     height: 100%;
   }
 

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Datamaps from "datamaps";
-import * as d3 from "d3";
+import d3 from "d3";
 import "../scss/Histogram.scss";
 import "../scss/Map.scss";
 

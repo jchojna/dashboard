@@ -15,11 +15,26 @@
     @include button;
     @include flex-center;
     padding: 5px;
-    stroke: $color-dark;
 
     &:hover {
-      background-color: $color-dark;
-      stroke: #fff;
+      background-color: #aaa;
+    }
+
+    &--minimize {
+      fill: none;
+      stroke: $color-dark;
+
+      &:hover {
+        stroke: #fff;
+      }
+    }
+
+    &--maximize {
+      fill: $color-dark;
+
+      &:hover {
+        fill: #fff;
+      }
     }
   }
 }
