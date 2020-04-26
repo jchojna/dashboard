@@ -33,7 +33,6 @@ class Dropdown extends Component {
   };
 
   handleMenu = (item) => {
-    console.log('item', item);
     const {type, onMenuClick} = this.props;
     this.toggleDropdown();
     type === "period" ? onMenuClick(item) : onMenuClick(type, item);
@@ -65,7 +64,7 @@ class Dropdown extends Component {
 
   render() {
     const {isOpen} = this.state;
-    const {currentId, menuList} = this.props;
+    const {type, currentId, menuList} = this.props;
     const label = Array.isArray(menuList) ? currentId : menuList[currentId];
 
     const buttonClass = classNames("Dropdown__button", {
@@ -73,7 +72,7 @@ class Dropdown extends Component {
     });
 
     return (
-      <div className="Dropdown" ref={this.dropdown}>
+      <div className={`Dropdown Dropdown--${type}`} ref={this.dropdown}>
         <button className={buttonClass} onClick={this.toggleDropdown}>
           <span className="Dropdown__label">{label}</span>
           <Icon id="dropdown" isRotated={isOpen} />

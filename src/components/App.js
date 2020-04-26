@@ -241,14 +241,14 @@ class App extends Component {
 
     return (
       <main className="App">
-        <h1 className="App__heading">Enterprise Dashboard</h1>
+        <h1 className="App__heading">dashboard</h1>
 
         {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
             <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__range">{statsDescription}</p>
+            <p className="App__info">{statsDescription}</p>
             <Dropdown
               currentId={period}
               type="period"
@@ -278,7 +278,7 @@ class App extends Component {
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
-            <p className="App__range">Some info</p>
+            <p className="App__info">Some info</p>
             {/* DROPDOWNS */}
             {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
               return (
@@ -310,7 +310,6 @@ class App extends Component {
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
-            <p className="App__info">Some info</p>
             <Button id="export" label="export" hasLabel="true" />
             <Button id="print" label="print" hasLabel="true" />
           </footer>

@@ -50,5 +50,9 @@
       background-color: #aaa;
       fill: #fff;
     }
+
+    @media only screen and (max-width: $media-md) {
+      display: none;
+    }
   }
 }

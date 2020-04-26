@@ -4,6 +4,22 @@
 .Dropdown {
   position: relative;
 
+  &--period {
+    grid-area: period;
+  }
+
+  &--field {
+    grid-area: field;
+  }
+
+  &--month {
+    grid-area: month;
+  }
+
+  &--year {
+    grid-area: year;
+  }
+
   &__button {
     @include button;
     align-items: center;
@@ -14,7 +30,6 @@
 
     &--active {
       background-color: #ccc;
-
     }
 
     &:hover {
