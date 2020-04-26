@@ -25,8 +25,18 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    min-width: 180px;
+    min-width: 8em;
     padding: 10px;
+    text-align: left;
+    width: 100%;
+
+    &--menu {
+      justify-content: flex-start;
+    }
+  
+    &--year {
+      min-width: 6em;
+    }
 
     &--active {
       background-color: #ccc;
@@ -35,6 +45,10 @@
     &:hover {
       background-color: #ccc;
     }
+  }
+
+  &__label {
+    margin-right: 10px;
   }
   
   &__list {

@@ -39,9 +39,14 @@ class Dropdown extends Component {
   };
 
   renderMenu = () => {
-    const {menuList} = this.props;
+    const {type, menuList} = this.props;
     const isListAnArray = Array.isArray(menuList);
     const menuItems = isListAnArray ? menuList : Object.keys(menuList);
+    const buttonClass = `
+      Dropdown__button
+      Dropdown__button--menu
+      Dropdown__button--${type}
+    `;
 
     return (
       <ul className="Dropdown__list">
@@ -51,7 +56,7 @@ class Dropdown extends Component {
           return (
             <li key={item} className="Dropdown__item">
               <button
-                className="Dropdown__button"
+                className={buttonClass}
                 onClick={() => this.handleMenu(item)}>
                 {label}
               </button>
@@ -67,9 +72,13 @@ class Dropdown extends Component {
     const {type, currentId, menuList} = this.props;
     const label = Array.isArray(menuList) ? currentId : menuList[currentId];
 
-    const buttonClass = classNames("Dropdown__button", {
-      "Dropdown__button--active": isOpen,
-    });
+    const buttonClass = classNames(
+      "Dropdown__button",
+      `Dropdown__button--${type}`,
+      {
+        "Dropdown__button--active": isOpen,
+      }
+    );
 
     return (
       <div className={`Dropdown Dropdown--${type}`} ref={this.dropdown}>

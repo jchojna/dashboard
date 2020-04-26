@@ -27,24 +27,27 @@
 
   &--dropdown {
     fill: $color-dark;
+    height: 15px;
     width: 15px;
   }
 
   &--minimize,
   &--maximize {
     fill: inherit;
+    height: 20px;
     width: 20px;
     padding: 0;
-    height: 100%;
   }
   
   &--export,
   &--print {
+    height: 40px;
     padding: 7px;
     width: 40px;
   }
 
   &--indicator {
+    height: 20px;
     margin-right: 5px;
     stroke: inherit;
     stroke-width: 10;

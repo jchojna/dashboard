@@ -278,7 +278,6 @@ class App extends Component {
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
-            <p className="App__info">Some info</p>
             {/* DROPDOWNS */}
             {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
               return (
