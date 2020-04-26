@@ -207,16 +207,33 @@ class App extends Component {
     }));
   };
 
-  handleExport = () => {
-    console.log('export');
-  }
+  handleExport = (data, filename, type) => {
+    const file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob)
+      // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      const a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  };
 
   handlePrint = () => {
-    console.log('print');
-  }
+    console.log("print");
+  };
 
   render() {
     const {
+      data,
       stats: {
         period,
         lastPeriodEndDate,
@@ -317,7 +334,17 @@ class App extends Component {
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
-            <Button id="export" label="export" onClick={this.handleExport} />
+            <Button
+              id="export"
+              label="export"
+              onClick={() =>
+                this.handleExport(
+                  JSON.stringify(data),
+                  "dashboard",
+                  "text/plain"
+                )
+              }
+            />
             <Button id="print" label="print" onClick={this.handlePrint} />
           </footer>
         </section>
