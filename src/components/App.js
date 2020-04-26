@@ -17,12 +17,13 @@ class App extends Component {
     this.date = new Date();
     this.state = {
       data: getData(countriesList),
+      isMounted: false,
       profit: {},
       users: {},
       orders: {},
       complaints: {},
       stats: {
-        period: "week",
+        period: "today",
         timeRanges: "",
       },
       analytics: {
@@ -65,6 +66,7 @@ class App extends Component {
         summaryData,
       },
       colors,
+      isMounted: true,
     });
   };
 
@@ -84,7 +86,7 @@ class App extends Component {
 
       this.setState({
         [field]: {
-          value: `${field === "profit" ? "$ " : ""}${lastPeriodTotal}`,
+          value: lastPeriodTotal,
           percentage,
         },
       });
@@ -225,6 +227,7 @@ class App extends Component {
       analytics: {field, month, year},
       yearsArray,
       maximizedPanel,
+      isMounted,
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
@@ -243,8 +246,8 @@ class App extends Component {
       }
     );
 
-    const appInfoCurrent = timeRanges ? timeRanges.split('vs.')[0] : "";
-    const appInfoBefore = timeRanges ? timeRanges.split('vs.')[1] : "";
+    const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
+    const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
 
     return (
       <main className="App">
@@ -268,19 +271,20 @@ class App extends Component {
           </header>
 
           {/* LATEST STATS TEXT PANELS */}
-          {Object.entries(statsFields).map(([field, heading]) => {
-            const {value, percentage} = this.state[field];
+          {isMounted &&
+            Object.entries(statsFields).map(([field, heading]) => {
+              const {value, percentage} = this.state[field];
 
-            return (
-              <TextPanel
-                key={field}
-                id={field}
-                heading={heading}
-                value={value}
-                percentage={percentage}
-              />
-            );
-          })}
+              return (
+                <TextPanel
+                  key={field}
+                  id={field}
+                  heading={heading}
+                  value={value}
+                  percentage={percentage}
+                />
+              );
+            })}
         </section>
 
         {/* ANALYTICS SECTION */}

@@ -169,7 +169,10 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
     prevPeriodTotal += getPeriodTotal(prevStartIndex, prevEndIndex);
     lastPeriodTotal += getPeriodTotal(lastStartIndex, lastEndIndex);
   });
-  const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(1);
+  const percentage =
+    prevPeriodTotal !== 0
+      ? (lastPeriodTotal / prevPeriodTotal * 100).toFixed(1)
+      : 100;
   return [lastPeriodTotal, percentage];
 };
 
@@ -187,17 +190,23 @@ export const getYears = (data) => {
 };
 
 export const getColorRgb = (id) => {
+  // temporary solution
   const svgIcon = document.querySelector(`svg[class*=${id}]`);
-  const style = window.getComputedStyle(svgIcon);
-  return style.getPropertyValue("background-color");
+  if (svgIcon) {
+    const style = window.getComputedStyle(svgIcon);
+    return style.getPropertyValue("background-color");
+  } else {
+    const colors = {
+      profit: "rgb(41, 191, 215)",
+      users: "rgb(188, 215, 74)",
+      orders: "rgb(254, 152, 51)",
+      complaints: "rgb(250, 80, 80)",
+    };
+    return colors[id];
+  }
 };
 
-const getColor = (id) => {
-  const svgIcon = document.querySelector(`svg[class*=${id}]`);
-  const style = window.getComputedStyle(svgIcon);
-  const color = style.getPropertyValue("background-color");
-  return color.match(/\d+/g);
-};
+const getColor = (id) => getColorRgb(id).match(/\d+/g);
 
 const getDateIds = (array, isYearly) => {
   const allDaysAsDates = array.map(([elem]) => elem);
