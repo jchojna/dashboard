@@ -65,6 +65,33 @@
         "histogram map   "
         "summary   map   "
         "footer    footer";
+      grid-template-rows: auto 300px 250px auto;
+    }
+
+    &--histogramMax {
+      grid-template-areas:
+        "header    header   "
+        "histogram histogram"
+        "summary   map      "
+        "footer    footer   ";
+      grid-template-rows: auto 300px 300px auto;
+    }
+
+    &--mapMax {
+      grid-template-areas:
+        "header    header "
+        "map       map    "
+        "histogram summary"
+        "footer    footer ";
+      grid-template-rows: auto 500px 250px auto;
+    }
+
+    &--summaryMax {
+      grid-template-areas:
+        "header    header "
+        "histogram map    "
+        "summary   summary"
+        "footer    footer ";
     }
   }
 

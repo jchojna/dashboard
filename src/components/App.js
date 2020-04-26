@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import classNames from "classnames";
 import {countriesList, getData} from "../lib/dataGenerator";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
@@ -37,9 +38,7 @@ class App extends Component {
       },
       yearsArray: [],
       colors: {},
-      isHistogramMax: false,
-      isMapMax: false,
-      isSummaryMax: false,
+      maximizedPanel: null,
     };
   }
 
@@ -201,15 +200,8 @@ class App extends Component {
   };
 
   handleMaximize = (id) => {
-    const {getCapitilizedString} = dataHandlers;
-    const capitalizedId = getCapitilizedString(id);
-    const key = [`is${capitalizedId}Max`];
-
     this.setState((prevState) => ({
-      isHistogramMax: false,
-      isMapMax: false,
-      isSummaryMax: false,
-      [key]: !prevState[key],
+      maximizedPanel: prevState.maximizedPanel === id ? null : id,
     }));
   };
 
@@ -224,29 +216,20 @@ class App extends Component {
       },
       analytics: {field, month, year},
       yearsArray,
-      isHistogramMax,
-      isMapMax,
-      isSummaryMax,
+      maximizedPanel,
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
-    const {getCapitilizedString} = dataHandlers;
     const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
     ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
 
-    const topLeft = isMapMax ? "map" : "histogram";
-    const topRight = isHistogramMax ? "histogram" : "map";
-    const bottomLeft = isMapMax ? "histogram" : "summary";
-    const bottomRight = isMapMax ? "summary" : isSummaryMax ? "summary" : "map";
-    const analyticsStyles = {
-      gridTemplateRows: `auto ${isMapMax ? "500px" : "300px"} 250px auto`,
-      gridTemplateAreas: `
-        "header        header        "
-        "${topLeft}    ${topRight}   "
-        "${bottomLeft} ${bottomRight}"
-        "footer        footer        "
-      `,
-    };
+    const analyticsClass = classNames(
+      "App__section",
+      "App__section--analytics",
+      {
+        [`App__section--${maximizedPanel}Max`]: maximizedPanel,
+      }
+    );
 
     return (
       <main className="App">
@@ -283,9 +266,7 @@ class App extends Component {
         </section>
 
         {/* ANALYTICS SECTION */}
-        <section
-          className="App__section App__section--analytics"
-          style={analyticsStyles}>
+        <section className={analyticsClass}>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
@@ -312,8 +293,7 @@ class App extends Component {
 
           {/* ANALYTICS CHARTS */}
           {analyticsPanels.map((panel) => {
-            const capitalizedId = getCapitilizedString(panel);
-            const isMaximized = this.state[`is${capitalizedId}Max`];
+            const isMaximized = this.state.maximizedPanel === panel;
             return (
               <VisualPanel
                 key={panel}

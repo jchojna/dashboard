@@ -115,13 +115,6 @@ const getDateIds = (array, isYearly) => {
   return isYearly ? monthsAsDates : daysAsDates;
 };
 
-export const getCapitilizedString = (string) => {
-  return string
-    .split("")
-    .map((letter, idx) => (idx === 0 ? letter.toUpperCase() : letter))
-    .join("");
-};
-
 const getSpecificData = (data, field, month, year, isAllBefore = false) => {
   const monthNum = parseInt(month);
   const yearNum = parseInt(year);
