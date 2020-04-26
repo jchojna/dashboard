@@ -3,9 +3,9 @@ import Icon from "./Icon";
 import "../scss/Button.scss";
 
 const Button = (props) => {
-  const {id} = props;
+  const {id, onClick} = props;
   return (
-    <button className={`Button Button--${id}`}>
+    <button className={`Button Button--${id}`} onClick={onClick}>
       <span className="Button__text">{id}</span>
       <Icon id={id} type="infographic" />
     </button>

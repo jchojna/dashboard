@@ -207,6 +207,14 @@ class App extends Component {
     }));
   };
 
+  handleExport = () => {
+    console.log('export');
+  }
+
+  handlePrint = () => {
+    console.log('print');
+  }
+
   render() {
     const {
       stats: {
@@ -309,8 +317,8 @@ class App extends Component {
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
-            <Button id="export" label="export" hasLabel="true" />
-            <Button id="print" label="print" hasLabel="true" />
+            <Button id="export" label="export" onClick={this.handleExport} />
+            <Button id="print" label="print" onClick={this.handlePrint} />
           </footer>
         </section>
       </main>

@@ -23,15 +23,18 @@
   &__button {
     @include button;
     align-items: center;
+    border-radius: $corner;
     display: flex;
     justify-content: space-between;
     min-width: 8em;
     padding: 10px;
     text-align: left;
+    transition: background-color $time-hover;
     width: 100%;
 
     &--menu {
       justify-content: flex-start;
+      border-radius: initial;
     }
   
     &--year {
@@ -54,6 +57,7 @@
   &__list {
     background-color: #eee;
     box-shadow: $section-shadow;
+    border-radius: $corner;
     left: 0;
     list-style-type: none;
     margin: 0;
