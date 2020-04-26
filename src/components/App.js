@@ -107,8 +107,6 @@ class App extends Component {
   };
 
   handleAnalytics = (type, id) => {
-    console.log("id", id);
-    console.log("type", type);
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
     const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
@@ -227,10 +225,6 @@ class App extends Component {
     }
   };
 
-  handlePrint = () => {
-    console.log("print");
-  };
-
   render() {
     const {
       data,
@@ -345,7 +339,7 @@ class App extends Component {
                 )
               }
             />
-            <Button id="print" label="print" onClick={this.handlePrint} />
+            <Button id="print" label="print" onClick={() => window.print()} />
           </footer>
         </section>
       </main>
