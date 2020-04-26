@@ -230,6 +230,7 @@ class App extends Component {
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
+    const {getCapitilizedString} = dataHandlers;
     const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
     ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
 
@@ -309,15 +310,20 @@ class App extends Component {
           </header>
 
           {/* ANALYTICS CHARTS */}
-          {analyticsPanels.map((panel) => (
-            <VisualPanel
-              key={panel}
-              id={panel}
-              heading={panel}
-              onMaximize={this.handleMaximize}>
-              {this.renderAnalytics(panel)}
-            </VisualPanel>
-          ))}
+          {analyticsPanels.map((panel) => {
+            const capitalizedId = getCapitilizedString(panel);
+            const isMaximized = this.state[`is${capitalizedId}Max`];
+            return (
+              <VisualPanel
+                key={panel}
+                id={panel}
+                heading={panel}
+                isMaximized={isMaximized}
+                onMaximize={this.handleMaximize}>
+                {this.renderAnalytics(panel)}
+              </VisualPanel>
+            );
+          })}
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">

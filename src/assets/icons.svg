@@ -20,11 +20,18 @@
   <symbol id="dropdown" viewBox="0 0 100 100">
     <path d="M95.001 27.5l-40.057 40.057c-2.739 2.739-7.148 2.739-9.887 0l-40.057-40.057z"/>
   </symbol>
-  <!-- MINIMIZE -->
-  <symbol id="minimize" viewBox="0 0 100 100">
+  <!-- INDICATOR -->
+  <symbol id="indicator" viewBox="0 0 100 100">
     <path d="M5 27.5l40.057 40.057c2.739 2.739 7.148 2.739 9.887 0l40.057-40.057"/>
   </symbol>
-  <!-- FULL-SCREEN -->
+  <!-- MINIMIZE -->
+  <symbol id="minimize" viewBox="0 0 100 100">
+    <polyline points="35,5 5,35 35,35"/>
+    <polyline points="5,65 35,95 35,65"/>
+    <polyline points="65,95 95,65 65,65"/>
+    <polyline points="95,35 65,5 65,35"/>
+  </symbol>
+  <!-- MAXIMIZE -->
   <symbol id="maximize" viewBox="0 0 100 100">
     <polyline points="35,5 5,5 5,35"/>
     <polyline points="5,65 5,95 35,95"/>
@@ -38,13 +45,5 @@
   <!-- PRINT -->
   <symbol id="print" viewBox="0 0 100 100">
     <path d="M30 65h40m-40 15h40m-65-55v50h15v-25h60v25h15v-50h-15v5h-60v-5zm15-20h60v25h-60zm0 45h60v45h-60z"/>
-  </symbol>
-  <!-- ZOOM IN -->
-  <symbol id="zoomIn" viewBox="0 0 100 100">
-    <polyline points="40,5 40,40 5,40 5,60 40,60 40,95 60,95 60,60 95,60 95,40 60,40 60,5 40,5"/>
-  </symbol>
-  <!-- ZOOM OUT -->
-  <symbol id="zoomOut" viewBox="0 0 100 100">
-    <polyline points="5,40 5,60 95,60 95,40 5,40"/>
   </symbol>
 </svg>

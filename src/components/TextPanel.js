@@ -11,6 +11,7 @@ const TextPanel = (props) => {
   });
   const absPercent = Math.abs(percentage);
   const percentValue = absPercent !== 0 ? `${absPercent}%` : "stable";
+  const isIconRotated = percentage > 0;
 
   return (
     <section className={`TextPanel TextPanel--${id}`}>
@@ -23,7 +24,7 @@ const TextPanel = (props) => {
       {/* VALUES AND INDICATORS */}
       <p className="TextPanel__value">{value}</p>
       <div className={percentageClass}>
-        <Icon id="minimize" type="indicator" isRotated={percentage > 0} />
+        <Icon id="indicator" isRotated={isIconRotated} />
         <span>{percentValue}</span>
       </div>
     </section>

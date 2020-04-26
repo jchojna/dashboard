@@ -108,7 +108,7 @@ class Map extends Component {
       )
     );
     this.map = map;
-    this.container.current.style.position = "absolute";
+    //this.container.current.style.position = "absolute";
     this.container.current.style.paddingBottom = 0;
   };
 

@@ -36,12 +36,15 @@
     text-transform: uppercase;
   }
 
-  &__buttons {
+  &__button {
+    @include button;
     @include flex-center;
-    bottom: $offset--zoomButton;
-    flex-direction: column;
-    position: absolute;
-    right: $offset--zoomButton;
+    fill: $color-dark;
+    padding: 5px;
 
+    &:hover {
+      background-color: #aaa;
+      fill: #fff;
+    }
   }
 }
