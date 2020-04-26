@@ -107,6 +107,8 @@ class App extends Component {
   };
 
   handleAnalytics = (type, id) => {
+    console.log("id", id);
+    console.log("type", type);
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
     const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
@@ -223,6 +225,12 @@ class App extends Component {
     const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
     ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
 
+    const dropdownsLists = {
+      field: [statsFields, field],
+      month: [months, month],
+      year: [yearsArray, year],
+    };
+
     const analyticsClass = classNames(
       "App__section",
       "App__section--analytics",
@@ -271,24 +279,18 @@ class App extends Component {
           <header className="App__header App__header--analytics">
             <h2 className="App__heading">Analytics</h2>
             <p className="App__range">Some info</p>
-            <Dropdown
-              currentId={field}
-              type="field"
-              menuList={statsFields}
-              onMenuClick={this.handleAnalytics}
-            />
-            <Dropdown
-              currentId={month}
-              type="month"
-              menuList={months}
-              onMenuClick={this.handleAnalytics}
-            />
-            <Dropdown
-              currentId={year}
-              type="year"
-              menuList={yearsArray}
-              onMenuClick={this.handleAnalytics}
-            />
+            {/* DROPDOWNS */}
+            {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
+              return (
+                <Dropdown
+                  key={id}
+                  currentId={id}
+                  type={type}
+                  menuList={list}
+                  onMenuClick={this.handleAnalytics}
+                />
+              );
+            })}
           </header>
 
           {/* ANALYTICS CHARTS */}
