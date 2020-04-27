@@ -21,6 +21,7 @@ class App extends Component {
     this.state = {
       isIntroVisible: true,
       isIntroMounted: true,
+      isDataLoading: false,
       data: getData(countriesList),
       isMounted: false,
       income: {},
@@ -139,6 +140,8 @@ class App extends Component {
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
+
+    this.setState({isDataLoading: true});
   
     const loadData = () => {
       return [
@@ -168,17 +171,9 @@ class App extends Component {
             histData,
             summaryData,
           },
+          isDataLoading: false,
         });
       })
-      .then(() =>
-        setTimeout(
-          () =>
-            this.setState({
-              isIntroMounted: false,
-            }),
-          1000
-        )
-      );
   };
 
   renderAnalytics = (type) => {
@@ -287,6 +282,7 @@ class App extends Component {
     const {
       isIntroVisible,
       isIntroMounted,
+      isDataLoading,
       data,
       stats: {period, timeRanges},
       analytics: {field, month, year},
@@ -314,6 +310,10 @@ class App extends Component {
         [`App__section--${maximizedPanel}Max`]: maximizedPanel,
       }
     );
+
+    const overlayClass = classNames("App__overlay", {
+      "App__overlay--visible": isDataLoading,
+    })
 
     const sectionHeadingClass = "App__heading App__heading--section";
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
@@ -365,6 +365,7 @@ class App extends Component {
 
         {/* ANALYTICS SECTION */}
         <section className={analyticsClass}>
+          <div className={overlayClass}></div>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className={sectionHeadingClass}>Analytics</h2>
@@ -391,6 +392,7 @@ class App extends Component {
               <VisualPanel
                 key={id}
                 id={id}
+                isDataLoading={isDataLoading}
                 heading={heading}
                 info={info}
                 isMaximized={isMaximized}

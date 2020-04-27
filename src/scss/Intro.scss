@@ -20,7 +20,7 @@
   right: 0;
   row-gap: 60px;
   top: 0;
-  transition: opacity 1s, visibility 1s;
+  transition: opacity $time-introFade, visibility $time-introFade;
   visibility: hidden;
   z-index: 3;
 
