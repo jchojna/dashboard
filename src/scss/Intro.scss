@@ -1,0 +1,22 @@
+@import "_variables.scss";
+@import "_mixins.scss";
+
+.Intro {
+  @include flex-center;
+  bottom: 0;
+  background-color: #fff;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: opacity 1s, visibility 1s;
+  visibility: hidden;
+  z-index: 3;
+
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}

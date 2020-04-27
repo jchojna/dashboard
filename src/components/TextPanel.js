@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import classNames from "classnames";
 import Icon from "./Icon";
 import {getNumberFormatted} from "../lib/dataHandlers";
 import "../scss/TextPanel.scss";
 
-class TextPanel extends Component {
+class TextPanel extends PureComponent {
   constructor(props) {
     super(props);
     this.intervalId = null;

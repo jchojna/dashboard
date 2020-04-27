@@ -4,6 +4,7 @@ import {getData} from "../lib/dataGenerator";
 import countriesList from "../lib/countryData";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
+import Intro from "./Intro";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
@@ -17,6 +18,8 @@ class App extends Component {
     super(props);
     this.date = new Date();
     this.state = {
+      isIntroVisible: true,
+      isIntroMounted: true,
       data: getData(countriesList),
       isMounted: false,
       income: {},
@@ -50,27 +53,51 @@ class App extends Component {
     } = this.state;
     const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
     const {statsFields} = dataHelpers;
-    const mapData = getMapData(data, field, month, year);
-    const histData = getHistData(data, field, month, year);
-    const summaryData = getSummaryData(data, month, year);
 
-    const colors = {};
-    Object.keys(statsFields).forEach(
-      (field) => (colors[field] = getColorRgb(field))
-    );
+    const loadData = () => {
+      return [
+        getMapData(data, field, month, year),
+        getHistData(data, field, month, year),
+        getSummaryData(data, month, year),
+      ];
+    };
 
-    this.handleStats(period);
-    this.setState({
-      yearsArray: dataHandlers.getYears(data),
-      analytics: {
-        ...analytics,
-        mapData,
-        histData,
-        summaryData,
-      },
-      colors,
-      isMounted: true,
+    const dataPromise = new Promise((resolve, reject) => {
+      setTimeout(resolve, 2000);
     });
+
+    dataPromise
+      .then(() => loadData())
+      .then((response) => {
+        const [mapData, histData, summaryData] = response;
+        const colors = {};
+        Object.keys(statsFields).forEach(
+          (field) => (colors[field] = getColorRgb(field))
+        );
+
+        this.handleStats(period);
+        this.setState({
+          yearsArray: dataHandlers.getYears(data),
+          analytics: {
+            ...analytics,
+            mapData,
+            histData,
+            summaryData,
+          },
+          colors,
+          isMounted: true,
+          isIntroVisible: false,
+        });
+      })
+      .then(() =>
+        setTimeout(
+          () =>
+            this.setState({
+              isIntroMounted: false,
+            }),
+          1000
+        )
+      );
   };
 
   handleStats = (period) => {
@@ -234,6 +261,8 @@ class App extends Component {
 
   render() {
     const {
+      isIntroVisible,
+      isIntroMounted,
       data,
       stats: {period, timeRanges},
       analytics: {field, month, year},
@@ -250,6 +279,10 @@ class App extends Component {
       year: [yearsArray, year],
     };
 
+    const introClass = classNames("Intro", {
+      "Intro--visible": isIntroVisible,
+    });
+
     const analyticsClass = classNames(
       "App__section",
       "App__section--analytics",
@@ -265,6 +298,9 @@ class App extends Component {
 
     return (
       <main className="App">
+        {/* INTRO */}
+        {isIntroMounted && <Intro className={introClass} />}
+
         <h1 className="App__heading">dashboard _</h1>
 
         {/* LATEST STATS SECTION */}
