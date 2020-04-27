@@ -1,0 +1,48 @@
+@import "_animations.scss";
+@import "_variables.scss";
+@import "_mixins.scss";
+
+.Intro {
+  @include flex-center;
+  align-content: center;
+  background-color: #fff;
+  bottom: 0;
+  column-gap: 10px;
+  display: grid;
+  grid-template-areas:
+    "heading logo  "
+    "loader  loader";
+  grid-template-columns: repeat(2, auto);
+  justify-items: center;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  row-gap: 60px;
+  top: 0;
+  transition: opacity 1s, visibility 1s;
+  visibility: hidden;
+  z-index: 3;
+
+  &__heading {
+    color: #000;
+    font-size: 2rem;
+    grid-area: heading;
+    margin: 0;
+  }
+
+  &__loader {
+    @include flex-center;
+    animation: logo 0.8s alternate infinite ease-in-out;
+    border: 3px solid #000;
+    border-radius: 20%;
+    grid-area: loader;
+    height: 30px;
+    width: 30px;
+  }
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}

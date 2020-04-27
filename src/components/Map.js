@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import Datamaps from "datamaps";
 import d3 from "d3";
-import "../scss/Histogram.scss";
+import {getNumberFormatted} from "../lib/dataHandlers";
+import "../scss/BarChart.scss";
 import "../scss/Map.scss";
 
 class Map extends Component {
@@ -78,10 +79,16 @@ class Map extends Component {
               return `
                 <div class="hoverinfo tooltip">
                   <h4 class="tooltip__heading">${geo.properties.name}</h4>
-                  <p class="tooltip__text">${field}: ${data.countryTotal}</p>
-                  <p class="tooltip__text">Share: ${countryPercent.toFixed(
-                    1
-                  )}%</p>
+                  <p class="tooltip__text">${field}:
+                    <span class="tooltip__text--bold">
+                      ${getNumberFormatted(data.countryTotal)}
+                    </span>
+                  </p>
+                  <p class="tooltip__text">Share:
+                    <span class="tooltip__text--bold">                  
+                      ${countryPercent.toFixed(1)}%
+                    </span>
+                  </p>
                 </div>            
               `;
             },

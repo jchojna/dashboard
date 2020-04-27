@@ -13,7 +13,7 @@
   }
 
   $icons: (
-    profit: $color-profit,
+    income: $color-income,
     users: $color-users,
     orders: $color-orders,
     complaints: $color-complaints,
@@ -51,6 +51,20 @@
     margin-right: 5px;
     stroke: inherit;
     stroke-width: 10;
+    width: 20px;
+  }
+
+  &--logo {
+    fill: #000;
+    grid-area: logo;
+    height: 25px;
+    width: 25px;
+  }
+
+  &--mainLogo {
+    fill: $color-dark;
+    height: 20px;
+    margin-left: 5px;
     width: 20px;
   }
 

@@ -13,6 +13,10 @@ const getNumberSuffix = (number) => {
   return number >= 4 ? numberSuffixes[3] : numberSuffixes[number - 1];
 };
 
+export const getNumberFormatted = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 const getCapitalized = (string) =>
   string
     .split("")
@@ -171,7 +175,9 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
   });
   const percentage =
     prevPeriodTotal !== 0
-      ? ((lastPeriodTotal / prevPeriodTotal) * 100).toFixed(1)
+      ? Math.round(
+          ((lastPeriodTotal - prevPeriodTotal) / prevPeriodTotal) * 1000
+        ) / 10
       : 100;
   return [lastPeriodTotal, percentage];
 };
@@ -197,7 +203,7 @@ export const getColorRgb = (id) => {
     return style.getPropertyValue("background-color");
   } else {
     const colors = {
-      profit: "rgb(41, 191, 215)",
+      income: "rgb(41, 191, 215)",
       users: "rgb(188, 215, 74)",
       orders: "rgb(254, 152, 51)",
       complaints: "rgb(250, 80, 80)",
@@ -348,6 +354,7 @@ export const getHistData = (data, field, month, year, isAllBefore = false) => {
 
     return {
       id: `${index + 1} ${months[month]}`,
+      month: months[month],
       [field]: value,
     };
   });
@@ -356,20 +363,23 @@ export const getHistData = (data, field, month, year, isAllBefore = false) => {
 
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
-    const array = [];
+    let array = [];
     for (let field in statsFields) {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = allTotal === 0 ? 0 : (beforeTotal / allTotal) * 100;
-      const currentPercent =
-        allTotal === 0 ? 0 : (currentTotal / allTotal) * 100;
 
-      array.unshift({
-        id: field,
-        [`${field}Before`]: beforePercent,
-        [`${field}Current`]: currentPercent,
-      });
+      if (allTotal !== 0) {
+        
+        const beforePercent = (beforeTotal / allTotal) * 100;
+        const currentPercent = (currentTotal / allTotal) * 100;
+  
+        array.unshift({
+          id: field,
+          [`${field}Before`]: beforePercent,
+          [`${field}Current`]: currentPercent,
+        });
+      }
     }
     return array;
   };

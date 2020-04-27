@@ -4,11 +4,13 @@ import {getData} from "../lib/dataGenerator";
 import countriesList from "../lib/countryData";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
+import Intro from "./Intro";
+import Icon from "./Icon";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
-import Histogram from "./Histogram";
+import BarChart from "./BarChart";
 import Map from "./Map";
 import "../scss/App.scss";
 
@@ -17,9 +19,11 @@ class App extends Component {
     super(props);
     this.date = new Date();
     this.state = {
+      isIntroVisible: true,
+      isIntroMounted: true,
       data: getData(countriesList),
       isMounted: false,
-      profit: {},
+      income: {},
       users: {},
       orders: {},
       complaints: {},
@@ -28,9 +32,8 @@ class App extends Component {
         timeRanges: "",
       },
       analytics: {
-        field: "profit",
-        month: 0,
-        //month: this.date.getMonth() + 1,
+        field: "income",
+        month: this.date.getMonth() + 1,
         year: this.date.getFullYear(),
         mapData: {},
         histData: [],
@@ -51,26 +54,51 @@ class App extends Component {
     } = this.state;
     const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
     const {statsFields} = dataHelpers;
-    const mapData = getMapData(data, field, month, year);
-    const histData = getHistData(data, field, month, year);
-    const summaryData = getSummaryData(data, month, year);
-    const colors = {};
-    Object.keys(statsFields).forEach(
-      (field) => (colors[field] = getColorRgb(field))
-    );
 
-    this.handleStats(period);
-    this.setState({
-      yearsArray: dataHandlers.getYears(data),
-      analytics: {
-        ...analytics,
-        mapData,
-        histData,
-        summaryData,
-      },
-      colors,
-      isMounted: true,
+    const loadData = () => {
+      return [
+        getMapData(data, field, month, year),
+        getHistData(data, field, month, year),
+        getSummaryData(data, month, year),
+      ];
+    };
+
+    const dataPromise = new Promise((resolve, reject) => {
+      setTimeout(resolve, 1000);
     });
+
+    dataPromise
+      .then(() => loadData())
+      .then((response) => {
+        const [mapData, histData, summaryData] = response;
+        const colors = {};
+        Object.keys(statsFields).forEach(
+          (field) => (colors[field] = getColorRgb(field))
+        );
+
+        this.handleStats(period);
+        this.setState({
+          yearsArray: dataHandlers.getYears(data),
+          analytics: {
+            ...analytics,
+            mapData,
+            histData,
+            summaryData,
+          },
+          colors,
+          isMounted: true,
+          isIntroVisible: false,
+        });
+      })
+      .then(() =>
+        setTimeout(
+          () =>
+            this.setState({
+              isIntroMounted: false,
+            }),
+          1000
+        )
+      );
   };
 
   handleStats = (period) => {
@@ -96,7 +124,6 @@ class App extends Component {
     });
 
     const timeRanges = getTimeRanges(breakpointDates, period);
-
     const stats = {
       period,
       timeRanges,
@@ -107,30 +134,51 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
-    const mapData = getMapData(data, field, month, year);
-    const histData = getHistData(data, field, month, year);
-    const summaryData =
-      type === "month" || type === "year"
-        ? getSummaryData(data, month, year)
-        : analytics.summaryData;
-    const accentColor =
-      type === "field" ? getColorRgb(id) : this.state.accentColor;
+  
+    const loadData = () => {
+      return [
+        getMapData(data, field, month, year),
+        getHistData(data, field, month, year)
+      ];
+    };
 
-    this.setState({
-      analytics: {
-        ...analytics,
-        [type]: id,
-        mapData,
-        histData,
-        summaryData,
-      },
-      accentColor,
+    const dataPromise = new Promise((resolve, reject) => {
+      setTimeout(resolve, 1000);
     });
+
+    dataPromise
+      .then(() => loadData())
+      .then((response) => {
+        const [mapData, histData] = response;
+        const summaryData =
+          type === "month" || type === "year"
+            ? getSummaryData(data, month, year)
+            : analytics.summaryData;
+    
+        this.setState({
+          analytics: {
+            ...analytics,
+            [type]: id,
+            mapData,
+            histData,
+            summaryData,
+          },
+        });
+      })
+      .then(() =>
+        setTimeout(
+          () =>
+            this.setState({
+              isIntroMounted: false,
+            }),
+          1000
+        )
+      );
   };
 
   renderAnalytics = (type) => {
@@ -138,31 +186,50 @@ class App extends Component {
       analytics: {field, mapData, histData, summaryData},
       colors,
     } = this.state;
+    const alertClass = "VisualPanel__alert";
+    const alertText = "No data for this time range...";
 
     switch (type) {
       case "histogram":
-        return (
-          <Histogram
+        const isHistData = histData.length > 0;
+
+        return isHistData ? (
+          <BarChart
             data={histData}
             keys={[field]}
             type="histogram"
             layout="vertical"
-            margin={{top: 60, right: 30, bottom: 30, left: 60}}
+            margin={{left: 60}}
             colors={(id) => colors[id]}
+            enableGridX={true}
             enableGridY={true}
           />
+        ) : (
+          <div className={alertClass}>{alertText}</div>
         );
 
       case "map":
         return <Map data={mapData} />;
 
       case "summary":
-        return (
-          <Histogram
+        const isSummaryData = summaryData.length > 0;
+        const enableGridX = isSummaryData ? true : false;
+        const axisBottom =
+          isSummaryData > 0
+            ? {
+                tickSize: 5,
+                tickPadding: 0,
+                tickRotation: 0,
+                tickValues: [20, 40, 60, 80],
+              }
+            : null;
+
+        return isSummaryData ? (
+          <BarChart
             data={summaryData}
             keys={[
-              "profitBefore",
-              "profitCurrent",
+              "incomeBefore",
+              "incomeCurrent",
               "usersBefore",
               "usersCurrent",
               "ordersBefore",
@@ -172,19 +239,17 @@ class App extends Component {
             ]}
             type="summary"
             layout="horizontal"
-            margin={{top: 60, right: 30, bottom: 50, left: 100}}
+            margin={{left: 100}}
             colors={(id) => {
               const isCurrent = id.includes("Current");
               return isCurrent ? colors[id.replace("Current", "")] : "#fff";
             }}
-            enableGridX={true}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              tickValues: [20, 40, 60, 80],
-            }}
+            enableGridX={enableGridX}
+            gridXValues={[20, 40, 60, 80]}
+            axisBottom={axisBottom}
           />
+        ) : (
+          <div className={alertClass}>{alertText}</div>
         );
 
       default:
@@ -220,6 +285,8 @@ class App extends Component {
 
   render() {
     const {
+      isIntroVisible,
+      isIntroMounted,
       data,
       stats: {period, timeRanges},
       analytics: {field, month, year},
@@ -236,6 +303,10 @@ class App extends Component {
       year: [yearsArray, year],
     };
 
+    const introClass = classNames("Intro", {
+      "Intro--visible": isIntroVisible,
+    });
+
     const analyticsClass = classNames(
       "App__section",
       "App__section--analytics",
@@ -245,13 +316,18 @@ class App extends Component {
     );
 
     const sectionHeadingClass = "App__heading App__heading--section";
-
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
     const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
 
     return (
       <main className="App">
-        <h1 className="App__heading">dashboard _</h1>
+        {/* INTRO */}
+        {isIntroMounted && <Intro className={introClass} />}
+
+        <header className="App__header App__header--main">
+          <h1 className="App__heading">dashboard</h1>
+          <Icon id="logo" type="mainLogo" />
+        </header>
 
         {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">
@@ -307,16 +383,19 @@ class App extends Component {
           </header>
 
           {/* ANALYTICS CHARTS */}
-          {analyticsPanels.map((panel) => {
-            const isMaximized = this.state.maximizedPanel === panel;
+          {Object.entries(analyticsPanels).map(([id, info]) => {
+            const isMaximized = this.state.maximizedPanel === id;
+            const heading = id === "summary" ? "summary" : statsFields[field];
+
             return (
               <VisualPanel
-                key={panel}
-                id={panel}
-                heading={panel}
+                key={id}
+                id={id}
+                heading={heading}
+                info={info}
                 isMaximized={isMaximized}
                 onMaximize={this.handleMaximize}>
-                {this.renderAnalytics(panel)}
+                {this.renderAnalytics(id)}
               </VisualPanel>
             );
           })}

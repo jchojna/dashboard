@@ -1,9 +1,10 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import classNames from "classnames";
 import Icon from "./Icon";
+import {getNumberFormatted} from "../lib/dataHandlers";
 import "../scss/TextPanel.scss";
 
-class TextPanel extends Component {
+class TextPanel extends PureComponent {
   constructor(props) {
     super(props);
     this.intervalId = null;
@@ -17,7 +18,6 @@ class TextPanel extends Component {
   };
 
   componentDidUpdate = () => {
-    
     if (!this.intervalId) {
       this.setState({animatedValue: 0});
       this.handleValue();
@@ -27,13 +27,13 @@ class TextPanel extends Component {
   componentWillUnmount = () => {
     clearInterval(this.intervalId);
     this.intervalId = null;
-  }
+  };
 
   handleValue = () => {
     this.intervalId = setInterval(() => {
       const {animatedValue} = this.state;
       const {value} = this.props;
-      
+
       // one increment on every 10ms
       const increment = Math.ceil(value / 80);
 
@@ -47,17 +47,17 @@ class TextPanel extends Component {
         this.intervalId = null;
       }
     }, 10);
-  }
+  };
 
   render() {
     const {id, heading, percentage} = this.props;
     const {animatedValue} = this.state;
     const percentageClass = classNames("TextPanel__percentage", {
-      "TextPanel__percentage--positive": percentage >= 100,
-      "TextPanel__percentage--negative": percentage < 100,
+      "TextPanel__percentage--positive": percentage >= 0,
+      "TextPanel__percentage--negative": percentage < 0,
     });
     const percentValue = percentage !== 0 ? `${percentage}%` : "stable";
-    const isIconRotated = percentage > 100;
+    const isIconRotated = percentage >= 0;
 
     return (
       <section className={`TextPanel TextPanel--${id}`}>
@@ -68,7 +68,10 @@ class TextPanel extends Component {
         </header>
 
         {/* VALUES AND INDICATORS */}
-        <p className="TextPanel__value">{animatedValue}</p>
+        <p className="TextPanel__value">
+          {getNumberFormatted(animatedValue)}
+          {id === "income" ? " $" : ""}
+        </p>
         <div className={percentageClass}>
           <Icon id="indicator" isRotated={isIconRotated} />
           <span>{percentValue}</span>

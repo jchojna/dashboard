@@ -2,6 +2,7 @@
 @import "_mixins.scss";
 
 .VisualPanel {
+  @include flex-center;
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
@@ -27,6 +28,7 @@
     display: flex;
     justify-content: space-between;
     left: 0;
+    padding: $panel-padding;
     position: absolute;
     top: 0;
     width: 100%;
@@ -34,10 +36,17 @@
   }
 
   &__heading {
-    font-size: 1.2em;
+    font-size: 1rem;
     margin: 0;
-    padding: $panel-padding;
+    padding-left: 10px;
     text-transform: uppercase;
+
+    &--info {
+      color: #aaa;
+      font-size: 0.9rem;
+      font-weight: normal;
+      text-transform: lowercase;
+    }
   }
 
   &__button {
@@ -54,5 +63,14 @@
     @media only screen and (max-width: $media-md) {
       display: none;
     }
+  }
+
+  &__alert {
+    @include flex-center;
+    background-color: #eee;
+    color: #aaa;
+    height: 100%;
+    margin-top: 20px;
+    width: 100%;
   }
 }

@@ -8,3 +8,12 @@
     transform-origin: top;
   }
 }
+
+@keyframes logo {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(2);
+  }
+}

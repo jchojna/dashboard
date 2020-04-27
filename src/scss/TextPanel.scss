@@ -16,8 +16,8 @@
   overflow: hidden;
   width: 100%;
 
-  &--profit {
-    grid-area: profit;
+  &--income {
+    grid-area: income;
   }
 
   &--users {
@@ -51,10 +51,12 @@
   &__percentage {
     margin: 0;
     padding: $panel-padding;
+    padding-left: 15px;
   }
 
   &__value {
-    font-size: 1.5em;
+    font-size: 1.6em;
+    font-weight: bold;
     grid-area: value;
     padding-top: 0;
   }

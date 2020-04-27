@@ -21,8 +21,7 @@ export const getData = (list) => {
       date.setDate(date.getDate() + 1);
       dateString = getDateString(date);
       data[country][dateString] = {};
-      // temporarily not considering financial loss
-      data[country][dateString].profit = getRandom(0, 3000);
+      data[country][dateString].income = getRandom(0, 3000);
       data[country][dateString].users = getRandom(0, 80);
       data[country][dateString].orders = getRandom(0, 50);
       data[country][dateString].complaints = getRandom(0, 5);
