@@ -5,6 +5,7 @@ import countriesList from "../lib/countryData";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
 import Intro from "./Intro";
+import Icon from "./Icon";
 import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
@@ -292,7 +293,6 @@ class App extends Component {
     );
 
     const sectionHeadingClass = "App__heading App__heading--section";
-
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
     const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
 
@@ -301,7 +301,10 @@ class App extends Component {
         {/* INTRO */}
         {isIntroMounted && <Intro className={introClass} />}
 
-        <h1 className="App__heading">dashboard _</h1>
+        <header className="App__header App__header--main">
+          <h1 className="App__heading">dashboard</h1>
+          <Icon id="logo" type="mainLogo" />
+        </header>
 
         {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">

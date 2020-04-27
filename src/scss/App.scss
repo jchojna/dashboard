@@ -29,6 +29,11 @@
   &__header {
     grid-area: header;
 
+    &--main {
+      @include flex-center;
+      justify-content: flex-end;
+    }
+
     &--stats {
       grid-template-areas: "heading info period";
       grid-template-columns: auto 1fr auto;
