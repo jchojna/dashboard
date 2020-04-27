@@ -1,5 +1,5 @@
 import countryCodes from "./countryCodes";
-import {statsFields, months} from "./dataHelpers";
+import {statsFields, months, days, numberSuffixes} from "./dataHelpers";
 
 export const getRandom = (bottomLimit, upperLimit) => {
   return (
@@ -9,8 +9,115 @@ export const getRandom = (bottomLimit, upperLimit) => {
 
 export const getDateString = (date) => date.toISOString().slice(0, 10);
 
-export const getDateFormatted = (date) => {
-  return date.toISOString().slice(0, 10);
+const getNumberSuffix = (number) => {
+  return number >= 4 ? numberSuffixes[3] : numberSuffixes[number - 1];
+};
+
+const getCapitalized = (string) =>
+  string
+    .split("")
+    .map((letter, index) => (index === 0 ? letter.toUpperCase() : letter))
+    .join("");
+
+// get date format to use in stat's header info
+export const getTimeRanges = (dates, period) => {
+  const [lastEndDate, lastStartDate, prevEndDate, prevStartDate] = dates;
+
+  const getElements = (date) => {
+    const [year, month, day] = getDateString(date)
+      .split("-")
+      .map((string) => parseInt(string));
+    const suffix = getNumberSuffix(day);
+    const dayName = days[date.getDay()];
+    const monthName = getCapitalized(months[month]);
+    return [dayName, day, suffix, monthName, year];
+  };
+
+  const [
+    lastEndDayName,
+    lastEndDay,
+    lastEndSuffix,
+    lastEndMonth,
+    lastEndYear,
+  ] = getElements(lastEndDate);
+
+  const [
+    lastStartDayName,
+    lastStartDay,
+    lastStartSuffix,
+    lastStartMonth,
+    lastStartYear,
+  ] = getElements(lastStartDate);
+
+  const [
+    prevEndDayName,
+    prevEndDay,
+    prevEndSuffix,
+    prevEndMonth,
+    prevEndYear,
+  ] = getElements(prevEndDate);
+
+  const [
+    prevStartDayName,
+    prevStartDay,
+    prevStartSuffix,
+    prevStartMonth,
+    prevStartYear,
+  ] = getElements(prevStartDate);
+
+  switch (period.toLowerCase()) {
+    case "today":
+    case "yesterday":
+      return `
+      ${lastStartDayName}, ${lastStartDay}${lastStartSuffix}
+      ${prevStartMonth !== lastStartMonth ? `of ${lastStartMonth}` : ""}
+      vs.
+      ${prevStartDayName}, ${prevStartDay}${prevStartSuffix} of ${prevStartMonth}
+    `;
+
+    case "week":
+    case "month":
+    case "year":
+      return `
+      ${lastStartDayName}, ${lastStartDay}${lastStartSuffix}
+      ${
+        lastStartMonth !== lastEndMonth || lastStartYear !== lastEndYear
+          ? `of ${lastStartMonth}`
+          : ""
+      }
+      ${lastStartYear !== lastEndYear ? `, ${lastStartYear}` : ""}
+
+      -
+
+      ${lastEndDayName}, ${lastEndDay}${lastEndSuffix}
+      ${
+        lastEndMonth !== prevEndMonth || lastEndYear !== prevEndYear
+          ? `of ${lastEndMonth}`
+          : ""
+      }
+      ${prevEndYear !== lastEndYear ? `, ${lastEndYear}` : ""}
+      
+
+      vs.
+      
+      ${prevStartDayName}, ${prevStartDay}${prevStartSuffix}
+      ${
+        prevStartMonth !== prevEndMonth || prevStartYear !== prevEndYear
+          ? `of ${prevStartMonth}`
+          : ""
+      }
+      ${prevStartYear !== prevEndYear ? `, ${prevStartYear}` : ""}
+
+      -
+
+      ${prevEndDayName}, ${prevEndDay}${prevEndSuffix}
+
+      of ${prevEndMonth}, ${prevEndYear}
+    `;
+
+    default:
+      return false;
+  }
 };
 
 export const getBreakpointDates = (range) => {
@@ -25,9 +132,7 @@ export const getBreakpointDates = (range) => {
 
   return Object.entries(offsets)
     .find(([key, value]) => key === range)[1]
-    .map((offset) =>
-      getDateString(new Date(now.setDate(now.getDate() - offset)))
-    );
+    .map((offset) => new Date(now.setDate(now.getDate() - offset)));
 };
 
 export const getTotalInTimeRange = (data, type, breakpointDates) => {
@@ -39,43 +144,35 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
     lastPeriodStartDate,
     prevPeriodEndDate,
     prevPeriodStartDate,
-  ] = breakpointDates;
+  ] = breakpointDates; // date objects
 
   /* iterating through all countries */
   Object.values(data).forEach((country) => {
-    const prevStartIndex = Object.keys(country).findIndex(
-      (key) => key === prevPeriodStartDate
-    );
-    const prevEndIndex = Object.keys(country).findIndex(
-      (key) => key === prevPeriodEndDate
-    );
-    const lastStartIndex = Object.keys(country).findIndex(
-      (key) => key === lastPeriodStartDate
-    );
-    const lastEndIndex = Object.keys(country).findIndex(
-      (key) => key === lastPeriodEndDate
-    );
+    const getIndex = (date) =>
+      Object.keys(country).findIndex((key) => key === getDateString(date));
+    const lastEndIndex = getIndex(lastPeriodEndDate);
+    const lastStartIndex = getIndex(lastPeriodStartDate);
+    const prevEndIndex = getIndex(prevPeriodEndDate);
+    const prevStartIndex = getIndex(prevPeriodStartDate);
 
-    prevPeriodTotal += Object.values(country)
-      .map((date) => date[type])
-      .reduce((acc, curr, index) => {
-        if (index >= prevStartIndex && index <= prevEndIndex) {
-          acc += curr;
-        }
-        return acc;
-      }, 0);
+    const getPeriodTotal = (startIndex, endIndex) => {
+      return Object.values(country)
+        .map((date) => date[type])
+        .reduce((acc, curr, index) => {
+          if (index >= startIndex && index <= endIndex) {
+            acc += curr;
+          }
+          return acc;
+        }, 0);
+    };
 
-    lastPeriodTotal += Object.values(country)
-      .map((date) => date[type])
-      .reduce((acc, curr, index) => {
-        if (index >= lastStartIndex && index <= lastEndIndex) {
-          acc += curr;
-        }
-        return acc;
-      }, 0);
+    prevPeriodTotal += getPeriodTotal(prevStartIndex, prevEndIndex);
+    lastPeriodTotal += getPeriodTotal(lastStartIndex, lastEndIndex);
   });
-
-  const percentage = (lastPeriodTotal / prevPeriodTotal - 1).toFixed(1);
+  const percentage =
+    prevPeriodTotal !== 0
+      ? ((lastPeriodTotal / prevPeriodTotal) * 100).toFixed(1)
+      : 100;
   return [lastPeriodTotal, percentage];
 };
 
@@ -93,74 +190,80 @@ export const getYears = (data) => {
 };
 
 export const getColorRgb = (id) => {
+  // temporary solution
   const svgIcon = document.querySelector(`svg[class*=${id}]`);
-  const style = window.getComputedStyle(svgIcon);
-  return style.getPropertyValue("background-color");
+  if (svgIcon) {
+    const style = window.getComputedStyle(svgIcon);
+    return style.getPropertyValue("background-color");
+  } else {
+    const colors = {
+      profit: "rgb(41, 191, 215)",
+      users: "rgb(188, 215, 74)",
+      orders: "rgb(254, 152, 51)",
+      complaints: "rgb(250, 80, 80)",
+    };
+    return colors[id];
+  }
 };
 
-const getColor = (id) => {
-  const svgIcon = document.querySelector(`svg[class*=${id}]`);
-  const style = window.getComputedStyle(svgIcon);
-  const color = style.getPropertyValue("background-color");
-  return color.match(/\d+/g);
+const getColor = (id) => getColorRgb(id).match(/\d+/g);
+
+const get2digit = (number) => (number < 10 ? `0${number}` : `${number}`);
+
+const autoCompleteDates = (array, type) => {
+  if (array.length === 0) return array;
+
+  // autocomplete array with the missing date string
+  // since a first day of the month
+  if (type === "days") {
+    const [year, month, day] = array[0].split("-");
+    const prevDay = parseInt(day) - 1;
+
+    for (let i = prevDay; i > 0; i--) {
+      array.unshift(`${year}-${month}-${get2digit(i)}`);
+    }
+    return array;
+
+    // autocomplete array with the missing months in a given year
+  } else if (type === "months") {
+    const firstDate = array[0];
+    const lastDate = array[array.length - 1];
+
+    const [firstYear, firstMonth] = firstDate.split("-");
+    const [lastYear, lastMonth] = lastDate.split("-");
+    const prevMonth = parseInt(firstMonth) - 1;
+    const nextMonth = parseInt(lastMonth) + 1;
+
+    // autocomplete months before first month in a given year
+    for (let i = prevMonth; i > 0; i--) {
+      array.unshift(`${firstYear}-${get2digit(i)}`);
+    }
+
+    // autocomplete months after last month in a given year
+    for (let i = nextMonth; i <= 12; i++) {
+      array.push(`${lastYear}-${get2digit(i)}`);
+    }
+    return array;
+  }
 };
 
 const getDateIds = (array, isYearly) => {
+  // returns array of strings formatted as:
+  // yyy-mm-dd when isYearly is false
+  // yyy-mm when isYearly is true
+
   const allDaysAsDates = array.map(([elem]) => elem);
   const daysAsDates = [...new Set(allDaysAsDates)];
   const allMonthsAsDates = daysAsDates.map((date) =>
     date.split("-").slice(0, 2).join("-")
   );
   const monthsAsDates = [...new Set(allMonthsAsDates)];
-  return isYearly ? monthsAsDates : daysAsDates;
+  const daysOutput = autoCompleteDates(daysAsDates, "days");
+  const monthsOutput = autoCompleteDates(monthsAsDates, "months");
+  return isYearly ? monthsOutput : daysOutput;
 };
 
-const getSpecificData = (data, field, month, year, isAllBefore = false) => {
-  const monthNum = parseInt(month);
-  const yearNum = parseInt(year);
-  const histArray = [];
-  /* HIST DATA */
-  Object.values(data).forEach((datesObj) => {
-    histArray.push(...Object.entries(datesObj));
-  });
-  // get filtered and sorted array of all date-value elements
-  // in a given time range (if there's more than one country
-  // there will be many duplicates of the same date key)
-  const filteredHistArray = histArray
-    .filter(([date]) => {
-      const [y, m] = date.split("-").map((elem) => parseInt(elem));
-
-      if (isAllBefore) {
-        return y < yearNum || (y === yearNum && m < monthNum);
-      } else {
-        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
-      }
-    })
-    .sort(([dateA], [dateB]) => {
-      const getNum = (date) => parseInt(date.split("-").join(""));
-      return getNum(dateA) - getNum(dateB);
-    });
-
-  // get date keys in format yyyy-mm-dd for days
-  // or yyyy-mm for months
-  const isYearly = monthNum === 0;
-  const dateStrings = getDateIds(filteredHistArray, isYearly);
-
-  const histData = dateStrings.map((dateString, index) => {
-    const value = filteredHistArray
-      .filter(([date]) => date.includes(dateString))
-      .map(([date, values]) => values[field])
-      .reduce((a, b) => a + b, 0);
-
-    return {
-      id: `${index + 1} ${months[month]}`,
-      [field]: value,
-    };
-  });
-  return histData;
-};
-
-export const getAnalyticsData = (data, field, month, year) => {
+export const getMapData = (data, field, month, year) => {
   const mapData = {};
   const countriesTotals = {};
   const [r, g, b] = getColor(field);
@@ -170,7 +273,6 @@ export const getAnalyticsData = (data, field, month, year) => {
   Object.entries(data).forEach(([countryName, values]) => {
     countriesTotals[countryName] = Object.entries(values)
       .filter(([date]) => {
-        //* refactor
         const [y, m] = date.split("-").map((elem) => parseInt(elem));
         return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
       })
@@ -182,7 +284,6 @@ export const getAnalyticsData = (data, field, month, year) => {
   const maxTotal = Math.max(...totalsArray);
   const allCountriesTotal = totalsArray.reduce((a, b) => a + b, 0);
 
-  /* MAP DATA */
   Object.keys(data).forEach((countryName) => {
     const countryCode = countryCodes[countryName];
     if (countryCode) {
@@ -201,13 +302,58 @@ export const getAnalyticsData = (data, field, month, year) => {
       }
     }
   });
-
-  /* HISTOGRAM DATA */
-  const histData = getSpecificData(data, field, month, year);
-  return [mapData, histData];
+  return mapData;
 };
 
-/* SUMMARY DATA */
+export const getHistData = (data, field, month, year, isAllBefore = false) => {
+  const monthNum = parseInt(month);
+  const yearNum = parseInt(year);
+  const histArray = [];
+
+  Object.values(data).forEach((datesObj) => {
+    histArray.push(...Object.entries(datesObj));
+  });
+
+  // returns filtered and sorted array of all date-value elements
+  // in a given time range (if there's more than one country
+  // there will be many duplicates of the same date key)
+
+  const filteredHistArray = histArray
+    .filter(([date]) => {
+      const [y, m] = date.split("-").map((elem) => parseInt(elem));
+
+      if (isAllBefore) {
+        return y < yearNum || (y === yearNum && m < monthNum);
+      } else {
+        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+      }
+    })
+    .sort(([dateA], [dateB]) => {
+      const getNum = (date) => parseInt(date.split("-").join(""));
+      return getNum(dateA) - getNum(dateB);
+    });
+
+  // get array of date strings formatted as:
+  // yyy-mm-dd when isYearly is false
+  // yyy-mm when isYearly is true
+
+  const isYearly = monthNum === 0;
+  const dateStrings = getDateIds(filteredHistArray, isYearly);
+
+  const histData = dateStrings.map((dateString, index) => {
+    const value = filteredHistArray
+      .filter(([date]) => date.includes(dateString))
+      .map(([date, values]) => values[field])
+      .reduce((a, b) => a + b, 0);
+
+    return {
+      id: `${index + 1} ${months[month]}`,
+      [field]: value,
+    };
+  });
+  return histData;
+};
+
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
     const array = [];
@@ -215,8 +361,9 @@ export const getSummaryData = (data, month, year) => {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = (beforeTotal / allTotal) * 100;
-      const currentPercent = (currentTotal / allTotal) * 100;
+      const beforePercent = allTotal === 0 ? 0 : (beforeTotal / allTotal) * 100;
+      const currentPercent =
+        allTotal === 0 ? 0 : (currentTotal / allTotal) * 100;
 
       array.unshift({
         id: field,
@@ -228,9 +375,8 @@ export const getSummaryData = (data, month, year) => {
   };
 
   const getTotal = (field, isAllBefore) => {
-    return getSpecificData(data, field, month, year, isAllBefore)
-      .map((elem) => elem[field])
-      .reduce((a, b) => a + b, 0);
+    const temp = getHistData(data, field, month, year, isAllBefore);
+    return temp.map((elem) => elem[field]).reduce((a, b) => a + b, 0);
   };
 
   return getFieldTotals();

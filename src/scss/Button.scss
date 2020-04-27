@@ -5,15 +5,23 @@
   @include button;
   @include flex-center;
   background-color: #ccc;
+  border-radius: $corner;
   justify-content: space-between;
   min-width: 150px;
+  overflow: hidden;
   text-transform: uppercase;
+  transition: color $time-hover, background-color $time-hover;
 
-  &__text {
-    padding: 10px;
+  &:hover {
+    color: #fff;
+    background-color: #999;
   }
 
-  &--export,
-  &--print {
+  @media only screen and (max-width: $media-sm) {
+    min-width: 0;
+  }
+
+  &__text {
+    padding-left: 10px;
   }
 }

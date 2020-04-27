@@ -33,16 +33,20 @@ class Dropdown extends Component {
   };
 
   handleMenu = (item) => {
-    console.log('item', item);
     const {type, onMenuClick} = this.props;
     this.toggleDropdown();
     type === "period" ? onMenuClick(item) : onMenuClick(type, item);
   };
 
   renderMenu = () => {
-    const {menuList} = this.props;
+    const {type, menuList} = this.props;
     const isListAnArray = Array.isArray(menuList);
     const menuItems = isListAnArray ? menuList : Object.keys(menuList);
+    const buttonClass = `
+      Dropdown__button
+      Dropdown__button--menu
+      Dropdown__button--${type}
+    `;
 
     return (
       <ul className="Dropdown__list">
@@ -52,7 +56,7 @@ class Dropdown extends Component {
           return (
             <li key={item} className="Dropdown__item">
               <button
-                className="Dropdown__button"
+                className={buttonClass}
                 onClick={() => this.handleMenu(item)}>
                 {label}
               </button>
@@ -65,15 +69,19 @@ class Dropdown extends Component {
 
   render() {
     const {isOpen} = this.state;
-    const {currentId, menuList} = this.props;
+    const {type, currentId, menuList} = this.props;
     const label = Array.isArray(menuList) ? currentId : menuList[currentId];
 
-    const buttonClass = classNames("Dropdown__button", {
-      "Dropdown__button--active": isOpen,
-    });
+    const buttonClass = classNames(
+      "Dropdown__button",
+      `Dropdown__button--${type}`,
+      {
+        "Dropdown__button--active": isOpen,
+      }
+    );
 
     return (
-      <div className="Dropdown" ref={this.dropdown}>
+      <div className={`Dropdown Dropdown--${type}`} ref={this.dropdown}>
         <button className={buttonClass} onClick={this.toggleDropdown}>
           <span className="Dropdown__label">{label}</span>
           <Icon id="dropdown" isRotated={isOpen} />

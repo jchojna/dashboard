@@ -3,21 +3,26 @@
 
 .App {
   @include flex-center;
-  flex-direction: column;
   background-color: #eee;
-  display: flex;
   color: $color-dark;
+  display: flex;
+  flex-direction: column;
   font-weight: normal;
   height: 100%;
   min-height: 100vh;
+  min-width: 320px;
   padding: 30px;
   width: 100%;
+
+  @media only screen and (max-width: $media-sm) {
+    padding: 10px;
+  }
 
   &__header,
   &__footer {
     align-items: center;
-    display: grid;
     column-gap: 20px;
+    display: grid;
     width: 100%;
   }
 
@@ -25,30 +30,93 @@
     grid-area: header;
 
     &--stats {
+      grid-template-areas: "heading info period";
       grid-template-columns: auto 1fr auto;
+
+      @media (max-width: $media-md) {
+        grid-template-areas:
+          "heading period"
+          "info    info  ";
+        grid-template-columns: 1fr auto;
+      }
     }
 
     &--analytics {
-      grid-template-columns: auto 1fr repeat(3, auto);
+      grid-template-areas: "heading field month year";
+      grid-template-columns: 1fr repeat(3, auto);
+
+      @media only screen and (max-width: $media-md) {
+        grid-template-areas:
+          "heading month year "
+          ".       .     field";
+        grid-template-columns: 1fr repeat(2, auto);
+      }
+
+      @media only screen and (max-width: $media-sm) {
+        grid-template-areas:
+          "heading field"
+          ".       month"
+          ".       year ";
+        grid-template-columns: 1fr auto;
+      }
     }
   }
 
   &__heading {
+    align-self: flex-end;
     color: $color-dark;
-    font-size: 1.5em;
+    font-size: 1.6em;
+    grid-area: heading;
     margin: 0;
+
+    &--section {
+      align-self: center;
+    }
+  }
+
+  &__info {
+    border-left: 1px solid #888;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    grid-area: info;
+    margin: 0;
+    padding-left: 10px;
+
+    &--current {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    &--before {
+      color: #888;
+      font-size: 0.8rem;
+    }
+
+    @media only screen and (max-width: $media-md) {
+      border: none;
+      border-top: 1px solid #888;
+      padding: 0;
+      padding-top: 10px;
+      order: 1;
+      grid-column: 1 / 3;
+    }
   }
 
   &__section {
     background-color: #ddd;
     border-radius: $corner;
-    box-shadow: inset 0 2px 20px rgba($color: #000, $alpha: 0.1),
-      inset 0 2px 5px rgba($color: #000, $alpha: 0.3);
+    box-shadow: 0 2px 20px rgba($color: #000, $alpha: 0.1) inset,
+      0 2px 5px rgba($color: #000, $alpha: 0.3) inset;
     display: grid;
     gap: 20px;
     max-width: 1200px;
     padding: 30px;
     width: 100%;
+
+    @media only screen and (max-width: $media-sm) {
+      padding: 15px;
+    }
 
     &--stats {
       grid-template-columns: repeat(4, 1fr);
@@ -56,6 +124,24 @@
         "header header header header    "
         "profit users  orders complaints";
       margin: 30px 0;
+
+      @media (max-width: $media-md) {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+          "header header    "
+          "profit users     "
+          "orders complaints";
+      }
+
+      @media only screen and (max-width: $media-sm) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header    "
+          "profit    "
+          "users     "
+          "orders    "
+          "complaints";
+      }
     }
 
     &--analytics {
@@ -66,41 +152,55 @@
         "summary   map   "
         "footer    footer";
       grid-template-rows: auto 300px 250px auto;
+
+      @media (max-width: $media-md) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header    "
+          "histogram "
+          "map       "
+          "summary   "
+          "footer";
+        grid-template-rows: auto 300px 400px 250px auto;
+      }
     }
 
-    &--histogramMax {
-      grid-template-areas:
-        "header    header   "
-        "histogram histogram"
-        "summary   map      "
-        "footer    footer   ";
-      grid-template-rows: auto 300px 300px auto;
-    }
+    @media only screen and (min-width: $media-md) {
+      &--histogramMax {
+        grid-template-areas:
+          "header    header   "
+          "histogram histogram"
+          "summary   map      "
+          "footer    footer   ";
+        grid-template-rows: auto 300px 300px auto;
+      }
 
-    &--mapMax {
-      grid-template-areas:
-        "header    header "
-        "map       map    "
-        "histogram summary"
-        "footer    footer ";
-      grid-template-rows: auto 500px 250px auto;
-    }
+      &--mapMax {
+        grid-template-areas:
+          "header    header "
+          "map       map    "
+          "histogram summary"
+          "footer    footer ";
+        grid-template-rows: auto 500px 250px auto;
+      }
 
-    &--summaryMax {
-      grid-template-areas:
-        "header    header "
-        "histogram map    "
-        "summary   summary"
-        "footer    footer ";
+      &--summaryMax {
+        grid-template-areas:
+          "header    header "
+          "histogram map    "
+          "summary   summary"
+          "footer    footer ";
+      }
     }
   }
 
   &__footer {
     grid-area: footer;
-    grid-template-columns: 1fr repeat(2, auto);
-  }
+    grid-template-columns: repeat(2, auto);
+    justify-content: end;
 
-  &__info {
-    margin: 0;
+    @media only screen and (max-width: $media-sm) {
+      justify-content: stretch;
+    }
   }
 }

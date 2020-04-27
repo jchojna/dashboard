@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import classNames from "classnames";
-import {countriesList, getData} from "../lib/dataGenerator";
+import {getData} from "../lib/dataGenerator";
+import countriesList from "../lib/countryData";
 import * as dataHandlers from "../lib/dataHandlers";
 import * as dataHelpers from "../lib/dataHelpers";
 import TextPanel from "./TextPanel";
@@ -17,20 +18,19 @@ class App extends Component {
     this.date = new Date();
     this.state = {
       data: getData(countriesList),
+      isMounted: false,
       profit: {},
       users: {},
       orders: {},
       complaints: {},
       stats: {
-        period: "month",
-        lastPeriodEndDate: "",
-        lastPeriodStartDate: "",
-        prevPeriodEndDate: "",
-        prevPeriodStartDate: "",
+        period: "week",
+        timeRanges: "",
       },
       analytics: {
         field: "profit",
-        month: this.date.getMonth() + 1,
+        month: 0,
+        //month: this.date.getMonth() + 1,
         year: this.date.getFullYear(),
         mapData: {},
         histData: [],
@@ -49,9 +49,10 @@ class App extends Component {
       analytics,
       analytics: {field, month, year},
     } = this.state;
-    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
     const {statsFields} = dataHelpers;
-    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const mapData = getMapData(data, field, month, year);
+    const histData = getHistData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
     const colors = {};
     Object.keys(statsFields).forEach(
@@ -68,21 +69,19 @@ class App extends Component {
         summaryData,
       },
       colors,
+      isMounted: true,
     });
   };
 
   handleStats = (period) => {
     const {data} = this.state;
-    const {getTotalInTimeRange, getBreakpointDates} = dataHandlers;
+    const {
+      getTotalInTimeRange,
+      getBreakpointDates,
+      getTimeRanges,
+    } = dataHandlers;
     const {statsFields} = dataHelpers;
-
     const breakpointDates = getBreakpointDates(period);
-    const [
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
-    ] = breakpointDates;
 
     Object.keys(statsFields).forEach((field) => {
       const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
@@ -90,33 +89,31 @@ class App extends Component {
 
       this.setState({
         [field]: {
-          value: `${field === "profit" ? "$ " : ""}${lastPeriodTotal}`,
+          value: lastPeriodTotal,
           percentage,
         },
       });
     });
 
+    const timeRanges = getTimeRanges(breakpointDates, period);
+
     const stats = {
       period,
-      lastPeriodEndDate,
-      lastPeriodStartDate,
-      prevPeriodEndDate,
-      prevPeriodStartDate,
+      timeRanges,
     };
     this.setState({stats});
   };
 
   handleAnalytics = (type, id) => {
-    console.log("id", id);
-    console.log("type", type);
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getAnalyticsData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
-    const [mapData, histData] = getAnalyticsData(data, field, month, year);
+    const mapData = getMapData(data, field, month, year);
+    const histData = getHistData(data, field, month, year);
     const summaryData =
       type === "month" || type === "year"
         ? getSummaryData(data, month, year)
@@ -151,7 +148,7 @@ class App extends Component {
             type="histogram"
             layout="vertical"
             margin={{top: 60, right: 30, bottom: 30, left: 60}}
-            colors={colors[field]}
+            colors={(id) => colors[id]}
             enableGridY={true}
           />
         );
@@ -176,16 +173,10 @@ class App extends Component {
             type="summary"
             layout="horizontal"
             margin={{top: 60, right: 30, bottom: 50, left: 100}}
-            colors={[
-              "#fff",
-              colors.profit,
-              "#fff",
-              colors.users,
-              "#fff",
-              colors.orders,
-              "#fff",
-              colors.complaints,
-            ]}
+            colors={(id) => {
+              const isCurrent = id.includes("Current");
+              return isCurrent ? colors[id.replace("Current", "")] : "#fff";
+            }}
             enableGridX={true}
             axisBottom={{
               tickSize: 5,
@@ -207,23 +198,37 @@ class App extends Component {
     }));
   };
 
+  handleExport = (data, filename, type) => {
+    const file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob)
+      // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      const a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  };
+
   render() {
     const {
-      stats: {
-        period,
-        lastPeriodEndDate,
-        lastPeriodStartDate,
-        prevPeriodEndDate,
-        prevPeriodStartDate,
-      },
+      data,
+      stats: {period, timeRanges},
       analytics: {field, month, year},
       yearsArray,
       maximizedPanel,
+      isMounted,
     } = this.state;
 
     const {statsFields, statsPeriods, months, analyticsPanels} = dataHelpers;
-    const statsDescription = `${lastPeriodStartDate} - ${lastPeriodEndDate} vs.
-    ${prevPeriodStartDate} - ${prevPeriodEndDate}`;
 
     const dropdownsLists = {
       field: [statsFields, field],
@@ -239,16 +244,24 @@ class App extends Component {
       }
     );
 
+    const sectionHeadingClass = "App__heading App__heading--section";
+
+    const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
+    const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
+
     return (
       <main className="App">
-        <h1 className="App__heading">Enterprise Dashboard</h1>
+        <h1 className="App__heading">dashboard _</h1>
 
         {/* LATEST STATS SECTION */}
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
-            <h2 className="App__heading">Latest Stats</h2>
-            <p className="App__range">{statsDescription}</p>
+            <h2 className={sectionHeadingClass}>Recent</h2>
+            <p className="App__info">
+              <span className="App__info--current">{appInfoCurrent} vs.</span>
+              <span className="App__info--before">{appInfoBefore}</span>
+            </p>
             <Dropdown
               currentId={period}
               type="period"
@@ -258,27 +271,27 @@ class App extends Component {
           </header>
 
           {/* LATEST STATS TEXT PANELS */}
-          {Object.entries(statsFields).map(([field, heading]) => {
-            const {value, percentage} = this.state[field];
+          {isMounted &&
+            Object.entries(statsFields).map(([field, heading]) => {
+              const {value, percentage} = this.state[field];
 
-            return (
-              <TextPanel
-                key={field}
-                id={field}
-                heading={heading}
-                value={value}
-                percentage={percentage}
-              />
-            );
-          })}
+              return (
+                <TextPanel
+                  key={field}
+                  id={field}
+                  heading={heading}
+                  value={value}
+                  percentage={percentage}
+                />
+              );
+            })}
         </section>
 
         {/* ANALYTICS SECTION */}
         <section className={analyticsClass}>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
-            <h2 className="App__heading">Analytics</h2>
-            <p className="App__range">Some info</p>
+            <h2 className={sectionHeadingClass}>Analytics</h2>
             {/* DROPDOWNS */}
             {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
               return (
@@ -310,9 +323,18 @@ class App extends Component {
 
           {/* ANALYTICS FOOTER */}
           <footer className="App__footer">
-            <p className="App__info">Some info</p>
-            <Button id="export" label="export" hasLabel="true" />
-            <Button id="print" label="print" hasLabel="true" />
+            <Button
+              id="export"
+              label="export"
+              onClick={() =>
+                this.handleExport(
+                  JSON.stringify(data),
+                  "dashboard",
+                  "text/plain"
+                )
+              }
+            />
+            <Button id="print" label="print" onClick={() => window.print()} />
           </footer>
         </section>
       </main>

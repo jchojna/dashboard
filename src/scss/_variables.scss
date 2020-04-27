@@ -1,5 +1,6 @@
-$corner: 5px;
-$panel-padding: 10px;
+// MEDIA
+$media-sm: 600px;
+$media-md: 1100px;
 
 // COLORS
 $color-profit: #29bfd7;
@@ -10,5 +11,7 @@ $color-country: #f8d74c;
 $color-dark: #555;
 
 $section-shadow: 0 2px 5px rgba($color: #000, $alpha: 0.3);
-
 $offset--zoomButton: 10px;
+$corner: 5px;
+$panel-padding: 10px;
+$time-hover: 0.2s;

@@ -58,6 +58,8 @@ const Histogram = (props) => {
     tickValues: 3,
   };
 
+  const color = {from: "color", modifiers: [["darker", "1.6"]]};
+
   const tooltip = (tooltipData) => {
     const {id, value, indexValue} = tooltipData;
     const monthName =
@@ -72,9 +74,13 @@ const Histogram = (props) => {
 
     const text =
       type === "histogram"
-        ? monthName ? monthName : `Date: ${indexValue}`
+        ? monthName
+          ? monthName
+          : `Date: ${indexValue}`
         : `${
-            id === "before" ? "Before current period" : "During current period"
+            id.includes("Before")
+              ? "Before current period"
+              : "During current period"
           }`;
 
     return (
@@ -93,11 +99,11 @@ const Histogram = (props) => {
         indexBy="id"
         margin={margin}
         padding={0.6}
-        innerPadding={5}
         layout={layout}
-        colors={colors}
+        //colors={bar => colors[bar.id]}
+        colors={(data) => colors(data.id)}
         colorBy="id"
-        borderColor={{from: "color", modifiers: [["darker", "1.6"]]}}
+        borderColor={color}
         axisTop={null}
         axisRight={axisRight}
         axisBottom={axisBottom}
@@ -109,13 +115,13 @@ const Histogram = (props) => {
         gridYValues={5}
         labelSkipWidth={12}
         labelSkipHeight={12}
-        labelTextColor={{from: "color", modifiers: [["darker", 1.6]]}}
+        labelTextColor={color}
         legends={[]}
         tooltip={tooltip}
         theme={theme}
         animate={true}
-        motionStiffness={90}
-        motionDamping={15}
+        motionStiffness={75}
+        motionDamping={10}
       />
     </div>
   );

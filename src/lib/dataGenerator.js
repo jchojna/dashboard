@@ -1,16 +1,5 @@
 import {getDateString, getRandom} from "./dataHandlers";
 
-export const countriesList = [
-  {
-    country: "Poland",
-    startDate: [2017, 12, 5],
-  },
-  {
-    country: "United States",
-    startDate: [2018, 5, 24],
-  },
-];
-
 export const getData = (list) => {
   const data = {};
 
@@ -32,7 +21,8 @@ export const getData = (list) => {
       date.setDate(date.getDate() + 1);
       dateString = getDateString(date);
       data[country][dateString] = {};
-      data[country][dateString].profit = getRandom(-300, 2200);
+      // temporarily not considering financial loss
+      data[country][dateString].profit = getRandom(0, 3000);
       data[country][dateString].users = getRandom(0, 80);
       data[country][dateString].orders = getRandom(0, 50);
       data[country][dateString].complaints = getRandom(0, 5);
