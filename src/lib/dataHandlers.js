@@ -210,7 +210,7 @@ const getColor = (id) => getColorRgb(id).match(/\d+/g);
 
 const get2digit = (number) => (number < 10 ? `0${number}` : `${number}`);
 
-const fillEmpty = (array, type) => {
+const autoCompleteDates = (array, type) => {
   if (array.length === 0) return array;
   const [year, month, day] = array[0].split("-");
   if (type === "days") {
@@ -241,8 +241,8 @@ const getDateIds = (array, isYearly) => {
     date.split("-").slice(0, 2).join("-")
   );
   const monthsAsDates = [...new Set(allMonthsAsDates)];
-  const monthsOutput = fillEmpty(monthsAsDates, "months");
-  const daysOutput = fillEmpty(daysAsDates, "days");
+  const monthsOutput = autoCompleteDates(monthsAsDates, "months");
+  const daysOutput = autoCompleteDates(daysAsDates, "days");
   return isYearly ? monthsOutput : daysOutput;
 };
 
@@ -350,7 +350,6 @@ export const getSummaryData = (data, month, year) => {
 
       array.unshift({
         id: field,
-        color: "hsl(12,100%,46%)",
         [`${field}Before`]: beforePercent,
         [`${field}Current`]: currentPercent,
       });

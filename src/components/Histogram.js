@@ -96,7 +96,8 @@ const Histogram = (props) => {
         margin={margin}
         padding={0.6}
         layout={layout}
-        colors={bar => colors[bar.id]}
+        //colors={bar => colors[bar.id]}
+        colors={(data) => colors(data.id)}
         colorBy="id"
         borderColor={color}
         axisTop={null}

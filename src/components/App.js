@@ -31,8 +31,7 @@ class App extends Component {
         field: "profit",
         month: 0,
         //month: this.date.getMonth() + 1,
-        //year: this.date.getFullYear(),
-        year: 2017,
+        year: this.date.getFullYear(),
         mapData: {},
         histData: [],
         summaryData: [],
@@ -149,8 +148,7 @@ class App extends Component {
             type="histogram"
             layout="vertical"
             margin={{top: 60, right: 30, bottom: 30, left: 60}}
-            //colors={colors[field]}
-            colors={{[field]: colors[field]}}
+            colors={(id) => colors[id]}
             enableGridY={true}
           />
         );
@@ -175,25 +173,9 @@ class App extends Component {
             type="summary"
             layout="horizontal"
             margin={{top: 60, right: 30, bottom: 50, left: 100}}
-            /* colors={[
-              "#fff",
-              colors.profit,
-              "#fff",
-              colors.users,
-              "#fff",
-              colors.orders,
-              "#fff",
-              colors.complaints,
-            ]} */
-            colors={{
-              profitBefore: "#fff",
-              profitCurrent: colors.profit,
-              usersBefore: "#fff",
-              usersCurrent: colors.users,
-              ordersBefore: "#fff",
-              ordersCurrent: colors.orders,
-              complaintsBefore: "#fff",
-              complaintsCurrent: colors.complaints,
+            colors={(id) => {
+              const isCurrent = id.includes("Current");
+              return isCurrent ? colors[id.replace("Current", "")] : "#fff";
             }}
             enableGridX={true}
             axisBottom={{
@@ -262,7 +244,7 @@ class App extends Component {
       }
     );
 
-    const sectionHeadingClass = "App__heading App__heading--section"
+    const sectionHeadingClass = "App__heading App__heading--section";
 
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
     const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
