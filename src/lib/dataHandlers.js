@@ -171,7 +171,9 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
   });
   const percentage =
     prevPeriodTotal !== 0
-      ? ((lastPeriodTotal / prevPeriodTotal) * 100).toFixed(1)
+      ? Math.round(
+          ((lastPeriodTotal - prevPeriodTotal) / prevPeriodTotal) * 1000
+        ) / 10
       : 100;
   return [lastPeriodTotal, percentage];
 };
@@ -197,7 +199,7 @@ export const getColorRgb = (id) => {
     return style.getPropertyValue("background-color");
   } else {
     const colors = {
-      profit: "rgb(41, 191, 215)",
+      income: "rgb(41, 191, 215)",
       users: "rgb(188, 215, 74)",
       orders: "rgb(254, 152, 51)",
       complaints: "rgb(250, 80, 80)",

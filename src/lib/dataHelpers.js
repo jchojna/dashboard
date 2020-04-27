@@ -1,5 +1,5 @@
 export const statsFields = {
-  profit: "Total Profit",
+  income: "Total Income",
   users: "Active users",
   orders: "New orders",
   complaints: "Open complaints",

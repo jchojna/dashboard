@@ -19,7 +19,7 @@ class App extends Component {
     this.state = {
       data: getData(countriesList),
       isMounted: false,
-      profit: {},
+      income: {},
       users: {},
       orders: {},
       complaints: {},
@@ -28,7 +28,7 @@ class App extends Component {
         timeRanges: "",
       },
       analytics: {
-        field: "profit",
+        field: "income",
         month: 0,
         //month: this.date.getMonth() + 1,
         year: this.date.getFullYear(),
@@ -161,8 +161,8 @@ class App extends Component {
           <Histogram
             data={summaryData}
             keys={[
-              "profitBefore",
-              "profitCurrent",
+              "incomeBefore",
+              "incomeCurrent",
               "usersBefore",
               "usersCurrent",
               "ordersBefore",

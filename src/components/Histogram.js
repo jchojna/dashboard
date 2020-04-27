@@ -69,7 +69,7 @@ const Histogram = (props) => {
 
     const heading =
       type === "histogram"
-        ? `${statsFields[id]}: ${value}${id === "profit" ? " $" : ""}`
+        ? `${statsFields[id]}: ${value}${id === "income" ? " $" : ""}`
         : `${indexValue}: ${value.toFixed(1)}%`;
 
     const text =
@@ -120,7 +120,7 @@ const Histogram = (props) => {
         tooltip={tooltip}
         theme={theme}
         animate={true}
-        motionStiffness={75}
+        motionStiffness={92}
         motionDamping={10}
       />
     </div>

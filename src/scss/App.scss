@@ -122,14 +122,14 @@
       grid-template-columns: repeat(4, 1fr);
       grid-template-areas:
         "header header header header    "
-        "profit users  orders complaints";
+        "income users  orders complaints";
       margin: 30px 0;
 
       @media (max-width: $media-md) {
         grid-template-columns: repeat(2, 1fr);
         grid-template-areas:
           "header header    "
-          "profit users     "
+          "income users     "
           "orders complaints";
       }
 
@@ -137,7 +137,7 @@
         grid-template-columns: 1fr;
         grid-template-areas:
           "header    "
-          "profit    "
+          "income    "
           "users     "
           "orders    "
           "complaints";

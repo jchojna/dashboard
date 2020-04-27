@@ -53,11 +53,11 @@ class TextPanel extends Component {
     const {id, heading, percentage} = this.props;
     const {animatedValue} = this.state;
     const percentageClass = classNames("TextPanel__percentage", {
-      "TextPanel__percentage--positive": percentage >= 100,
-      "TextPanel__percentage--negative": percentage < 100,
+      "TextPanel__percentage--positive": percentage >= 0,
+      "TextPanel__percentage--negative": percentage < 0,
     });
     const percentValue = percentage !== 0 ? `${percentage}%` : "stable";
-    const isIconRotated = percentage > 100;
+    const isIconRotated = percentage >= 0;
 
     return (
       <section className={`TextPanel TextPanel--${id}`}>
