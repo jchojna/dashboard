@@ -212,21 +212,38 @@ const get2digit = (number) => (number < 10 ? `0${number}` : `${number}`);
 
 const autoCompleteDates = (array, type) => {
   if (array.length === 0) return array;
-  const [year, month, day] = array[0].split("-");
+
+  // autocomplete array with the missing date string
+  // since a first day of the month
   if (type === "days") {
+    const [year, month, day] = array[0].split("-");
     const prevDay = parseInt(day) - 1;
 
     for (let i = prevDay; i > 0; i--) {
       array.unshift(`${year}-${month}-${get2digit(i)}`);
     }
     return array;
-  } else if (type === "months") {
-    const newArray = [];
 
-    for (let i = 1; i <= 12; i++) {
-      newArray.push(`${year}-${get2digit(i)}`);
+    // autocomplete array with the missing months in a given year
+  } else if (type === "months") {
+    const firstDate = array[0];
+    const lastDate = array[array.length - 1];
+
+    const [firstYear, firstMonth] = firstDate.split("-");
+    const [lastYear, lastMonth] = lastDate.split("-");
+    const prevMonth = parseInt(firstMonth) - 1;
+    const nextMonth = parseInt(lastMonth) + 1;
+
+    // autocomplete months before first month in a given year
+    for (let i = prevMonth; i > 0; i--) {
+      array.unshift(`${firstYear}-${get2digit(i)}`);
     }
-    return newArray;
+
+    // autocomplete months after last month in a given year
+    for (let i = nextMonth; i <= 12; i++) {
+      array.push(`${lastYear}-${get2digit(i)}`);
+    }
+    return array;
   }
 };
 
@@ -241,8 +258,8 @@ const getDateIds = (array, isYearly) => {
     date.split("-").slice(0, 2).join("-")
   );
   const monthsAsDates = [...new Set(allMonthsAsDates)];
-  const monthsOutput = autoCompleteDates(monthsAsDates, "months");
   const daysOutput = autoCompleteDates(daysAsDates, "days");
+  const monthsOutput = autoCompleteDates(monthsAsDates, "months");
   return isYearly ? monthsOutput : daysOutput;
 };
 
@@ -358,9 +375,8 @@ export const getSummaryData = (data, month, year) => {
   };
 
   const getTotal = (field, isAllBefore) => {
-    return getHistData(data, field, month, year, isAllBefore)
-      .map((elem) => elem[field])
-      .reduce((a, b) => a + b, 0);
+    const temp = getHistData(data, field, month, year, isAllBefore);
+    return temp.map((elem) => elem[field]).reduce((a, b) => a + b, 0);
   };
 
   return getFieldTotals();

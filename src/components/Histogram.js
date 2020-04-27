@@ -74,9 +74,13 @@ const Histogram = (props) => {
 
     const text =
       type === "histogram"
-        ? monthName ? monthName : `Date: ${indexValue}`
+        ? monthName
+          ? monthName
+          : `Date: ${indexValue}`
         : `${
-            id === "before" ? "Before current period" : "During current period"
+            id.includes("Before")
+              ? "Before current period"
+              : "During current period"
           }`;
 
     return (
@@ -116,8 +120,8 @@ const Histogram = (props) => {
         tooltip={tooltip}
         theme={theme}
         animate={true}
-        motionStiffness={90}
-        motionDamping={15}
+        motionStiffness={75}
+        motionDamping={10}
       />
     </div>
   );
