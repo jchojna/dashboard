@@ -142,11 +142,11 @@ class App extends Component {
     year = type === "year" ? id : year;
 
     this.setState({isDataLoading: true});
-  
+
     const loadData = () => {
       return [
         getMapData(data, field, month, year),
-        getHistData(data, field, month, year)
+        getHistData(data, field, month, year),
       ];
     };
 
@@ -162,7 +162,7 @@ class App extends Component {
           type === "month" || type === "year"
             ? getSummaryData(data, month, year)
             : analytics.summaryData;
-    
+
         this.setState({
           analytics: {
             ...analytics,
@@ -173,7 +173,7 @@ class App extends Component {
           },
           isDataLoading: false,
         });
-      })
+      });
   };
 
   renderAnalytics = (type) => {
@@ -311,10 +311,6 @@ class App extends Component {
       }
     );
 
-    const overlayClass = classNames("App__overlay", {
-      "App__overlay--visible": isDataLoading,
-    })
-
     const sectionHeadingClass = "App__heading App__heading--section";
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
     const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
@@ -341,6 +337,7 @@ class App extends Component {
             <Dropdown
               currentId={period}
               type="period"
+              isDataLoading={isDataLoading}
               menuList={statsPeriods}
               onMenuClick={this.handleStats}
             />
@@ -365,7 +362,6 @@ class App extends Component {
 
         {/* ANALYTICS SECTION */}
         <section className={analyticsClass}>
-          <div className={overlayClass}></div>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
             <h2 className={sectionHeadingClass}>Analytics</h2>
@@ -376,6 +372,7 @@ class App extends Component {
                   key={id}
                   currentId={id}
                   type={type}
+                  isDataLoading={isDataLoading}
                   menuList={list}
                   onMenuClick={this.handleAnalytics}
                 />
@@ -407,6 +404,7 @@ class App extends Component {
             <Button
               id="export"
               label="export"
+              isDataLoading={isDataLoading}
               onClick={() =>
                 this.handleExport(
                   JSON.stringify(data),
@@ -415,7 +413,12 @@ class App extends Component {
                 )
               }
             />
-            <Button id="print" label="print" onClick={() => window.print()} />
+            <Button
+              id="print"
+              label="print"
+              isDataLoading={isDataLoading}
+              onClick={() => window.print()}
+            />
           </footer>
         </section>
       </main>

@@ -209,21 +209,20 @@
       justify-content: stretch;
     }
   }
+}
 
-  &__overlay {
-    background-color: $color-dark;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity $time-overlay, visibility $time-overlay;
+.loader {
+  @include flex-center;
+  animation: logo 0.8s alternate infinite ease-in-out;
+  border: 3px solid #000;
+  border-radius: 20%;
+  grid-area: loader;
+  height: 30px;
+  width: 30px;
+  z-index: 1;
 
-    &--visible {
-      opacity: 0.5;
-      visibility: visible;
-    }
+  &--panel {
+    border: 2px solid #fff;
+
   }
 }

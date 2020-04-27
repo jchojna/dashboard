@@ -27,9 +27,11 @@ class Dropdown extends Component {
   };
 
   toggleDropdown = () => {
-    this.setState((prevState) => ({
-      isOpen: !prevState.isOpen,
-    }));
+    if (!this.props.isDataLoading) {
+      this.setState((prevState) => ({
+        isOpen: !prevState.isOpen,
+      }));
+    }
   };
 
   handleMenu = (item) => {
@@ -69,7 +71,7 @@ class Dropdown extends Component {
 
   render() {
     const {isOpen} = this.state;
-    const {type, currentId, menuList} = this.props;
+    const {type, currentId, menuList, isDataLoading} = this.props;
     const label = Array.isArray(menuList) ? currentId : menuList[currentId];
 
     const buttonClass = classNames(
@@ -77,6 +79,7 @@ class Dropdown extends Component {
       `Dropdown__button--${type}`,
       {
         "Dropdown__button--active": isOpen,
+        "Dropdown__button--disabled": isDataLoading,
       }
     );
 

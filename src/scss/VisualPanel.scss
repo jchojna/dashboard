@@ -8,6 +8,7 @@
   box-shadow: $section-shadow;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
   &--histogram {
     grid-area: histogram;
@@ -72,5 +73,23 @@
     height: 100%;
     margin-top: 20px;
     width: 100%;
+  }
+
+  &__overlay {
+    @include flex-center;
+    background-color: rgba($color: #000, $alpha: 0);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background-color $time-overlay, visibility $time-overlay;
+    visibility: hidden;
+    z-index: 1;
+
+    &--visible {
+      background-color: rgba($color: #000, $alpha: 0.3);
+      visibility: visible;
+    }
   }
 }

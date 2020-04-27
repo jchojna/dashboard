@@ -46,6 +46,10 @@
       background-color: #ccc;
     }
 
+    &--disabled {
+      pointer-events: none;
+    }
+
     &:hover {
       background-color: #ccc;
     }

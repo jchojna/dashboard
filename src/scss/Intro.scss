@@ -31,16 +31,6 @@
     margin: 0;
   }
 
-  &__loader {
-    @include flex-center;
-    animation: logo 0.8s alternate infinite ease-in-out;
-    border: 3px solid #000;
-    border-radius: 20%;
-    grid-area: loader;
-    height: 30px;
-    width: 30px;
-  }
-
   &--visible {
     opacity: 1;
     visibility: visible;
