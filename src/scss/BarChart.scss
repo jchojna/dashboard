@@ -16,6 +16,16 @@
     text-transform: capitalize;
   }
 
+  &__text {
+    font-size: 0.8rem;
+    margin: 0;
+    text-transform: capitalize;
+
+    &--bold {
+      font-weight: bold;
+    }
+  }
+
   &__heading {
     margin-bottom: 5px;
   }

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import classNames from "classnames";
 import Icon from "./Icon";
+import {getNumberFormatted} from "../lib/dataHandlers";
 import "../scss/TextPanel.scss";
 
 class TextPanel extends Component {
@@ -68,7 +69,7 @@ class TextPanel extends Component {
 
         {/* VALUES AND INDICATORS */}
         <p className="TextPanel__value">
-          {animatedValue}
+          {getNumberFormatted(animatedValue)}
           {id === "income" ? " $" : ""}
         </p>
         <div className={percentageClass}>

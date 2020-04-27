@@ -13,6 +13,13 @@ const getNumberSuffix = (number) => {
   return number >= 4 ? numberSuffixes[3] : numberSuffixes[number - 1];
 };
 
+export const getNumberFormatted = (number) => {
+  
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+
+}
+
 const getCapitalized = (string) =>
   string
     .split("")

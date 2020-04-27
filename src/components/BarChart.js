@@ -1,5 +1,6 @@
 import React from "react";
 import {statsFields, months} from "../lib/dataHelpers";
+import {getNumberFormatted} from "../lib/dataHandlers";
 import {ResponsiveBar} from "@nivo/bar";
 import "../scss/BarChart.scss";
 
@@ -70,7 +71,9 @@ const Histogram = (props) => {
 
     const heading =
       type === "histogram"
-        ? `${statsFields[id]}: ${value}${id === "income" ? " $" : ""}`
+        ? `${statsFields[id]}: ${getNumberFormatted(value)}${
+            id === "income" ? " $" : ""
+          }`
         : `${indexValue}: ${value.toFixed(1)}%`;
 
     const text =

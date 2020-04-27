@@ -28,6 +28,7 @@
     display: flex;
     justify-content: space-between;
     left: 0;
+    padding: $panel-padding;
     position: absolute;
     top: 0;
     width: 100%;
@@ -37,7 +38,7 @@
   &__heading {
     font-size: 1.2em;
     margin: 0;
-    padding: $panel-padding;
+    padding-left: 10px;
     text-transform: uppercase;
   }
 
@@ -59,8 +60,8 @@
 
   &__alert {
     @include flex-center;
-    color: #aaa;
     background-color: #eee;
+    color: #aaa;
     height: 100%;
     margin-top: 20px;
     width: 100%;
