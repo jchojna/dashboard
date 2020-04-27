@@ -63,7 +63,7 @@ class App extends Component {
     };
 
     const dataPromise = new Promise((resolve, reject) => {
-      setTimeout(resolve, 2000);
+      setTimeout(resolve, 3000);
     });
 
     dataPromise

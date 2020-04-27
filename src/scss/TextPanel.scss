@@ -51,6 +51,7 @@
   &__percentage {
     margin: 0;
     padding: $panel-padding;
+    padding-left: 15px;
   }
 
   &__value {
@@ -58,7 +59,6 @@
     font-weight: bold;
     grid-area: value;
     padding-top: 0;
-    padding-left: 15px;
   }
 
   &__percentage {

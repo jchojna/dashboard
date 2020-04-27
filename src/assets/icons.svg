@@ -46,4 +46,9 @@
   <symbol id="print" viewBox="0 0 100 100">
     <path d="M30 65h40m-40 15h40m-65-55v50h15v-25h60v25h15v-50h-15v5h-60v-5zm15-20h60v25h-60zm0 45h60v45h-60z"/>
   </symbol>
+  <!-- LOGO -->
+  <symbol id="logo" viewBox="0 0 100 100">
+    <polyline points="5,65 5,95 95,95 95,65"/>
+    <polyline points="95,5 65,5 65,35 95,35"/>
+  </symbol>
 </svg>

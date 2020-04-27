@@ -54,6 +54,13 @@
     width: 20px;
   }
 
+  &--logo {
+    fill: #000;
+    grid-area: logo;
+    width: 25px;
+    height: 25px;
+  }
+
   &--rotated {
     transform: rotate(180deg);
   }
