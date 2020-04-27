@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <!-- TOTAL PROFIT -->
-  <symbol id="profit" viewBox="0 0 100 100">
+  <symbol id="income" viewBox="0 0 100 100">
     <path
        d="M80 290.542a30 15 0 0 1-30 15 30 15 0 0 1-30-15 30 15 0 0 1 30-15 30 15 0 0 1 30 15zm-60 30c0 8.284 13.431 15 30 15 16.569 0 30-6.716 30-15m0-30v60m-60-60v60m0-15c0 8.284 13.431 15 30 15 16.569 0 30-6.716 30-15m-60 15c0 8.284 13.431 15 30 15 16.569 0 30-6.716 30-15m-60-45c0 8.284 13.431 15 30 15 16.569 0 30-6.716 30-15" transform="translate(0 -270.542)"/>
   </symbol>
@@ -45,5 +45,10 @@
   <!-- PRINT -->
   <symbol id="print" viewBox="0 0 100 100">
     <path d="M30 65h40m-40 15h40m-65-55v50h15v-25h60v25h15v-50h-15v5h-60v-5zm15-20h60v25h-60zm0 45h60v45h-60z"/>
+  </symbol>
+  <!-- LOGO -->
+  <symbol id="logo" viewBox="0 0 100 100">
+    <polyline points="5,65 5,95 95,95 95,65"/>
+    <polyline points="95,5 65,5 65,35 95,35"/>
   </symbol>
 </svg>
