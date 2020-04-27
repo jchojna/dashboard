@@ -33,4 +33,8 @@ export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const numberSuffixes = ["st", "nd", "rd", "th"];
 
-export const analyticsPanels = ["histogram", "map", "summary"];
+export const analyticsPanels = {
+  histogram: "in specified time range",
+  map: "by countries",
+  summary: "in specified time range vs. total before",
+};

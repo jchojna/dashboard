@@ -29,10 +29,8 @@ class App extends Component {
       },
       analytics: {
         field: "income",
-        //month: this.date.getMonth() + 1,
-        //year: this.date.getFullYear(),
-        month: 5,
-        year: 2017,
+        month: this.date.getMonth() + 1,
+        year: this.date.getFullYear(),
         mapData: {},
         histData: [],
         summaryData: [],
@@ -323,16 +321,19 @@ class App extends Component {
           </header>
 
           {/* ANALYTICS CHARTS */}
-          {analyticsPanels.map((panel) => {
-            const isMaximized = this.state.maximizedPanel === panel;
+          {Object.entries(analyticsPanels).map(([id, info]) => {
+            const isMaximized = this.state.maximizedPanel === id;
+            const heading = id === "summary" ? "summary" : statsFields[field];
+
             return (
               <VisualPanel
-                key={panel}
-                id={panel}
-                heading={panel}
+                key={id}
+                id={id}
+                heading={heading}
+                info={info}
                 isMaximized={isMaximized}
                 onMaximize={this.handleMaximize}>
-                {this.renderAnalytics(panel)}
+                {this.renderAnalytics(id)}
               </VisualPanel>
             );
           })}

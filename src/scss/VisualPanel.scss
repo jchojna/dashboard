@@ -36,10 +36,17 @@
   }
 
   &__heading {
-    font-size: 1.2em;
+    font-size: 1rem;
     margin: 0;
     padding-left: 10px;
     text-transform: uppercase;
+
+    &--info {
+      color: #aaa;
+      font-size: 0.9rem;
+      font-weight: normal;
+      text-transform: lowercase;
+    }
   }
 
   &__button {
