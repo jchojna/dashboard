@@ -171,7 +171,7 @@ export const getTotalInTimeRange = (data, type, breakpointDates) => {
   });
   const percentage =
     prevPeriodTotal !== 0
-      ? (lastPeriodTotal / prevPeriodTotal * 100).toFixed(1)
+      ? ((lastPeriodTotal / prevPeriodTotal) * 100).toFixed(1)
       : 100;
   return [lastPeriodTotal, percentage];
 };
@@ -208,59 +208,42 @@ export const getColorRgb = (id) => {
 
 const getColor = (id) => getColorRgb(id).match(/\d+/g);
 
+const get2digit = (number) => (number < 10 ? `0${number}` : `${number}`);
+
+const fillEmpty = (array, type) => {
+  if (array.length === 0) return array;
+  const [year, month, day] = array[0].split("-");
+  if (type === "days") {
+    const prevDay = parseInt(day) - 1;
+
+    for (let i = prevDay; i > 0; i--) {
+      array.unshift(`${year}-${month}-${get2digit(i)}`);
+    }
+    return array;
+  } else if (type === "months") {
+    const newArray = [];
+
+    for (let i = 1; i <= 12; i++) {
+      newArray.push(`${year}-${get2digit(i)}`);
+    }
+    return newArray;
+  }
+};
+
 const getDateIds = (array, isYearly) => {
+  // returns array of strings formatted as:
+  // yyy-mm-dd when isYearly is false
+  // yyy-mm when isYearly is true
+
   const allDaysAsDates = array.map(([elem]) => elem);
   const daysAsDates = [...new Set(allDaysAsDates)];
   const allMonthsAsDates = daysAsDates.map((date) =>
     date.split("-").slice(0, 2).join("-")
   );
   const monthsAsDates = [...new Set(allMonthsAsDates)];
-  return isYearly ? monthsAsDates : daysAsDates;
-};
-
-export const getHistData = (data, field, month, year, isAllBefore = false) => {
-  const monthNum = parseInt(month);
-  const yearNum = parseInt(year);
-  const histArray = [];
-  /* HIST DATA */
-  Object.values(data).forEach((datesObj) => {
-    histArray.push(...Object.entries(datesObj));
-  });
-  // get filtered and sorted array of all date-value elements
-  // in a given time range (if there's more than one country
-  // there will be many duplicates of the same date key)
-  const filteredHistArray = histArray
-    .filter(([date]) => {
-      const [y, m] = date.split("-").map((elem) => parseInt(elem));
-
-      if (isAllBefore) {
-        return y < yearNum || (y === yearNum && m < monthNum);
-      } else {
-        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
-      }
-    })
-    .sort(([dateA], [dateB]) => {
-      const getNum = (date) => parseInt(date.split("-").join(""));
-      return getNum(dateA) - getNum(dateB);
-    });
-
-  // get date keys in format yyyy-mm-dd for days
-  // or yyyy-mm for months
-  const isYearly = monthNum === 0;
-  const dateStrings = getDateIds(filteredHistArray, isYearly);
-
-  const histData = dateStrings.map((dateString, index) => {
-    const value = filteredHistArray
-      .filter(([date]) => date.includes(dateString))
-      .map(([date, values]) => values[field])
-      .reduce((a, b) => a + b, 0);
-
-    return {
-      id: `${index + 1} ${months[month]}`,
-      [field]: value,
-    };
-  });
-  return histData;
+  const monthsOutput = fillEmpty(monthsAsDates, "months");
+  const daysOutput = fillEmpty(daysAsDates, "days");
+  return isYearly ? monthsOutput : daysOutput;
 };
 
 export const getMapData = (data, field, month, year) => {
@@ -305,6 +288,54 @@ export const getMapData = (data, field, month, year) => {
   return mapData;
 };
 
+export const getHistData = (data, field, month, year, isAllBefore = false) => {
+  const monthNum = parseInt(month);
+  const yearNum = parseInt(year);
+  const histArray = [];
+
+  Object.values(data).forEach((datesObj) => {
+    histArray.push(...Object.entries(datesObj));
+  });
+
+  // returns filtered and sorted array of all date-value elements
+  // in a given time range (if there's more than one country
+  // there will be many duplicates of the same date key)
+
+  const filteredHistArray = histArray
+    .filter(([date]) => {
+      const [y, m] = date.split("-").map((elem) => parseInt(elem));
+
+      if (isAllBefore) {
+        return y < yearNum || (y === yearNum && m < monthNum);
+      } else {
+        return monthNum === 0 ? y === yearNum : m === monthNum && y === yearNum;
+      }
+    })
+    .sort(([dateA], [dateB]) => {
+      const getNum = (date) => parseInt(date.split("-").join(""));
+      return getNum(dateA) - getNum(dateB);
+    });
+
+  // get array of date strings formatted as:
+  // yyy-mm-dd when isYearly is false
+  // yyy-mm when isYearly is true
+
+  const isYearly = monthNum === 0;
+  const dateStrings = getDateIds(filteredHistArray, isYearly);
+
+  const histData = dateStrings.map((dateString, index) => {
+    const value = filteredHistArray
+      .filter(([date]) => date.includes(dateString))
+      .map(([date, values]) => values[field])
+      .reduce((a, b) => a + b, 0);
+
+    return {
+      id: `${index + 1} ${months[month]}`,
+      [field]: value,
+    };
+  });
+  return histData;
+};
 
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
@@ -313,11 +344,13 @@ export const getSummaryData = (data, month, year) => {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = (beforeTotal / allTotal) * 100;
-      const currentPercent = (currentTotal / allTotal) * 100;
+      const beforePercent = allTotal === 0 ? 0 : (beforeTotal / allTotal) * 100;
+      const currentPercent =
+        allTotal === 0 ? 0 : (currentTotal / allTotal) * 100;
 
       array.unshift({
         id: field,
+        color: "hsl(12,100%,46%)",
         [`${field}Before`]: beforePercent,
         [`${field}Current`]: currentPercent,
       });

@@ -65,7 +65,7 @@
   &__heading {
     align-self: flex-end;
     color: $color-dark;
-    font-size: 1.5em;
+    font-size: 1.6em;
     grid-area: heading;
     margin: 0;
 
@@ -75,20 +75,29 @@
   }
 
   &__info {
+    border-left: 1px solid #888;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
     grid-area: info;
     margin: 0;
+    padding-left: 10px;
 
     &--current {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: bold;
     }
 
     &--before {
       color: #888;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
 
     @media only screen and (max-width: $media-md) {
+      border: none;
+      border-top: 1px solid #888;
+      padding: 0;
+      padding-top: 10px;
       order: 1;
       grid-column: 1 / 3;
     }

@@ -31,7 +31,8 @@ class App extends Component {
         field: "profit",
         month: 0,
         //month: this.date.getMonth() + 1,
-        year: this.date.getFullYear(),
+        //year: this.date.getFullYear(),
+        year: 2017,
         mapData: {},
         histData: [],
         summaryData: [],
@@ -52,7 +53,6 @@ class App extends Component {
     const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
     const {statsFields} = dataHelpers;
     const mapData = getMapData(data, field, month, year);
-    console.log('mapData', mapData);
     const histData = getHistData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
     const colors = {};
@@ -149,7 +149,8 @@ class App extends Component {
             type="histogram"
             layout="vertical"
             margin={{top: 60, right: 30, bottom: 30, left: 60}}
-            colors={colors[field]}
+            //colors={colors[field]}
+            colors={{[field]: colors[field]}}
             enableGridY={true}
           />
         );
@@ -174,7 +175,7 @@ class App extends Component {
             type="summary"
             layout="horizontal"
             margin={{top: 60, right: 30, bottom: 50, left: 100}}
-            colors={[
+            /* colors={[
               "#fff",
               colors.profit,
               "#fff",
@@ -183,7 +184,17 @@ class App extends Component {
               colors.orders,
               "#fff",
               colors.complaints,
-            ]}
+            ]} */
+            colors={{
+              profitBefore: "#fff",
+              profitCurrent: colors.profit,
+              usersBefore: "#fff",
+              usersCurrent: colors.users,
+              ordersBefore: "#fff",
+              ordersCurrent: colors.orders,
+              complaintsBefore: "#fff",
+              complaintsCurrent: colors.complaints,
+            }}
             enableGridX={true}
             axisBottom={{
               tickSize: 5,
@@ -251,6 +262,8 @@ class App extends Component {
       }
     );
 
+    const sectionHeadingClass = "App__heading App__heading--section"
+
     const appInfoCurrent = timeRanges ? timeRanges.split("vs.")[0] : "";
     const appInfoBefore = timeRanges ? timeRanges.split("vs.")[1] : "";
 
@@ -262,7 +275,7 @@ class App extends Component {
         <section className="App__section App__section--stats">
           {/* LATEST STATS HEADER */}
           <header className="App__header App__header--stats">
-            <h2 className="App__heading App__heading--section">Latest Stats</h2>
+            <h2 className={sectionHeadingClass}>Recent</h2>
             <p className="App__info">
               <span className="App__info--current">{appInfoCurrent} vs.</span>
               <span className="App__info--before">{appInfoBefore}</span>
@@ -296,7 +309,7 @@ class App extends Component {
         <section className={analyticsClass}>
           {/* ANALYTICS HEADER */}
           <header className="App__header App__header--analytics">
-            <h2 className="App__heading">Analytics</h2>
+            <h2 className={sectionHeadingClass}>Analytics</h2>
             {/* DROPDOWNS */}
             {Object.entries(dropdownsLists).map(([type, [list, id]]) => {
               return (
