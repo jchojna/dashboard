@@ -17,7 +17,6 @@ class TextPanel extends Component {
   };
 
   componentDidUpdate = () => {
-    
     if (!this.intervalId) {
       this.setState({animatedValue: 0});
       this.handleValue();
@@ -27,13 +26,13 @@ class TextPanel extends Component {
   componentWillUnmount = () => {
     clearInterval(this.intervalId);
     this.intervalId = null;
-  }
+  };
 
   handleValue = () => {
     this.intervalId = setInterval(() => {
       const {animatedValue} = this.state;
       const {value} = this.props;
-      
+
       // one increment on every 10ms
       const increment = Math.ceil(value / 80);
 
@@ -47,7 +46,7 @@ class TextPanel extends Component {
         this.intervalId = null;
       }
     }, 10);
-  }
+  };
 
   render() {
     const {id, heading, percentage} = this.props;
@@ -68,7 +67,10 @@ class TextPanel extends Component {
         </header>
 
         {/* VALUES AND INDICATORS */}
-        <p className="TextPanel__value">{animatedValue}</p>
+        <p className="TextPanel__value">
+          {animatedValue}
+          {id === "income" ? " $" : ""}
+        </p>
         <div className={percentageClass}>
           <Icon id="indicator" isRotated={isIconRotated} />
           <span>{percentValue}</span>
