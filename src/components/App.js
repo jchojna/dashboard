@@ -8,7 +8,7 @@ import TextPanel from "./TextPanel";
 import VisualPanel from "./VisualPanel";
 import Dropdown from "./Dropdown";
 import Button from "./Button";
-import Histogram from "./Histogram";
+import BarChart from "./BarChart";
 import Map from "./Map";
 import "../scss/App.scss";
 
@@ -29,9 +29,10 @@ class App extends Component {
       },
       analytics: {
         field: "income",
-        month: 0,
         //month: this.date.getMonth() + 1,
-        year: this.date.getFullYear(),
+        //year: this.date.getFullYear(),
+        month: 5,
+        year: 2017,
         mapData: {},
         histData: [],
         summaryData: [],
@@ -54,6 +55,7 @@ class App extends Component {
     const mapData = getMapData(data, field, month, year);
     const histData = getHistData(data, field, month, year);
     const summaryData = getSummaryData(data, month, year);
+
     const colors = {};
     Object.keys(statsFields).forEach(
       (field) => (colors[field] = getColorRgb(field))
@@ -107,7 +109,7 @@ class App extends Component {
   handleAnalytics = (type, id) => {
     const {data, analytics} = this.state;
     let {field, month, year} = this.state.analytics;
-    const {getMapData, getHistData, getSummaryData, getColorRgb} = dataHandlers;
+    const {getMapData, getHistData, getSummaryData} = dataHandlers;
 
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
@@ -118,8 +120,6 @@ class App extends Component {
       type === "month" || type === "year"
         ? getSummaryData(data, month, year)
         : analytics.summaryData;
-    const accentColor =
-      type === "field" ? getColorRgb(id) : this.state.accentColor;
 
     this.setState({
       analytics: {
@@ -129,7 +129,6 @@ class App extends Component {
         histData,
         summaryData,
       },
-      accentColor,
     });
   };
 
@@ -138,27 +137,46 @@ class App extends Component {
       analytics: {field, mapData, histData, summaryData},
       colors,
     } = this.state;
+    const alertClass = "VisualPanel__alert";
+    const alertText = "No data for this time range...";
 
     switch (type) {
       case "histogram":
-        return (
-          <Histogram
+        const isHistData = histData.length > 0;
+
+        return isHistData ? (
+          <BarChart
             data={histData}
             keys={[field]}
             type="histogram"
             layout="vertical"
-            margin={{top: 60, right: 30, bottom: 30, left: 60}}
+            margin={{left: 60}}
             colors={(id) => colors[id]}
+            enableGridX={true}
             enableGridY={true}
           />
+        ) : (
+          <div className={alertClass}>{alertText}</div>
         );
 
       case "map":
         return <Map data={mapData} />;
 
       case "summary":
-        return (
-          <Histogram
+        const isSummaryData = summaryData.length > 0;
+        const enableGridX = isSummaryData ? true : false;
+        const axisBottom =
+          isSummaryData > 0
+            ? {
+                tickSize: 5,
+                tickPadding: 0,
+                tickRotation: 0,
+                tickValues: [20, 40, 60, 80],
+              }
+            : null;
+
+        return isSummaryData ? (
+          <BarChart
             data={summaryData}
             keys={[
               "incomeBefore",
@@ -172,19 +190,17 @@ class App extends Component {
             ]}
             type="summary"
             layout="horizontal"
-            margin={{top: 60, right: 30, bottom: 50, left: 100}}
+            margin={{left: 100}}
             colors={(id) => {
               const isCurrent = id.includes("Current");
               return isCurrent ? colors[id.replace("Current", "")] : "#fff";
             }}
-            enableGridX={true}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              tickValues: [20, 40, 60, 80],
-            }}
+            enableGridX={enableGridX}
+            gridXValues={[20, 40, 60, 80]}
+            axisBottom={axisBottom}
           />
+        ) : (
+          <div className={alertClass}>{alertText}</div>
         );
 
       default:

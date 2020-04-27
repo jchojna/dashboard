@@ -2,6 +2,7 @@
 @import "_mixins.scss";
 
 .VisualPanel {
+  @include flex-center;
   background-color: #fff;
   border-radius: $corner;
   box-shadow: $section-shadow;
@@ -54,5 +55,14 @@
     @media only screen and (max-width: $media-md) {
       display: none;
     }
+  }
+
+  &__alert {
+    @include flex-center;
+    color: #aaa;
+    background-color: #eee;
+    height: 100%;
+    margin-top: 20px;
+    width: 100%;
   }
 }

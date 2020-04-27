@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Datamaps from "datamaps";
 import d3 from "d3";
-import "../scss/Histogram.scss";
+import "../scss/BarChart.scss";
 import "../scss/Map.scss";
 
 class Map extends Component {

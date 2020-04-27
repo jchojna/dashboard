@@ -350,6 +350,7 @@ export const getHistData = (data, field, month, year, isAllBefore = false) => {
 
     return {
       id: `${index + 1} ${months[month]}`,
+      month: months[month],
       [field]: value,
     };
   });
@@ -358,20 +359,23 @@ export const getHistData = (data, field, month, year, isAllBefore = false) => {
 
 export const getSummaryData = (data, month, year) => {
   const getFieldTotals = () => {
-    const array = [];
+    let array = [];
     for (let field in statsFields) {
       const beforeTotal = getTotal(field, true);
       const currentTotal = getTotal(field, false);
       const allTotal = beforeTotal + currentTotal;
-      const beforePercent = allTotal === 0 ? 0 : (beforeTotal / allTotal) * 100;
-      const currentPercent =
-        allTotal === 0 ? 0 : (currentTotal / allTotal) * 100;
 
-      array.unshift({
-        id: field,
-        [`${field}Before`]: beforePercent,
-        [`${field}Current`]: currentPercent,
-      });
+      if (allTotal !== 0) {
+        
+        const beforePercent = (beforeTotal / allTotal) * 100;
+        const currentPercent = (currentTotal / allTotal) * 100;
+  
+        array.unshift({
+          id: field,
+          [`${field}Before`]: beforePercent,
+          [`${field}Current`]: currentPercent,
+        });
+      }
     }
     return array;
   };
