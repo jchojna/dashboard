@@ -69,7 +69,7 @@ class App extends Component {
     });
 
     dataPromise
-      .then(() => loadData())
+      .then(loadData)
       .then((response) => {
         const [mapData, histData, summaryData] = response;
         const colors = {};
@@ -112,16 +112,15 @@ class App extends Component {
     const {statsFields} = dataHelpers;
     const breakpointDates = getBreakpointDates(period);
 
+    const fieldsValues = {};
     Object.keys(statsFields).forEach((field) => {
       const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
       const [lastPeriodTotal, percentage] = statsOutput;
 
-      this.setState({
-        [field]: {
-          value: lastPeriodTotal,
-          percentage,
-        },
-      });
+      fieldsValues[field] = {
+        value: lastPeriodTotal,
+        percentage,
+      };
     });
 
     const timeRanges = getTimeRanges(breakpointDates, period);
@@ -129,7 +128,11 @@ class App extends Component {
       period,
       timeRanges,
     };
-    this.setState({stats});
+
+    this.setState({
+      ...fieldsValues,
+      stats,
+    });
   };
 
   handleAnalytics = (type, id) => {
@@ -151,7 +154,7 @@ class App extends Component {
     };
 
     const dataPromise = new Promise((resolve, reject) => {
-      setTimeout(resolve, 1000);
+      setTimeout(resolve, 500);
     });
 
     dataPromise

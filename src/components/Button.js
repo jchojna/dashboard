@@ -10,7 +10,7 @@ const Button = (props) => {
     "Button--disabled": isDataLoading,
   });
 
-  const handleClick = () => isDataLoading ? false : onClick();
+  const handleClick = () => (isDataLoading ? false : onClick());
 
   return (
     <button className={buttonClass} onClick={handleClick}>

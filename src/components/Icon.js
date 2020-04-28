@@ -8,7 +8,7 @@ const Icon = (props) => {
   const {id, type, isRotated} = props;
   const iconClass = classNames("Icon", `Icon--${id}`, {
     [`Icon--${type}`]: type,
-    "Icon--rotated": isRotated
+    "Icon--rotated": isRotated,
   });
   return (
     <svg className={iconClass} viewBox="0 0 100 100">
