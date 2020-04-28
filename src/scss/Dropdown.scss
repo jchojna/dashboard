@@ -43,11 +43,15 @@
     }
 
     &--active {
-      background-color: #ccc;
+      background-color: $color-light-1;
+    }
+
+    &--disabled {
+      pointer-events: none;
     }
 
     &:hover {
-      background-color: #ccc;
+      background-color: $color-light-1;
     }
   }
 
@@ -57,7 +61,7 @@
   
   &__list {
     animation: dropdownMenu 0.25s;
-    background-color: #eee;
+    background-color: $color-light-3;
     box-shadow: $section-shadow;
     border-radius: $corner;
     left: 0;

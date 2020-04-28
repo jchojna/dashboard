@@ -4,7 +4,7 @@
 .Button {
   @include button;
   @include flex-center;
-  background-color: #ccc;
+  background-color: $color-light-1;
   border-radius: $corner;
   justify-content: space-between;
   min-width: 150px;
@@ -12,9 +12,13 @@
   text-transform: uppercase;
   transition: color $time-hover, background-color $time-hover;
 
+  &--disabled {
+    pointer-events: none;
+  }
+
   &:hover {
     color: #fff;
-    background-color: #999;
+    background-color: $color-medium-2;
   }
 
   @media only screen and (max-width: $media-sm) {

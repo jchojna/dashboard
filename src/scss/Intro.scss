@@ -20,7 +20,7 @@
   right: 0;
   row-gap: 60px;
   top: 0;
-  transition: opacity 1s, visibility 1s;
+  transition: opacity $time-introFade, visibility $time-introFade;
   visibility: hidden;
   z-index: 3;
 
@@ -29,16 +29,6 @@
     font-size: 2rem;
     grid-area: heading;
     margin: 0;
-  }
-
-  &__loader {
-    @include flex-center;
-    animation: logo 0.8s alternate infinite ease-in-out;
-    border: 3px solid #000;
-    border-radius: 20%;
-    grid-area: loader;
-    height: 30px;
-    width: 30px;
   }
 
   &--visible {

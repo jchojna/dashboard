@@ -5,7 +5,7 @@ export default [
   },
   {
     country: "United States",
-    startDate: [2017, 6, 24],
+    startDate: [2017, 2, 24],
   },
   {
     country: "Australia",

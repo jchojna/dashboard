@@ -196,20 +196,13 @@ export const getYears = (data) => {
 };
 
 export const getColorRgb = (id) => {
-  // temporary solution
-  const svgIcon = document.querySelector(`svg[class*=${id}]`);
-  if (svgIcon) {
-    const style = window.getComputedStyle(svgIcon);
-    return style.getPropertyValue("background-color");
-  } else {
-    const colors = {
-      income: "rgb(41, 191, 215)",
-      users: "rgb(188, 215, 74)",
-      orders: "rgb(254, 152, 51)",
-      complaints: "rgb(250, 80, 80)",
-    };
-    return colors[id];
-  }
+  const colors = {
+    income: "rgb(41, 191, 215)",
+    users: "rgb(188, 215, 74)",
+    orders: "rgb(254, 152, 51)",
+    complaints: "rgb(250, 80, 80)",
+  };
+  return colors[id];
 };
 
 const getColor = (id) => getColorRgb(id).match(/\d+/g);

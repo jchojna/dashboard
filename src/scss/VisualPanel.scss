@@ -8,6 +8,7 @@
   box-shadow: $section-shadow;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
   &--histogram {
     grid-area: histogram;
@@ -42,7 +43,7 @@
     text-transform: uppercase;
 
     &--info {
-      color: #aaa;
+      color: $color-medium-1;
       font-size: 0.9rem;
       font-weight: normal;
       text-transform: lowercase;
@@ -56,7 +57,7 @@
     padding: 5px;
 
     &:hover {
-      background-color: #aaa;
+      background-color: $color-medium-1;
       fill: #fff;
     }
 
@@ -67,10 +68,28 @@
 
   &__alert {
     @include flex-center;
-    background-color: #eee;
-    color: #aaa;
+    background-color: $color-light-3;
+    color: $color-medium-1;
     height: 100%;
     margin-top: 20px;
     width: 100%;
+  }
+
+  &__overlay {
+    @include flex-center;
+    background-color: rgba($color: #000, $alpha: 0);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background-color $time-overlay, visibility $time-overlay;
+    visibility: hidden;
+    z-index: 1;
+
+    &--visible {
+      background-color: rgba($color: #000, $alpha: 0.2);
+      visibility: visible;
+    }
   }
 }

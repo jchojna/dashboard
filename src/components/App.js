@@ -21,6 +21,7 @@ class App extends Component {
     this.state = {
       isIntroVisible: true,
       isIntroMounted: true,
+      isDataLoading: false,
       data: getData(countriesList),
       isMounted: false,
       income: {},
@@ -68,7 +69,7 @@ class App extends Component {
     });
 
     dataPromise
-      .then(() => loadData())
+      .then(loadData)
       .then((response) => {
         const [mapData, histData, summaryData] = response;
         const colors = {};
@@ -111,16 +112,15 @@ class App extends Component {
     const {statsFields} = dataHelpers;
     const breakpointDates = getBreakpointDates(period);
 
+    const fieldsValues = {};
     Object.keys(statsFields).forEach((field) => {
       const statsOutput = getTotalInTimeRange(data, field, breakpointDates);
       const [lastPeriodTotal, percentage] = statsOutput;
 
-      this.setState({
-        [field]: {
-          value: lastPeriodTotal,
-          percentage,
-        },
-      });
+      fieldsValues[field] = {
+        value: lastPeriodTotal,
+        percentage,
+      };
     });
 
     const timeRanges = getTimeRanges(breakpointDates, period);
@@ -128,7 +128,11 @@ class App extends Component {
       period,
       timeRanges,
     };
-    this.setState({stats});
+
+    this.setState({
+      ...fieldsValues,
+      stats,
+    });
   };
 
   handleAnalytics = (type, id) => {
@@ -139,16 +143,18 @@ class App extends Component {
     field = type === "field" ? id : field;
     month = type === "month" ? id : month;
     year = type === "year" ? id : year;
-  
+
+    this.setState({isDataLoading: true});
+
     const loadData = () => {
       return [
         getMapData(data, field, month, year),
-        getHistData(data, field, month, year)
+        getHistData(data, field, month, year),
       ];
     };
 
     const dataPromise = new Promise((resolve, reject) => {
-      setTimeout(resolve, 1000);
+      setTimeout(resolve, 500);
     });
 
     dataPromise
@@ -159,7 +165,7 @@ class App extends Component {
           type === "month" || type === "year"
             ? getSummaryData(data, month, year)
             : analytics.summaryData;
-    
+
         this.setState({
           analytics: {
             ...analytics,
@@ -168,17 +174,9 @@ class App extends Component {
             histData,
             summaryData,
           },
+          isDataLoading: false,
         });
-      })
-      .then(() =>
-        setTimeout(
-          () =>
-            this.setState({
-              isIntroMounted: false,
-            }),
-          1000
-        )
-      );
+      });
   };
 
   renderAnalytics = (type) => {
@@ -287,6 +285,7 @@ class App extends Component {
     const {
       isIntroVisible,
       isIntroMounted,
+      isDataLoading,
       data,
       stats: {period, timeRanges},
       analytics: {field, month, year},
@@ -341,6 +340,7 @@ class App extends Component {
             <Dropdown
               currentId={period}
               type="period"
+              isDataLoading={isDataLoading}
               menuList={statsPeriods}
               onMenuClick={this.handleStats}
             />
@@ -375,6 +375,7 @@ class App extends Component {
                   key={id}
                   currentId={id}
                   type={type}
+                  isDataLoading={isDataLoading}
                   menuList={list}
                   onMenuClick={this.handleAnalytics}
                 />
@@ -391,6 +392,7 @@ class App extends Component {
               <VisualPanel
                 key={id}
                 id={id}
+                isDataLoading={isDataLoading}
                 heading={heading}
                 info={info}
                 isMaximized={isMaximized}
@@ -405,6 +407,7 @@ class App extends Component {
             <Button
               id="export"
               label="export"
+              isDataLoading={isDataLoading}
               onClick={() =>
                 this.handleExport(
                   JSON.stringify(data),
@@ -413,7 +416,12 @@ class App extends Component {
                 )
               }
             />
-            <Button id="print" label="print" onClick={() => window.print()} />
+            <Button
+              id="print"
+              label="print"
+              isDataLoading={isDataLoading}
+              onClick={() => window.print()}
+            />
           </footer>
         </section>
       </main>
